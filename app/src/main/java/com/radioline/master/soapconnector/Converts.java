@@ -162,7 +162,52 @@ public class Converts {
         return Items;
     }
 
+    public ArrayList<Item> getItemsArrayListFromServerWithBarcode(String barcode,Boolean full) throws ExecutionException, InterruptedException {
+        final String method_name = "GetPriceOnBarCode";
 
+
+        // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
+        linkAsync = new LinkAsyncTaskGetSoapObject(method_name);
+        //linkAsync.execute();
+        PropertyInfo pi0 = new PropertyInfo();
+        pi0.setName("PartnerId");
+        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setType(String.class);
+
+        PropertyInfo pi1 = new PropertyInfo();
+        pi1.setName("barcode");
+        pi1.setValue(barcode);
+        pi1.setType(String.class);
+
+
+
+        PropertyInfo pi2 = new PropertyInfo();
+        pi2.setName("SimpleFields");
+        pi2.setValue(!full);
+        pi2.setType(Boolean.class);
+
+        SoapObject tSoap = linkAsync.execute(pi0,pi1,pi2).get();
+        if (tSoap==null){
+            return null;
+        }
+        SoapObject items = (SoapObject)tSoap.getProperty("Prices");
+        //SoapObject items = (SoapObject)prices.getProperty("Item");
+
+        int itemsCount = items.getPropertyCount();
+        ArrayList<Item> Items = new ArrayList<Item>();
+        for (int curCount=0;curCount<itemsCount;curCount++) {
+            SoapObject item = (SoapObject)items.getProperty(curCount);
+            Items.add(new Item(item));
+        }
+
+        Collections.sort(Items, new Comparator<Item>() {
+            public int compare(Item p1, Item p2) {
+                return p1.getName().compareToIgnoreCase(
+                        p2.getName());
+            }
+        });
+        return Items;
+    }
 
     public Bitmap getBitMapFromServer(String idItem)throws ExecutionException, InterruptedException{
         final String method_name = "GetPNG";

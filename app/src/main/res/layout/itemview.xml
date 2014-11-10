@@ -33,8 +33,7 @@
             android:minWidth="50dp"
             android:maxHeight="50dp"
             android:maxWidth="50dp"
-            android:scaleType="fitStart"
-            android:layout_gravity="left" />
+            android:scaleType="fitStart" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -54,16 +53,13 @@
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:layout_gravity="left"
-            android:gravity="right">
+            android:layout_weight="20">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="$ 99999.99"
                 android:id="@+id/tvItemUSD"
-                android:gravity="left"
                 android:layout_gravity="right" />
 
             <TextView
@@ -71,7 +67,6 @@
                 android:layout_height="wrap_content"
                 android:text="G 99999.99"
                 android:id="@+id/tvItemUAH"
-                android:gravity="left"
                 android:layout_gravity="right" />
         </LinearLayout>
     </LinearLayout>

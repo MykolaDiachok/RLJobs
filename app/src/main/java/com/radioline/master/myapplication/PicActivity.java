@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.radioline.master.basic.Item;
-import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.ImageDownloaderSOAP;
+import com.splunk.mint.Mint;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -34,8 +34,25 @@ public class PicActivity extends Activity {
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Mint.initAndStartSession(this, "3b65ddeb");
+        //Mint.enableDebug();
+
         setContentView(R.layout.activity_pic);
         this.setTitle(getIntent().getStringExtra("Name"));
         imageView2 = (ImageView) findViewById(R.id.imageView2);
@@ -62,9 +79,9 @@ public class PicActivity extends Activity {
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if ((dialog!=null) &&(dialog.isShowing()))
-                        dialog.dismiss();
-                        if (itemlist.isEmpty())
+                        if ((dialog!=null)&&(dialog.isShowing())){
+                            dialog.dismiss();}
+                        if ((itemlist==null)&&(itemlist.isEmpty()))
                             return;
 
                         Item item = itemlist.get(0);
@@ -93,11 +110,12 @@ public class PicActivity extends Activity {
                         if ((item.getDescription()!=null)&&(item.getDescription().length()!=0))
                             properties = properties+"<b>description #:</b>"+item.getDescription()+"<br>";
 
-                        if ((item.getOurWebSite()!=null)&&(item.getOurWebSite().length()!=0))
-                            properties = properties+"<a href=\"https://"+item.getOurWebSite()+">our site</a><br>";
+                        if ((item.getOurWebSite()!=null)&&(item.getOurWebSite().length()!=0)){
+                            properties = properties+"<a href=\"https://"+item.getOurWebSite()+">our site</a><br>";}
 
-                        if ((item.getSite()!=null)&&(item.getSite().length()!=0))
-                            properties = properties+"<a href=\""+item.getSite()+">product site</a><br>";
+                        if ((item.getSite()!=null)&&(item.getSite().length()!=0)){
+                            properties = properties+"<a href=\""+item.getSite()+">product site</a><br>";}
+
                         tvProperties.setMovementMethod(LinkMovementMethod.getInstance());
                         tvProperties.setText(Html.fromHtml(properties));
 
@@ -118,7 +136,7 @@ public class PicActivity extends Activity {
                         else
                             tvPriceRRCUAH.setText("");
                         //lvItem.setAdapter(itemViewAdapter);
-                    };
+                    }
                 });
             }
         };

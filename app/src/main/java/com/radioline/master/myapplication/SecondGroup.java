@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
+import com.splunk.mint.Mint;
 
 import java.util.concurrent.ExecutionException;
 
@@ -26,8 +27,27 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
     private GroupViewAdapter groupViewAdapter;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Mint.initAndStartSession(this, "3b65ddeb");
+        //Mint.enableDebug();
+
         setContentView(R.layout.activity_second_group);
         lvSecond = (ListView)findViewById(R.id.lvSecond);
         lvSecond.setOnItemClickListener(this);
@@ -58,9 +78,11 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
 
                 handler.post(new Runnable() {
                     public void run() {
-                        dialog.dismiss();
-                        lvSecond.setAdapter(groupViewAdapter);
-                    };
+                        if ((dialog!=null)&&(dialog.isShowing())){
+                            dialog.dismiss();}
+                        if (groupViewAdapter!=null){
+                        lvSecond.setAdapter(groupViewAdapter);}
+                    }
                 });
             }
         };
