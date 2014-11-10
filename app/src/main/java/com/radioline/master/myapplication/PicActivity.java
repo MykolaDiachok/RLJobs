@@ -62,6 +62,7 @@ public class PicActivity extends Activity {
 
                 handler.post(new Runnable() {
                     public void run() {
+                        if ((dialog!=null) &&(dialog.isShowing()))
                         dialog.dismiss();
                         if (itemlist.isEmpty())
                             return;
