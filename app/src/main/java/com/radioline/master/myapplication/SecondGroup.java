@@ -78,8 +78,10 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
 
                 handler.post(new Runnable() {
                     public void run() {
-                        dialog.dismiss();
-                        lvSecond.setAdapter(groupViewAdapter);
+                        if ((dialog!=null)&&(dialog.isShowing())){
+                            dialog.dismiss();}
+                        if (groupViewAdapter!=null){
+                        lvSecond.setAdapter(groupViewAdapter);}
                     }
                 });
             }

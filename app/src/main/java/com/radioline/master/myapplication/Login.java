@@ -72,7 +72,8 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
 
                 handler.post(new Runnable() {
                     public void run() {
-                        dialog.dismiss();
+                        if ((dialog!=null)&&(dialog.isShowing())){
+                            dialog.dismiss();}
                         if (groupViewAdapter!=null){
                         listView.setAdapter(groupViewAdapter);}
                     };

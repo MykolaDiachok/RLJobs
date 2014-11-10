@@ -124,8 +124,10 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
 
                         handler.post(new Runnable() {
                             public void run() {
-                                dialog.dismiss();
-                                lvScan.setAdapter(itemViewAdapter);
+                                if ((dialog!=null)&&(dialog.isShowing())){
+                                    dialog.dismiss();}
+                                if (itemViewAdapter!=null){
+                                lvScan.setAdapter(itemViewAdapter);}
                             }
                         });
                     }

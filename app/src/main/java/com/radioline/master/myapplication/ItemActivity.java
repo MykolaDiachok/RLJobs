@@ -80,8 +80,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
                 handler.post(new Runnable() {
                     public void run() {
-                        dialog.dismiss();
-                        lvItem.setAdapter(itemViewAdapter);
+                        if ((dialog!=null)&&(dialog.isShowing())){
+                            dialog.dismiss();}
+                        if (itemViewAdapter!=null){
+                        lvItem.setAdapter(itemViewAdapter);}
                     }
                 });
             }
