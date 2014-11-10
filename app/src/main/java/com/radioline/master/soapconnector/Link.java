@@ -1,8 +1,5 @@
 package com.radioline.master.soapconnector;
 
-import android.os.AsyncTask;
-
-import com.radioline.master.basic.Group;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
@@ -79,7 +76,7 @@ public class Link {
         if (isConnectedToServer("https://of.rl.com.ua:6443/",3000)){
             url = "https://of.rl.com.ua:6443/GlobalBase1/ws/wsPrice.1cws";
             workUrl = true;}
-        else if (isConnectedToServer("https://of.rl.com.ua:6443/",3000)){
+        else if (isConnectedToServer("http://mws-01.rl.int/",3000)){
             url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;}
         //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";

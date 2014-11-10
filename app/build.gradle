@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android'
 
 android {
     compileSdkVersion 20
@@ -19,7 +20,13 @@ android {
     }
 }
 
+repositories {
+    maven {
+        url "https://mint.splunk.com/gradle/"
+    }
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
+    compile "com.splunk.mint:mint:4.0.4"
 }

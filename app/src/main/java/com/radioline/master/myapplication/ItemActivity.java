@@ -11,11 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.radioline.master.basic.Group;
-import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.soapconnector.Converts;
+import com.splunk.mint.Mint;
 
 import java.util.concurrent.ExecutionException;
 
@@ -28,8 +27,27 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     private ItemViewAdapter itemViewAdapter;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.enableDebug();
+
         setContentView(R.layout.activity_item);
 
         this.setTitle(getIntent().getStringExtra("Name"));
@@ -64,7 +82,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                     public void run() {
                         dialog.dismiss();
                         lvItem.setAdapter(itemViewAdapter);
-                    };
+                    }
                 });
             }
         };

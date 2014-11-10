@@ -1,28 +1,21 @@
 package com.radioline.master.myapplication;
 
 import android.app.Activity;
-import android.app.ExpandableListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
-import com.radioline.master.soapconnector.Link;
+import com.splunk.mint.Mint;
 
-import org.kobjects.base64.Base64;
 
 import java.util.concurrent.ExecutionException;
 
@@ -36,10 +29,26 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.enableDebug();
+
         setContentView(R.layout.activity_login);
         listView = (ListView)findViewById(R.id.listView);
 
