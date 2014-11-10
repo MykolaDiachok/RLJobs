@@ -14,5 +14,8 @@
     <string name="ProgressDialogMessage">Loading, please wait..</string>
     <string name="title_activity_image">ImageActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_scan">ScanActivity</string>
+    <string name="btScan">Scan</string>
+    <string name="action_scan">Scaning</string>
 
 </resources>

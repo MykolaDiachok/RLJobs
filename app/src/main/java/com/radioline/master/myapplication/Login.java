@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.google.zxing.client.android.Intents;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -99,11 +100,19 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+
+
+        switch (item.getItemId()) {
+            case R.id.action_scan:
+                Intent intent = new Intent(this,ScanActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -143,4 +152,6 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
         intent.putExtra("Name",itemgroup.getName());
         startActivity(intent);
     }
+
+
 }
