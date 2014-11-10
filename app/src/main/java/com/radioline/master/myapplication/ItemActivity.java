@@ -46,7 +46,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
 
         Mint.initAndStartSession(this, "3b65ddeb");
-        Mint.enableDebug();
+        //Mint.enableDebug();
 
         setContentView(R.layout.activity_item);
 

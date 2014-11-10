@@ -48,7 +48,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
         super.onCreate(savedInstanceState);
 
         Mint.initAndStartSession(this, "3b65ddeb");
-        Mint.enableDebug();
+        //Mint.enableDebug();
 
         setContentView(R.layout.activity_login);
         listView = (ListView)findViewById(R.id.listView);

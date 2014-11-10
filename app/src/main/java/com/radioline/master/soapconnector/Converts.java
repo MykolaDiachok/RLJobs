@@ -182,11 +182,14 @@ public class Converts {
 
 
         PropertyInfo pi2 = new PropertyInfo();
-        pi2.setName("Simple");
+        pi2.setName("SimpleFields");
         pi2.setValue(!full);
         pi2.setType(Boolean.class);
 
         SoapObject tSoap = linkAsync.execute(pi0,pi1,pi2).get();
+        if (tSoap==null){
+            return null;
+        }
         SoapObject items = (SoapObject)tSoap.getProperty("Prices");
         //SoapObject items = (SoapObject)prices.getProperty("Item");
 

@@ -2,6 +2,7 @@ package com.radioline.master.myapplication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,8 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -19,6 +22,7 @@ import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -29,6 +33,12 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
     private String contents;
+
+    final Runnable showToastMessage = new Runnable() {
+        public void run() {
+            Toast.makeText(ScanActivity.this, "It's barcode="+contents+" not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
     @Override
@@ -67,7 +77,7 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
                 //integrator.addExtra("SCAN_HEIGHT", 480);
                 //integrator.addExtra("SCAN_MODE", "ONE_D_MODE");
                 integrator.addExtra("SCAN_MODE", "PRODUCT_MODE");
-                integrator.addExtra("SCAN_FORMATS", "CODE_128");
+                integrator.addExtra("SCAN_FORMATS", "EAN_13");//EAN_13,CODE_128
                 //customize the prompt message before scanning
                 integrator.addExtra("PROMPT_MESSAGE", "Scanner Start!");
                 integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
@@ -93,7 +103,18 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
                     public void run() {
                         Converts tg = new Converts();
                         try {
-                            itemViewAdapter = new ItemViewAdapter(ScanActivity.this, tg.getItemsArrayListFromServerWithBarcode(contents, false));
+                            ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(contents, false);
+                            if (item==null){
+//                                Context context = getApplicationContext();
+//                                CharSequence text = "It's barcode=" + contents+" not found in database, perhaps the item is not available";
+//                                int duration = Toast.LENGTH_SHORT;
+//
+//                                Toast toast = Toast.makeText(ScanActivity.this, text, duration);
+//                                toast.show();
+                                handler.post(showToastMessage);
+                            }
+                             else{
+                                itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);}
 
                         } catch (ExecutionException e) {
                             e.printStackTrace();

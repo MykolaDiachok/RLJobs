@@ -51,7 +51,7 @@ public class PicActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         Mint.initAndStartSession(this, "3b65ddeb");
-        Mint.enableDebug();
+        //Mint.enableDebug();
 
         setContentView(R.layout.activity_pic);
         this.setTitle(getIntent().getStringExtra("Name"));
