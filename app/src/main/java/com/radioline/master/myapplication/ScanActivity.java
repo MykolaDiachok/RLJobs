@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.radioline.master.basic.Item;
@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 public class ScanActivity extends Activity implements AdapterView.OnItemClickListener {
     private Button btScan;
     private ListView lvScan;
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
     private String contents;

@@ -2,15 +2,19 @@ package com.radioline.master.myapplication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.badoo.mobile.util.WeakHandler;
+
+import com.radioline.master.SwipeDetector.SwipeDetector;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -24,9 +28,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
     //http://stackoverflow.com/questions/4373485/android-swipe-on-list
     private ListView lvItem;
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
+    private SwipeDetector swipeDetector;
 
     @Override
     protected void onResume() {
@@ -53,9 +58,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_item);
 
         this.setTitle(getIntent().getStringExtra("Name"));
-
+        swipeDetector = new SwipeDetector();
         lvItem = (ListView)findViewById(R.id.lvItem);
         lvItem.setOnItemClickListener(this);
+        lvItem.setOnTouchListener(swipeDetector);
 //        Converts tg = new Converts();
 //        try {
 //            ItemViewAdapter itemViewAdapter = new ItemViewAdapter(this, tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid")));
@@ -121,9 +127,19 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Item item = (Item) adapterView.getItemAtPosition(position);
-        Intent intent = new Intent(this,PicActivity.class);
-        intent.putExtra("itemid",item.getId());
-        intent.putExtra("Name",item.getName());
-        startActivity(intent);
+        if (swipeDetector.swipeDetected()){
+            if((swipeDetector.getAction()== SwipeDetector.Action.RL)||(swipeDetector.getAction()== SwipeDetector.Action.LR)){
+                Toast.makeText(ItemActivity.this,"swipe:"+item.getName()+" +1",Toast.LENGTH_SHORT).show();
+
+            }
+        } else {
+            Intent intent = new Intent(this,PicActivity.class);
+            intent.putExtra("itemid",item.getId());
+            intent.putExtra("Name",item.getName());
+            startActivity(intent);
+        }
+
+
+
     }
 }

@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 public class SecondGroup extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView lvSecond;
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
 

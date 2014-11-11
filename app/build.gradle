@@ -6,7 +6,7 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-        applicationId "com.radioline.master.myapplication"
+        applicationId "com.radioline.master.rlprice"
         minSdkVersion 16
         targetSdkVersion 20
         versionCode 1
@@ -26,6 +26,9 @@ repositories {
     }
     maven {
         url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/"
+    }
+    maven {
+            url 'https://oss.sonatype.org/content/repositories/releases/'
     }
 }
 dependencies {
@@ -49,5 +52,7 @@ dependencies {
     // This mostly affects encoding, but you should test if you plan to support these versions.
     // Older versions e.g. 2.2 may also work if you need support for older Android versions.
     compile 'com.google.zxing:core:3.0.1'
+
+    compile 'com.badoo.mobile:android-weak-handler:1.0'
 
 }

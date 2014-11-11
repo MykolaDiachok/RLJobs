@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Item;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.ImageDownloaderSOAP;
@@ -23,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 public class PicActivity extends Activity {
     private ImageView imageView2;
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private  ArrayList<Item> itemlist;
     private TextView tvProperties;

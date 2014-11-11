@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.google.zxing.client.android.Intents;
+import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -23,10 +22,11 @@ import java.util.concurrent.ExecutionException;
 
 public class Login extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener {
 
-
+//https://play.google.com/apps/
+    //https://code.google.com/p/android-query/wiki/API
     private ListView listView;
     final String LOG_TAG = "myLogs";
-    private Handler handler = new Handler();
+    private WeakHandler handler = new WeakHandler ();
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
 
