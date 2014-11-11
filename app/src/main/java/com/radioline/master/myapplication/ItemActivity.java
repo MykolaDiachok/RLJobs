@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 
 public class ItemActivity extends Activity implements AdapterView.OnItemClickListener {
 
+
+    //http://stackoverflow.com/questions/4373485/android-swipe-on-list
     private ListView lvItem;
     private Handler handler = new Handler();
     private ProgressDialog dialog;
