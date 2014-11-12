@@ -25,8 +25,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
 //https://play.google.com/apps/
     //https://code.google.com/p/android-query/wiki/API
     private ListView listView;
-    final String LOG_TAG = "myLogs";
-    private WeakHandler handler = new WeakHandler ();
+    private WeakHandler handler;
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
 
@@ -46,7 +45,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        handler = new WeakHandler();
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
@@ -72,8 +71,17 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if ((dialog!=null)||(dialog.isShowing())){
-                            dialog.dismiss();}
+                        if (dialog!=null){
+                                if (dialog.isShowing()){
+                                    try {
+                                        dialog.dismiss();
+                                    }  catch (IllegalArgumentException e){
+                                        e.printStackTrace();
+                                    };
+
+
+                                }
+                        }
                         if (groupViewAdapter!=null){
                         listView.setAdapter(groupViewAdapter);}
                     };

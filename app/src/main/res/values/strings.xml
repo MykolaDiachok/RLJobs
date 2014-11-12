@@ -17,6 +17,8 @@
     <string name="title_activity_scan">ScanActivity</string>
     <string name="btScan">Scan</string>
     <string name="action_scan">Scaning</string>
+    <string name="action_basket">Basket</string>
+    <string name="action_search">Search</string>
     <string name="btAddItem">+</string>
     <string name="btDel">-</string>
 

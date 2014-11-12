@@ -31,22 +31,14 @@
         <activity
             android:name="com.radioline.master.myapplication.ItemActivity"
             android:label="@string/title_activity_item"
-            android:parentActivityName="com.radioline.master.myapplication.Login" >
+            android:parentActivityName="com.radioline.master.myapplication.SecondGroup" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.radioline.master.myapplication.Login" />
+                android:value="com.radioline.master.myapplication.SecondGroup" />
         </activity>
         <activity
             android:name="com.radioline.master.myapplication.PicActivity"
             android:label="@string/title_activity_pic"
-            android:parentActivityName="com.radioline.master.myapplication.Login" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.radioline.master.myapplication.Login" />
-        </activity>
-        <activity
-            android:name="com.radioline.master.myapplication.ImageActivity"
-            android:label="@string/title_activity_image"
             android:parentActivityName="com.radioline.master.myapplication.ItemActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,7 +46,8 @@
         </activity>
         <activity
             android:name="com.radioline.master.myapplication.ScanActivity"
-            android:label="@string/title_activity_scan" >
+            android:label="@string/title_activity_scan"
+            android:icon="@drawable/ic_barcode">
         </activity>
     </application>
 

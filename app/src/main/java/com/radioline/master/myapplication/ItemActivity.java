@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -88,8 +89,15 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if ((dialog!=null)&&(dialog.isShowing())){
-                            dialog.dismiss();}
+                        if (dialog!=null){
+                            if (dialog.isShowing()){
+                                try {
+                                    dialog.dismiss();
+                                }  catch (IllegalArgumentException e){
+                                    e.printStackTrace();
+                                };
+                            }
+                        }
                         if (itemViewAdapter!=null){
                         lvItem.setAdapter(itemViewAdapter);}
                     }
@@ -106,8 +114,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_item, menu);
-        return true;
+//        getMenuInflater().inflate(R.menu.menu_item, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
