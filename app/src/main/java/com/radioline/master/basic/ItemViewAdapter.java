@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.radioline.master.myapplication.R;
 import com.radioline.master.soapconnector.Converts;
@@ -35,19 +37,23 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         this.itemArrayList = itemsArrayList;
     }
 
+
+
     static class ViewHolder {
         public TextView tvItemName;
         //public TextView tvProperties;
         public TextView tvItemUSD;
         public TextView tvItemUAH;
         public ImageView ivItem;
+        public Button btAdd;
+        public Button btDel;
 
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-
+        final int tposition = position;
         ViewHolder holder;
 
         View rowView = convertView;
@@ -61,6 +67,20 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             holder.tvItemUSD = (TextView) rowView.findViewById(R.id.tvItemUSD);
             holder.tvItemUAH = (TextView) rowView.findViewById(R.id.tvItemUAH);
             holder.ivItem = (ImageView) rowView.findViewById(R.id.ivItem);
+            holder.btAdd = (Button) rowView.findViewById(R.id.btAdd);
+            holder.btAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "button add: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.btDel = (Button) rowView.findViewById(R.id.btDel);
+            holder.btDel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "button del: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
             //
             //holder.tvCode = (TextView) rowView.findViewById(R.id.tvCode);
 
@@ -88,9 +108,14 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         holder.tvItemUSD.setText("$ " + dec.format(itemArrayList.get(position).getPrice()));
         holder.tvItemUAH.setText("₴ " + dec.format(itemArrayList.get(position).getPriceUAH()));
 
+
+
+
         //new DownloadImageInBackground(holder.imageView).execute(itemArrayList.get(position).getId());
+
         ImageDownloaderSOAP getimage = new ImageDownloaderSOAP();
         getimage.download(itemArrayList.get(position).getId(),holder.ivItem,null,false);
+
 //        Converts tg1 = new Converts();
 //        Bitmap bitmap = null;
 //        try {
