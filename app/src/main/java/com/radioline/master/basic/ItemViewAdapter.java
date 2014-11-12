@@ -37,7 +37,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
     static class ViewHolder {
         public TextView tvItemName;
-        public TextView tvProperties;
+        //public TextView tvProperties;
         public TextView tvItemUSD;
         public TextView tvItemUAH;
         public ImageView ivItem;
@@ -57,7 +57,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             rowView = inflater.inflate(R.layout.itemview, null, true);
             holder = new ViewHolder();
             holder.tvItemName = (TextView) rowView.findViewById(R.id.tvItemName);
-            holder.tvProperties = (TextView) rowView.findViewById(R.id.tvProperties);
+            //holder.tvProperties = (TextView) rowView.findViewById(R.id.tvProperties);
             holder.tvItemUSD = (TextView) rowView.findViewById(R.id.tvItemUSD);
             holder.tvItemUAH = (TextView) rowView.findViewById(R.id.tvItemUAH);
             holder.ivItem = (ImageView) rowView.findViewById(R.id.ivItem);
@@ -72,16 +72,16 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         holder.tvItemName.setText(itemArrayList.get(position).getName());
         String properties="";
 
-        if ((itemArrayList.get(position).getModel()!=null) && (itemArrayList.get(position).getModel().length()!=0)){
-            properties=properties+"<b>model:</b>"+itemArrayList.get(position).getModel()+"<br>";
-        }
+//        if ((itemArrayList.get(position).getModel()!=null) && (itemArrayList.get(position).getModel().length()!=0)){
+//            properties=properties+"<b>model:</b>"+itemArrayList.get(position).getModel()+"<br>";
+//        }
 //        String partnumber = itemArrayList.get(position).getPartNumber();
 //        if ((partnumber!=null) && (partnumber.length()!=0)){
 //            properties =properties+ "<b>part #:</b>"+partnumber+"<br>";
 //        }
 
 
-        holder.tvProperties.setText(Html.fromHtml(properties));
+//        holder.tvProperties.setText(Html.fromHtml(properties));
 
         DecimalFormat dec = new DecimalFormat("0.00");
 
