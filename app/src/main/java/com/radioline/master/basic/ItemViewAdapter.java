@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
 import com.radioline.master.myapplication.R;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.DownloadImageInBackground;
@@ -28,7 +30,6 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
     Context context;
     private final ArrayList<Item> itemArrayList;
-    DownloadImageInBackground dn;
 
     public ItemViewAdapter(Context context, ArrayList<Item> itemsArrayList) {
         super(context, R.layout.itemview, itemsArrayList);
@@ -71,78 +72,51 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             holder.btAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    ParseObject basket = new ParseObject("basket");
+                    basket.put("productid", itemArrayList.get(tposition).getId());
+                    basket.put("quantity", 1);
+                    basket.put("requiredpriceUSD", itemArrayList.get(tposition).getPrice());
+                    basket.put("requiredpriceUAH", itemArrayList.get(tposition).getPriceUAH());
+                    basket.pinInBackground();
+
+
                     Toast.makeText(context, "button add: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
+
+
+
+
                 }
             });
             holder.btDel = (Button) rowView.findViewById(R.id.btDel);
             holder.btDel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ParseObject basket = new ParseObject("basket");
+                    basket.put("productid", itemArrayList.get(tposition).getId());
+                    basket.put("quantity", -1);
+                    basket.put("requiredprice", itemArrayList.get(tposition).getPrice());
+                    basket.pinInBackground();
                     Toast.makeText(context, "button del: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
                 }
             });
-            //
-            //holder.tvCode = (TextView) rowView.findViewById(R.id.tvCode);
-
             rowView.setTag(holder);
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
 
         holder.tvItemName.setText(itemArrayList.get(position).getName());
-        String properties="";
 
-//        if ((itemArrayList.get(position).getModel()!=null) && (itemArrayList.get(position).getModel().length()!=0)){
-//            properties=properties+"<b>model:</b>"+itemArrayList.get(position).getModel()+"<br>";
-//        }
-//        String partnumber = itemArrayList.get(position).getPartNumber();
-//        if ((partnumber!=null) && (partnumber.length()!=0)){
-//            properties =properties+ "<b>part #:</b>"+partnumber+"<br>";
-//        }
-
-
-//        holder.tvProperties.setText(Html.fromHtml(properties));
 
         DecimalFormat dec = new DecimalFormat("0.00");
 
         holder.tvItemUSD.setText("$ " + dec.format(itemArrayList.get(position).getPrice()));
         holder.tvItemUAH.setText("₴ " + dec.format(itemArrayList.get(position).getPriceUAH()));
 
-
-
-
-        //new DownloadImageInBackground(holder.imageView).execute(itemArrayList.get(position).getId());
-
         ImageDownloaderSOAP getimage = new ImageDownloaderSOAP();
         getimage.download(itemArrayList.get(position).getId(),holder.ivItem,null,false);
 
-//        Converts tg1 = new Converts();
-//        Bitmap bitmap = null;
-//        try {
-//            bitmap = tg1.getBitMapFromServer(itemArrayList.get(position).getId(),50,50,50,false);
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        if (bitmap!=null){
-//        holder.imageView.setImageBitmap(bitmap);}
-
-
-        //(holder.imageView).execute(itemArrayList.get(position).getId());
-
-
-        //((ViewPager) container).addView(rowView);
-        //      holder.tvCode.setText(groupArrayList.get(position).getCode());
-
-
-
         return rowView;
 
-
-
-
-
-        //return super.getView(position, convertView, parent);
     }
 }

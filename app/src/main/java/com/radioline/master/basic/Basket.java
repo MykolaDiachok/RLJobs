@@ -4,17 +4,28 @@ package com.radioline.master.basic;
  * Created by master on 13.11.2014.
  */
 public class Basket {
-    private String productid;
+    private String productId;
+    private String name;
     private int quantity;
-    private float requiredprice;
-    private float summa;
+    private float requiredpriceUSD;
+    private float requiredpriceUAH;
+    private float summaUSD;
+    private float summaUAH;
 
-    public String getProductid() {
-        return productid;
+    public String getProductId() {
+        return productId;
     }
 
-    public void setProductid(String productid) {
-        this.productid = productid;
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getQuantity() {
@@ -25,24 +36,37 @@ public class Basket {
         this.quantity = quantity;
     }
 
-    public float getSumma() {
-        return summa;
+    public float getRequiredpriceUSD() {
+        return requiredpriceUSD;
     }
 
-    public void setSumma(float summa) {
-        this.summa = summa;
+    public void setRequiredpriceUSD(float requiredpriceUSD) {
+        this.requiredpriceUSD = requiredpriceUSD;
     }
 
-    public void setSumma()
-    {
-        this.summa = this.quantity*this.requiredprice;
+    public float getRequiredpriceUAH() {
+        return requiredpriceUAH;
     }
 
-    public float getRequiredprice() {
-        return requiredprice;
+    public void setRequiredpriceUAH(float requiredpriceUAH) {
+        this.requiredpriceUAH = requiredpriceUAH;
     }
 
-    public void setRequiredprice(float requiredprice) {
-        this.requiredprice = requiredprice;
+    public float getSummaUSD() {
+        return summaUSD;
     }
+
+    public void setSummaUSD(float summaUSD) {
+        this.summaUSD = summaUSD;
+    }
+
+    public float getSummaUAH() {
+        return summaUAH;
+    }
+
+    public void setSummaUAH(float summaUAH) {
+        this.summaUAH = summaUAH;
+    }
+
+
 }

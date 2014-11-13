@@ -19,7 +19,7 @@ import com.splunk.mint.Mint;
 import java.util.concurrent.ExecutionException;
 
 
-public class SecondGroup extends Activity implements AdapterView.OnItemClickListener {
+public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView lvSecond;
     private WeakHandler handler = new WeakHandler();
@@ -48,7 +48,7 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
-        setContentView(R.layout.activity_second_group);
+        setContentView(R.layout.activity_secondgroup);
         lvSecond = (ListView)findViewById(R.id.lvSecond);
         lvSecond.setOnItemClickListener(this);
         this.setTitle(getIntent().getStringExtra("Name"));
@@ -68,7 +68,7 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
             public void run() {
                 Converts tg = new Converts();
                 try {
-                    groupViewAdapter = new GroupViewAdapter(SecondGroup.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
+                    groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -103,7 +103,7 @@ public class SecondGroup extends Activity implements AdapterView.OnItemClickList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_second_group, menu);
+        getMenuInflater().inflate(R.menu.menu_secondgroup, menu);
         return true;
     }
 

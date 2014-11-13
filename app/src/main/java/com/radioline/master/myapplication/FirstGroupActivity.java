@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.parse.Parse;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -20,7 +21,7 @@ import com.splunk.mint.Mint;
 import java.util.concurrent.ExecutionException;
 
 
-public class Login extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener {
+public class FirstGroupActivity extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener {
 
 //https://play.google.com/apps/
     //https://code.google.com/p/android-query/wiki/API
@@ -49,7 +50,10 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
-        setContentView(R.layout.activity_login);
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+
+        setContentView(R.layout.activity_firstgroup);
         listView = (ListView)findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
@@ -61,7 +65,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
             public void run() {
                 Converts tg = new Converts();
                 try {
-                    groupViewAdapter = new GroupViewAdapter(Login.this, tg.getGroupsArrayListFromServer());
+                    groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this, tg.getGroupsArrayListFromServer());
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -100,7 +104,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login, menu);
+        getMenuInflater().inflate(R.menu.menu_firstgroup, menu);
         return true;
     }
 
@@ -156,7 +160,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
-        Intent intent = new Intent(this,SecondGroup.class);
+        Intent intent = new Intent(this,SecondGroupActivity.class);
         intent.putExtra("parentid",itemgroup.getId());
         intent.putExtra("Name",itemgroup.getName());
         startActivity(intent);
