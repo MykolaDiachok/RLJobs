@@ -16,16 +16,13 @@ import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
-
 import java.util.concurrent.ExecutionException;
 
 
-public class Login extends Activity implements View.OnClickListener,AdapterView.OnItemClickListener {
+public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
-//https://play.google.com/apps/
-    //https://code.google.com/p/android-query/wiki/API
-    private ListView listView;
-    private WeakHandler handler;
+    private ListView lvSecond;
+    private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
 
@@ -42,18 +39,28 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
         Mint.flush();
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handler = new WeakHandler();
+
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
-        setContentView(R.layout.activity_login);
-        listView = (ListView)findViewById(R.id.listView);
-
-        listView.setOnItemClickListener(this);
-
+        setContentView(R.layout.activity_second_group);
+        lvSecond = (ListView)findViewById(R.id.lvSecond);
+        lvSecond.setOnItemClickListener(this);
+        this.setTitle(getIntent().getStringExtra("Name"));
+//        Converts tg = new Converts();
+//        try {
+//            GroupViewAdapter groupViewAdapter = new GroupViewAdapter(this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
+//            listView.setAdapter(groupViewAdapter);
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
                 getString(R.string.ProgressDialogMessage));
@@ -61,7 +68,7 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
             public void run() {
                 Converts tg = new Converts();
                 try {
-                    groupViewAdapter = new GroupViewAdapter(Login.this, tg.getGroupsArrayListFromServer());
+                    groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -72,26 +79,22 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
                 handler.post(new Runnable() {
                     public void run() {
                         if (dialog!=null){
-                                if (dialog.isShowing()){
-                                    try {
-                                        dialog.dismiss();
-                                    }  catch (IllegalArgumentException e){
-                                        e.printStackTrace();
-                                    };
-
-
-                                }
+                            if (dialog.isShowing()){
+                                try {
+                                    dialog.dismiss();
+                                }  catch (IllegalArgumentException e){
+                                    e.printStackTrace();
+                                };
+                            }
                         }
                         if (groupViewAdapter!=null){
-                        listView.setAdapter(groupViewAdapter);}
-                    };
+                        lvSecond.setAdapter(groupViewAdapter);}
+                    }
                 });
             }
         };
 
         t.start();
-
-
 
 
     }
@@ -100,20 +103,15 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login, menu);
+        getMenuInflater().inflate(R.menu.menu_second_group, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-
         switch (item.getItemId()) {
             case R.id.action_scan:
-                Intent intent = new Intent(this,ScanActivity.class);
+                Intent intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -121,46 +119,15 @@ public class Login extends Activity implements View.OnClickListener,AdapterView.
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-    }
-
-    @Override
-    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.bGetGroups:
-//                Converts tg = new Converts();
-//                try {
-//                    GroupViewAdapter groupViewAdapter = new GroupViewAdapter(this, tg.getGroupsArrayListFromServer());
-//                    listView.setAdapter(groupViewAdapter);
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                break;
-//            case R.id.btLoadPNG:
-////                Converts tg1 = new Converts();
-////                try {
-////                    Bitmap tbmp = tg1.getBitMapFromServer("aaa",100,100,50,true);
-////                    imageView2.setImageBitmap(tbmp);
-////                } catch (ExecutionException e) {
-////                    e.printStackTrace();
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//
-//                break;
-//        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
-        Intent intent = new Intent(this,SecondGroup.class);
+        Intent intent = new Intent(this,ItemActivity.class);
         intent.putExtra("parentid",itemgroup.getId());
         intent.putExtra("Name",itemgroup.getName());
         startActivity(intent);
     }
-
 
 }
