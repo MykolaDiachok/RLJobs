@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".FirstGroupActivity"
+            android:name="com.radioline.master.myapplication.FirstGroupActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,9 +21,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SecondGroupActivity"
+            android:name="com.radioline.master.myapplication.SecondGroupActivity"
             android:label="@string/title_activity_second_group"
-            android:parentActivityName=".FirstGroupActivity" >
+            android:parentActivityName="com.radioline.master.myapplication.FirstGroupActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.radioline.master.myapplication.Login" />
@@ -31,7 +31,7 @@
         <activity
             android:name="com.radioline.master.myapplication.ItemActivity"
             android:label="@string/title_activity_item"
-            android:parentActivityName=".SecondGroupActivity" >
+            android:parentActivityName="com.radioline.master.myapplication.SecondGroupActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.radioline.master.myapplication.SecondGroup" />
@@ -46,8 +46,12 @@
         </activity>
         <activity
             android:name="com.radioline.master.myapplication.ScanActivity"
-            android:label="@string/title_activity_scan"
-            android:icon="@drawable/ic_barcode">
+            android:icon="@drawable/ic_barcode"
+            android:label="@string/title_activity_scan" >
+        </activity>
+        <activity
+            android:name="com.radioline.master.myapplication.BasketActivity"
+            android:label="@string/title_activity_basket" >
         </activity>
     </application>
 

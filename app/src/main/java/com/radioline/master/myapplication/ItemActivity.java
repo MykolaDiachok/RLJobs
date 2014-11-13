@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 
+import com.parse.Parse;
 import com.radioline.master.SwipeDetector.SwipeDetector;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
@@ -54,7 +55,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
 
         Mint.initAndStartSession(this, "3b65ddeb");
+
+
         //Mint.enableDebug();
+
 
         setContentView(R.layout.activity_item);
 
@@ -122,11 +126,15 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_scan:
-                Intent intent = new Intent(this, ScanActivity.class);
+                intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_basket:
+                intent = new Intent(this,BasketActivity.class);
+                startActivity(intent);
             case R.id.action_settings:
                 return true;
             default:

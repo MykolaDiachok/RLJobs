@@ -48,7 +48,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
-        setContentView(R.layout.activity_second_group);
+        setContentView(R.layout.activity_secondgroup);
         lvSecond = (ListView)findViewById(R.id.lvSecond);
         lvSecond.setOnItemClickListener(this);
         this.setTitle(getIntent().getStringExtra("Name"));
@@ -103,7 +103,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_second_group, menu);
+        getMenuInflater().inflate(R.menu.menu_secondgroup, menu);
         return true;
     }
 

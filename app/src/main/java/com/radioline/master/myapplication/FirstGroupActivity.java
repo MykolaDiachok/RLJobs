@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.parse.Parse;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -49,7 +50,10 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
 
-        setContentView(R.layout.activity_login);
+        Parse.enableLocalDatastore(this);
+        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+
+        setContentView(R.layout.activity_firstgroup);
         listView = (ListView)findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
@@ -100,7 +104,7 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login, menu);
+        getMenuInflater().inflate(R.menu.menu_firstgroup, menu);
         return true;
     }
 
