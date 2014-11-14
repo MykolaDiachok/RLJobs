@@ -12,8 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.radioline.master.myapplication.R;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.DownloadImageInBackground;
@@ -21,6 +26,7 @@ import com.radioline.master.soapconnector.ImageDownloaderSOAP;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -30,6 +36,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
     Context context;
     private final ArrayList<Item> itemArrayList;
+
 
     public ItemViewAdapter(Context context, ArrayList<Item> itemsArrayList) {
         super(context, R.layout.itemview, itemsArrayList);
@@ -54,7 +61,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        final int tposition = position;
+        //final int tposition = position;
         ViewHolder holder;
 
         View rowView = convertView;
@@ -69,22 +76,35 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             holder.tvItemUAH = (TextView) rowView.findViewById(R.id.tvItemUAH);
             holder.ivItem = (ImageView) rowView.findViewById(R.id.ivItem);
             holder.btAdd = (Button) rowView.findViewById(R.id.btAdd);
+            final Item finalitem = itemArrayList.get(position);
             holder.btAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    ParseQuery<Basket> query = Basket.getQuery();
+                    query.fromLocalDatastore();
+                    query.whereEqualTo("productId", finalitem.getId());
+                    int currentcount = 1;
+                    try {
+                        Basket localbasket = query.getFirst();
+                        currentcount = localbasket.getQuantity()+1;
+                        localbasket.setQuantity(currentcount);
+                        localbasket.pin();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Basket basket = new Basket();
+                        basket.setProductId(finalitem.getId());
+                        basket.setName(finalitem.getName());
+                        basket.setRequiredpriceUSD(finalitem.getPrice());
+                        basket.setRequiredpriceUAH(finalitem.getPriceUAH());
+                        basket.setQuantity(1);
+                        try {
+                            basket.pin();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
 
-                    ParseObject basket = new ParseObject("basket");
-                    basket.put("productid", itemArrayList.get(tposition).getId());
-                    basket.put("quantity", 1);
-                    basket.put("requiredpriceUSD", itemArrayList.get(tposition).getPrice());
-                    basket.put("requiredpriceUAH", itemArrayList.get(tposition).getPriceUAH());
-                    basket.pinInBackground();
-
-
-                    Toast.makeText(context, "button add: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
-
-
-
+                    Toast.makeText(context, "add: " + finalitem.getName()+"+1="+currentcount, Toast.LENGTH_SHORT).show();
 
                 }
             });
@@ -92,12 +112,31 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             holder.btDel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ParseObject basket = new ParseObject("basket");
-                    basket.put("productid", itemArrayList.get(tposition).getId());
-                    basket.put("quantity", -1);
-                    basket.put("requiredprice", itemArrayList.get(tposition).getPrice());
-                    basket.pinInBackground();
-                    Toast.makeText(context, "button del: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
+                    ParseQuery<Basket> query = Basket.getQuery();
+                    query.fromLocalDatastore();
+                    query.whereEqualTo("productId", finalitem.getId());
+                    int currentcount = 0;
+                    try {
+                        Basket localbasket = query.getFirst();
+                        currentcount = localbasket.getQuantity()-1;
+                        localbasket.setQuantity(currentcount);
+                        localbasket.pin();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    if (currentcount<1) {
+                        ParseQuery<Basket> query2 = Basket.getQuery();
+                        query2.fromLocalDatastore();
+                        query2.whereEqualTo("productId", finalitem.getId());
+                        try {
+                            Basket localbasket = query2.getFirst();
+                            localbasket.delete();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    Toast.makeText(context, "del: " + finalitem.getName()+"-1="+currentcount, Toast.LENGTH_SHORT).show();
                 }
             });
             rowView.setTag(holder);

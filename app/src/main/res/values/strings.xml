@@ -21,6 +21,7 @@
     <string name="action_search">Search</string>
     <string name="btAddItem">+</string>
     <string name="btDel">-</string>
-    <string name="title_activity_basket">BasketActivity</string>
+    <string name="title_activity_basket">Basket</string>
+    <string name="action_clearBasket">Clear</string>
 
 </resources>

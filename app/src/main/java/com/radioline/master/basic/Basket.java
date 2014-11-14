@@ -1,72 +1,69 @@
 package com.radioline.master.basic;
 
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.UUID;
+
 /**
  * Created by master on 13.11.2014.
  */
-public class Basket {
-    private String productId;
-    private String name;
-    private int quantity;
-    private float requiredpriceUSD;
-    private float requiredpriceUAH;
-    private float summaUSD;
-    private float summaUAH;
+@ParseClassName("Basket")
+public class Basket extends ParseObject {
+
+//    public Basket(){
+//        put("objectId", UUID.randomUUID().toString());
+//    }
+//
+//    public String getObjectId() {
+//        return getString("objectId");
+//
+//    }
+
 
     public String getProductId() {
-        return productId;
+        return getString("productId");
     }
 
     public void setProductId(String productId) {
-        this.productId = productId;
+        put("productId", productId);
     }
 
     public String getName() {
-        return name;
+        return getString("name");
     }
 
     public void setName(String name) {
-        this.name = name;
+        put("name", name);
     }
 
     public int getQuantity() {
-        return quantity;
+        return getInt("quantity");
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        put("quantity", quantity);
     }
 
-    public float getRequiredpriceUSD() {
-        return requiredpriceUSD;
+    public double getRequiredpriceUSD() {
+        return getDouble("requiredpriceUSD");
     }
 
-    public void setRequiredpriceUSD(float requiredpriceUSD) {
-        this.requiredpriceUSD = requiredpriceUSD;
+    public void setRequiredpriceUSD(double requiredpriceUSD) {
+        put("requiredpriceUSD", requiredpriceUSD);
     }
 
-    public float getRequiredpriceUAH() {
-        return requiredpriceUAH;
+    public double getRequiredpriceUAH() {
+        return getDouble("requiredpriceUAH");
     }
 
     public void setRequiredpriceUAH(float requiredpriceUAH) {
-        this.requiredpriceUAH = requiredpriceUAH;
+        put("requiredpriceUAH", requiredpriceUAH);
     }
 
-    public float getSummaUSD() {
-        return summaUSD;
+    public static ParseQuery<Basket> getQuery() {
+        return ParseQuery.getQuery(Basket.class);
     }
-
-    public void setSummaUSD(float summaUSD) {
-        this.summaUSD = summaUSD;
-    }
-
-    public float getSummaUAH() {
-        return summaUAH;
-    }
-
-    public void setSummaUAH(float summaUAH) {
-        this.summaUAH = summaUAH;
-    }
-
 
 }

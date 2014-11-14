@@ -12,6 +12,8 @@ import android.widget.ListView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.parse.Parse;
+import com.parse.ParseObject;
+import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -49,9 +51,11 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
         handler = new WeakHandler();
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
+        ParseObject.registerSubclass(Basket.class);
+        Parse.enableLocalDatastore(getApplicationContext());
 
-        Parse.enableLocalDatastore(this);
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+
 
         setContentView(R.layout.activity_firstgroup);
         listView = (ListView)findViewById(R.id.listView);

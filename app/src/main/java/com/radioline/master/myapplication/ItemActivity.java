@@ -135,6 +135,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
             case R.id.action_basket:
                 intent = new Intent(this,BasketActivity.class);
                 startActivity(intent);
+                return true;
             case R.id.action_settings:
                 return true;
             default:
@@ -145,17 +146,17 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Item item = (Item) adapterView.getItemAtPosition(position);
-        if (swipeDetector.swipeDetected()){
-            if((swipeDetector.getAction()== SwipeDetector.Action.RL)||(swipeDetector.getAction()== SwipeDetector.Action.LR)){
-                Toast.makeText(ItemActivity.this,"swipe:"+item.getName()+" +1",Toast.LENGTH_SHORT).show();
-
-            }
-        } else {
+//        if (swipeDetector.swipeDetected()){
+//            if((swipeDetector.getAction()== SwipeDetector.Action.RL)||(swipeDetector.getAction()== SwipeDetector.Action.LR)){
+//                Toast.makeText(ItemActivity.this,"swipe:"+item.getName()+" +1",Toast.LENGTH_SHORT).show();
+//
+//            }
+//        } else {
             Intent intent = new Intent(this,PicActivity.class);
             intent.putExtra("itemid",item.getId());
             intent.putExtra("Name",item.getName());
             startActivity(intent);
-        }
+//        }
 
 
 

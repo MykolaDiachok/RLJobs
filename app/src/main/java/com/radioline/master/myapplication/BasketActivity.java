@@ -1,16 +1,26 @@
 package com.radioline.master.myapplication;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.SaveCallback;
+import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
 import com.radioline.master.myapplication.R;
 import com.splunk.mint.Mint;
+
+import java.util.List;
 
 public class BasketActivity extends Activity {
 
@@ -26,12 +36,12 @@ public class BasketActivity extends Activity {
 
         setContentView(R.layout.activity_basket);
 
-        mainAdapter = new ParseQueryAdapter<ParseObject>(this, "basket");
+
         basketViewAdapter = new BasketViewAdapter(this);
         lvBasket = (ListView) findViewById(R.id.lvBasket);
         lvBasket.setAdapter(basketViewAdapter);
         basketViewAdapter.loadObjects();
-        mainAdapter.loadObjects();
+
     }
 
 
@@ -44,16 +54,31 @@ public class BasketActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_clearbasket:
+                ParseQuery<Basket> query = Basket.getQuery();
+                query.fromLocalDatastore();
+                query.findInBackground(new FindCallback<Basket>() {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                    @Override
+                    public void done(final List<Basket> baskets, final com.parse.ParseException e) {
+
+                        ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        ParseObject.pinAllInBackground("Basket",baskets);
+                                    }
+                                }
+                        );
+                    }
+
+                });
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
