@@ -32,7 +32,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
             public ParseQuery create() {
                 ParseQuery query = Basket.getQuery();
                 query.fromLocalDatastore();
-                //query.whereEqualTo("highPri", true);
+                query.whereGreaterThan("quantity", 0);
                 return query;
             }
         });
