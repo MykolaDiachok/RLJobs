@@ -24,7 +24,7 @@ import com.splunk.mint.Mint;
 import java.util.concurrent.ExecutionException;
 
 
-public class FirstGroupActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class FirstGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
     //https://play.google.com/apps/
     //https://code.google.com/p/android-query/wiki/API
@@ -114,18 +114,12 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_firstgroup, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-
         switch (item.getItemId()) {
             case R.id.action_scan:
                 Intent intent = new Intent(this, ScanActivity.class);
@@ -143,34 +137,6 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
 
     }
 
-    @Override
-    public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.bGetGroups:
-//                Converts tg = new Converts();
-//                try {
-//                    GroupViewAdapter groupViewAdapter = new GroupViewAdapter(this, tg.getGroupsArrayListFromServer());
-//                    listView.setAdapter(groupViewAdapter);
-//                } catch (ExecutionException e) {
-//                    e.printStackTrace();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//                break;
-//            case R.id.btLoadPNG:
-////                Converts tg1 = new Converts();
-////                try {
-////                    Bitmap tbmp = tg1.getBitMapFromServer("aaa",100,100,50,true);
-////                    imageView2.setImageBitmap(tbmp);
-////                } catch (ExecutionException e) {
-////                    e.printStackTrace();
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//
-//                break;
-//        }
-    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
