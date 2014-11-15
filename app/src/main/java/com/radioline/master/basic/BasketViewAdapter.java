@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -66,43 +68,74 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
         TextView tvQuantity = (TextView) v.findViewById(R.id.tvQuantity);
         tvQuantity.setText(String.valueOf(object.getQuantity()));
 
-//        Button btAdd = (Button) v.findViewById(R.id.btAdd);
-//        btAdd.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                ParseObject basket = new ParseObject("basket");
-//                basket.put("productid", object.getString("productid"));
-//                basket.put("quantity", 1);
-//                basket.put("requiredpriceUSD", itemArrayList.get(tposition).getPrice());
-//                basket.put("requiredpriceUAH", object.getDouble(""));
-//                basket.pinInBackground();
-//
-//
-//                Toast.makeText(context, "button add: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
-//
-//
-//
-//
-//            }
-//        });
-//        Button btDel = (Button) v.findViewById(R.id.btDel);
-//        btDel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ParseObject basket = new ParseObject("basket");
-//                basket.put("productid", itemArrayList.get(tposition).getId());
-//                basket.put("quantity", -1);
-//                basket.put("requiredprice", itemArrayList.get(tposition).getPrice());
-//                basket.pinInBackground();
-//                Toast.makeText(context, "button del: " + itemArrayList.get(tposition).getName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        Button btAdd = (Button) v.findViewById(R.id.btAdd);
+
+        Button btDel = (Button) v.findViewById(R.id.btDel);
+
+
+        this.setOnClickListener(btAdd, object);
+        this.setOnClickListener(btDel, object);
 
 
         return v;
     }
 
+    private void setOnClickListener(Button btListener, final Basket object) {
+        //btListener.setTag(position);
+        btListener.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btAdd:
+                        addItem(object);
+                        break;
+                    case R.id.btDel:
+                        delItem(object);
+                        break;
+                }
 
+            }
+        });
+    }
+
+    private void addItem (Basket object)
+    {
+        //int pos = Integer.parseInt(v.getTag().toString());
+        //Item finalitem = itemArrayList.get(pos);
+        ParseQuery<Basket> query = Basket.getQuery();
+        query.fromLocalDatastore();
+        query.whereEqualTo("productId", object.getProductId());
+        int currentcount = 1;
+        try {
+            Basket localbasket = query.getFirst();
+            currentcount = localbasket.getQuantity() + 1;
+            localbasket.setQuantity(currentcount);
+            localbasket.pinInBackground();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(context, "add: " + object.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
+    }
+
+    private void delItem(Basket object) {
+        ParseQuery<Basket> query = Basket.getQuery();
+        query.fromLocalDatastore();
+        query.whereEqualTo("productId", object.getProductId());
+        int currentcount = 0;
+        try {
+            Basket localbasket = query.getFirst();
+            currentcount = localbasket.getQuantity() - 1;
+            if (currentcount < 0) {
+                currentcount = 0;
+            }
+            localbasket.setQuantity(currentcount);
+            localbasket.pinInBackground();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(context, "del: " + object.getName() + "-1=" + currentcount, Toast.LENGTH_SHORT).show();
+    }
 
 }

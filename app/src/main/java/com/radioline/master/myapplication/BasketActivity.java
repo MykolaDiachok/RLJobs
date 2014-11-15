@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -17,16 +21,18 @@ import com.parse.ParseQueryAdapter;
 import com.parse.SaveCallback;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
+import com.radioline.master.basic.Item;
 import com.radioline.master.myapplication.R;
 import com.splunk.mint.Mint;
 
 import java.util.List;
 
-public class BasketActivity extends Activity {
+public class BasketActivity extends Activity  {
 
     private ParseQueryAdapter<ParseObject> mainAdapter;
     private ListView lvBasket;
     private BasketViewAdapter basketViewAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,7 @@ public class BasketActivity extends Activity {
         lvBasket = (ListView) findViewById(R.id.lvBasket);
         lvBasket.setAdapter(basketViewAdapter);
         basketViewAdapter.loadObjects();
+
 
     }
 
@@ -75,10 +82,13 @@ public class BasketActivity extends Activity {
                     }
 
                 });
-
+                basketViewAdapter.loadObjects();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+
 }

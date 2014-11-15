@@ -23,5 +23,7 @@
     <string name="btDel">-</string>
     <string name="title_activity_basket">Basket</string>
     <string name="action_clearBasket">Clear</string>
+    <string name="btSearchBarcode">Search</string>
+    <string name="title_activity_dispatch">DispatchActivity</string>
 
 </resources>

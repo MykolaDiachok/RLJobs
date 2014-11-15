@@ -53,6 +53,14 @@
             android:name="com.radioline.master.myapplication.BasketActivity"
             android:label="@string/title_activity_basket" >
         </activity>
+        <activity
+            android:name="com.radioline.master.myapplication.DispatchActivity"
+            android:label="@string/title_activity_dispatch"
+            android:parentActivityName="com.radioline.master.myapplication.BasketActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.radioline.master.myapplication.BasketActivity" />
+        </activity>
     </application>
 
 </manifest>

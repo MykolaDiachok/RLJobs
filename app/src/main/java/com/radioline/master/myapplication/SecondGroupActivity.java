@@ -19,7 +19,7 @@ import com.splunk.mint.Mint;
 import java.util.concurrent.ExecutionException;
 
 
-public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener {
+public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener {
 
     private ListView lvSecond;
     private WeakHandler handler = new WeakHandler();
@@ -109,9 +109,14 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_scan:
-                Intent intent = new Intent(this, ScanActivity.class);
+                intent = new Intent(this, ScanActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_basket:
+                intent = new Intent(this,BasketActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -130,4 +135,8 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
         startActivity(intent);
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,13 +27,15 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
-public class ScanActivity extends Activity implements AdapterView.OnItemClickListener {
+public class ScanActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private Button btScan;
+    private Button btSearchBarcode;
     private ListView lvScan;
     private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
     private String contents;
+    private EditText edBarcode;
 
     final Runnable showToastMessage = new Runnable() {
         public void run() {
@@ -64,15 +67,16 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
         lvScan = (ListView) findViewById(R.id.lvScan);
         lvScan.setOnItemClickListener(this);
 
+        btSearchBarcode = (Button) findViewById(R.id.btSearchBarcode);
+        btSearchBarcode.setOnClickListener(this);
+
+        edBarcode = (EditText) findViewById(R.id.edBarcode);
+
         btScan = (Button) findViewById(R.id.btScan);
         btScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
                 IntentIntegrator integrator = new IntentIntegrator(ScanActivity.this);
-
                 //integrator.addExtra("SCAN_WIDTH", 640);
                 //integrator.addExtra("SCAN_HEIGHT", 480);
                 //integrator.addExtra("SCAN_MODE", "ONE_D_MODE");
@@ -96,51 +100,8 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
             contents = result.getContents();
             if (contents != null) {
                 //textViewScan.setText(contents);
-
-                dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                        getString(R.string.ProgressDialogMessage));
-                Thread t = new Thread() {
-                    public void run() {
-                        Converts tg = new Converts();
-                        try {
-                            ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(contents, false);
-                            if (item==null){
-//                                Context context = getApplicationContext();
-//                                CharSequence text = "It's barcode=" + contents+" not found in database, perhaps the item is not available";
-//                                int duration = Toast.LENGTH_SHORT;
-//
-//                                Toast toast = Toast.makeText(ScanActivity.this, text, duration);
-//                                toast.show();
-                                handler.post(showToastMessage);
-                            }
-                             else{
-                                itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);}
-
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        handler.post(new Runnable() {
-                            public void run() {
-                                if (dialog!=null){
-                                    if (dialog.isShowing()){
-                                        try {
-                                            dialog.dismiss();
-                                        }  catch (IllegalArgumentException e){
-                                            e.printStackTrace();
-                                        };
-                                    }
-                                }
-                                if (itemViewAdapter!=null){
-                                lvScan.setAdapter(itemViewAdapter);}
-                            }
-                        });
-                    }
-                };
-
-                t.start();
+                edBarcode.setText(contents);
+                searchOnDataBase(contents);
 
 
 
@@ -160,17 +121,17 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.action_basket:
+                intent = new Intent(this,BasketActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -181,4 +142,60 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
         intent.putExtra("Name",item.getName());
         startActivity(intent);
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btSearchBarcode:
+                searchOnDataBase(edBarcode.getText().toString());
+                break;
+            case R.id.btScan:
+                break;
+        }
+    }
+
+    private void searchOnDataBase(final String searchBarCode){
+
+        dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
+                getString(R.string.ProgressDialogMessage));
+        Thread t = new Thread() {
+            public void run() {
+                Converts tg = new Converts();
+                try {
+                    ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(searchBarCode, false);
+                    if (item==null){
+
+                        handler.post(showToastMessage);
+                    }
+                    else{
+                        itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);}
+
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                handler.post(new Runnable() {
+                    public void run() {
+                        if (dialog!=null){
+                            if (dialog.isShowing()){
+                                try {
+                                    dialog.dismiss();
+                                }  catch (IllegalArgumentException e){
+                                    e.printStackTrace();
+                                };
+                            }
+                        }
+                        if (itemViewAdapter!=null){
+                            lvScan.setAdapter(itemViewAdapter);}
+                    }
+                });
+            }
+        };
+
+        t.start();
+
+    }
+
 }

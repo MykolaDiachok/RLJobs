@@ -124,6 +124,10 @@ public class FirstGroupActivity extends Activity implements View.OnClickListener
                 Intent intent = new Intent(this,ScanActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_basket:
+                intent = new Intent(this,BasketActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_settings:
                 return true;
             default:

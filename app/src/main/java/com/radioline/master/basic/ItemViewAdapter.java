@@ -48,7 +48,6 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
     static class ViewHolder {
         public TextView tvItemName;
-        //public TextView tvProperties;
         public TextView tvItemUSD;
         public TextView tvItemUAH;
         public ImageView ivItem;
@@ -60,7 +59,6 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        //final int tposition = position;
         ViewHolder holder;
 
         View rowView = convertView;
@@ -70,49 +68,16 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             rowView = inflater.inflate(R.layout.itemview, null, true);
             holder = new ViewHolder();
             holder.tvItemName = (TextView) rowView.findViewById(R.id.tvItemName);
-            //holder.tvProperties = (TextView) rowView.findViewById(R.id.tvProperties);
             holder.tvItemUSD = (TextView) rowView.findViewById(R.id.tvItemUSD);
             holder.tvItemUAH = (TextView) rowView.findViewById(R.id.tvItemUAH);
             holder.ivItem = (ImageView) rowView.findViewById(R.id.ivItem);
             holder.btAdd = (Button) rowView.findViewById(R.id.btAdd);
-            //final Item finalitem = itemArrayList.get(position);
-
             holder.btDel = (Button) rowView.findViewById(R.id.btDel);
-//            holder.btDel.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    ParseQuery<Basket> query = Basket.getQuery();
-//                    query.fromLocalDatastore();
-//                    query.whereEqualTo("productId", finalitem.getId());
-//                    int currentcount = 0;
-//                    try {
-//                        Basket localbasket = query.getFirst();
-//                        currentcount = localbasket.getQuantity()-1;
-//                        localbasket.setQuantity(currentcount);
-//                        localbasket.pin();
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (currentcount<1) {
-//                        ParseQuery<Basket> query2 = Basket.getQuery();
-//                        query2.fromLocalDatastore();
-//                        query2.whereEqualTo("productId", finalitem.getId());
-//                        try {
-//                            Basket localbasket = query2.getFirst();
-//                            localbasket.delete();
-//                        } catch (ParseException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    Toast.makeText(context, "del: " + finalitem.getName()+"-1="+currentcount, Toast.LENGTH_SHORT).show();
-//                }
-//            });
+
             rowView.setTag(holder);
         } else {
             holder = (ViewHolder) rowView.getTag();
         }
-        //holder.btAdd.setTag(position);
         this.setOnClickListener(holder.btAdd, itemArrayList.get(position));
         this.setOnClickListener(holder.btDel, itemArrayList.get(position));
 
@@ -151,40 +116,44 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         Toast.makeText(context, "del: " + finalitem.getName() + "-1=" + currentcount, Toast.LENGTH_SHORT).show();
     }
 
+    private void addItem(Item finalitem){
+        //int pos = Integer.parseInt(v.getTag().toString());
+        //Item finalitem = itemArrayList.get(pos);
+        ParseQuery<Basket> query = Basket.getQuery();
+        query.fromLocalDatastore();
+        query.whereEqualTo("productId", finalitem.getId());
+        int currentcount = 1;
+        try {
+            Basket localbasket = query.getFirst();
+            currentcount = localbasket.getQuantity() + 1;
+            localbasket.setQuantity(currentcount);
+            localbasket.pin();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Basket basket = new Basket();
+            basket.setProductId(finalitem.getId());
+            basket.setName(finalitem.getName());
+            basket.setRequiredpriceUSD(finalitem.getPrice());
+            basket.setRequiredpriceUAH(finalitem.getPriceUAH());
+            basket.setQuantity(1);
+            try {
+                basket.pin();
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        Toast.makeText(context, "add: " + finalitem.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
+    }
+
     private void setOnClickListener(Button btListener, final Item finalitem) {
-        //btListener.setTag(position);
+
         btListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btAdd:
-                        //int pos = Integer.parseInt(v.getTag().toString());
-                        //Item finalitem = itemArrayList.get(pos);
-                        ParseQuery<Basket> query = Basket.getQuery();
-                        query.fromLocalDatastore();
-                        query.whereEqualTo("productId", finalitem.getId());
-                        int currentcount = 1;
-                        try {
-                            Basket localbasket = query.getFirst();
-                            currentcount = localbasket.getQuantity() + 1;
-                            localbasket.setQuantity(currentcount);
-                            localbasket.pin();
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            Basket basket = new Basket();
-                            basket.setProductId(finalitem.getId());
-                            basket.setName(finalitem.getName());
-                            basket.setRequiredpriceUSD(finalitem.getPrice());
-                            basket.setRequiredpriceUAH(finalitem.getPriceUAH());
-                            basket.setQuantity(1);
-                            try {
-                                basket.pin();
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-                        }
-
-                        Toast.makeText(context, "add: " + finalitem.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
+                        addItem(finalitem);
                         break;
                     case R.id.btDel:
                         delItem(finalitem);
