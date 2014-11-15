@@ -84,14 +84,20 @@ public class BasketActivity extends Activity {
 //                } catch (ParseException e) {
 //                    e.printStackTrace();
 //                }
-
-                ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
+                ParseObject.unpinAllInBackground(new DeleteCallback() {
                     @Override
                     public void done(ParseException e) {
                         basketViewAdapter.notifyDataSetChanged();
                         basketViewAdapter.loadObjects();
                     }
                 });
+//                ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        basketViewAdapter.notifyDataSetChanged();
+//                        basketViewAdapter.loadObjects();
+//                    }
+//                });
 
                 return true;
             default:
