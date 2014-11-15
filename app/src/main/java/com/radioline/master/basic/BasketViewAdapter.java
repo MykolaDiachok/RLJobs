@@ -24,8 +24,6 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
     Context context;
 
     public BasketViewAdapter(Context context) {
-        // Use the QueryFactory to construct a PQA that will only show
-        // Todos marked as high-pri
 
         super(context, new ParseQueryAdapter.QueryFactory<Basket>() {
             public ParseQuery create() {
