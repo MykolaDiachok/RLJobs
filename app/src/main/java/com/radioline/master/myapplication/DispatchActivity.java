@@ -70,7 +70,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
     private void setSumBasket(final Boolean USD) {
         ParseQuery<Basket> query = Basket.getQuery();
         query.fromLocalDatastore();
-        query.whereGreaterThan("quantity", 0);
+        //query.whereGreaterThan("quantity", 0);
         query.findInBackground(new FindCallback<Basket>() {
             public void done(List<Basket> BasketList,
                              ParseException e) {

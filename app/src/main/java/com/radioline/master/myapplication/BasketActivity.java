@@ -17,6 +17,7 @@ import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
 import com.splunk.mint.Mint;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class BasketActivity extends Activity {
@@ -62,24 +63,36 @@ public class BasketActivity extends Activity {
                 startActivity(intent);
                 return true;
             case R.id.action_clearbasket:
-                ParseQuery<Basket> query = Basket.getQuery();
-                query.fromLocalDatastore();
-                query.findInBackground(new FindCallback<Basket>() {
+//                ParseQuery<Basket> query = Basket.getQuery();
+//                query.fromLocalDatastore();
+//                try {
+//                    List<Basket> basketList = query.find();
+//                    for (Basket ibasket : basketList) {
+//                        ibasket.unpinInBackground("Basket", new DeleteCallback() {
+//                            public void done(ParseException e) {
+//                                if (e == null) {
+//                                    // myObjectWasDeletedSuccessfully();
+//                                    //basketViewAdapter.loadObjects();
+//
+//                                    basketViewAdapter.notifyDataSetChanged();
+//                                } else {
+//                                    // myObjectDeleteDidNotSucceed();
+//                                }
+//                            }
+//                        });
+//                    }
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
 
+                ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
                     @Override
-                    public void done(final List<Basket> baskets, final com.parse.ParseException e) {
-
-                        ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        ParseObject.pinAllInBackground("Basket", baskets);
-                                    }
-                                }
-                        );
+                    public void done(ParseException e) {
+                        basketViewAdapter.notifyDataSetChanged();
+                        basketViewAdapter.loadObjects();
                     }
-
                 });
-                basketViewAdapter.loadObjects();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

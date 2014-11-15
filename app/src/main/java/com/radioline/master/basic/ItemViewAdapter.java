@@ -106,9 +106,12 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             currentcount = localbasket.getQuantity() - 1;
             if (currentcount < 0) {
                 currentcount = 0;
+                localbasket.unpin();
             }
-            localbasket.setQuantity(currentcount);
-            localbasket.pin();
+            else {
+                localbasket.setQuantity(currentcount);
+                localbasket.pin();
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
