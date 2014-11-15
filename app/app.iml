@@ -83,8 +83,8 @@
     <orderEntry type="library" exported="" name="zxing-android-legacy-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="ksoap2-android-assembly-3.3.0-jar-with-dependencies" level="project" />
     <orderEntry type="library" exported="" name="android-weak-handler-1.0" level="project" />
+    <orderEntry type="library" exported="" name="mint-4.0.5" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-19.1.0" level="project" />
-    <orderEntry type="library" exported="" name="mint-4.0.4" level="project" />
     <orderEntry type="library" exported="" name="core-3.0.1" level="project" />
     <orderEntry type="library" exported="" name="Parse-1.7.1" level="project" />
     <orderEntry type="library" exported="" name="zxing-android-minimal-2.0.0" level="project" />
