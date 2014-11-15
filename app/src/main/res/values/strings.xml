@@ -12,7 +12,7 @@
     <string name="title_activity_pic">Picture</string>
     <string name="ProgressDialogTitle">Loading</string>
     <string name="ProgressDialogMessage">Loading, please wait..</string>
-    <string name="title_activity_image">ImageActivity</string>
+    <string name="title_activity_image">Image</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_scan">ScanActivity</string>
     <string name="btScan">Scan</string>
@@ -23,7 +23,14 @@
     <string name="btDel">-</string>
     <string name="title_activity_basket">Basket</string>
     <string name="action_clearBasket">Clear</string>
+    <string name="action_dispatch">Send to centre</string>
     <string name="btSearchBarcode">Search</string>
-    <string name="title_activity_dispatch">DispatchActivity</string>
+    <string name="title_activity_dispatch">Dispatch</string>
+    <string name="tvComments">Comments</string>
+    <string name="swCurrency">Currency</string>
+    <string name="btSendToServer">Send</string>
+    <string name="ProgressDialogTitleSending">Sending</string>
+    <string name="ProgressDialogMessageSending">Sending, please wait..</string>
+    <string name="NoConnect">Connection to the server is not possible, try again..</string>
 
 </resources>

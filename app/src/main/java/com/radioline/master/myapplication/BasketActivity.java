@@ -3,14 +3,9 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
@@ -18,16 +13,13 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
-import com.parse.SaveCallback;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
-import com.radioline.master.basic.Item;
-import com.radioline.master.myapplication.R;
 import com.splunk.mint.Mint;
 
 import java.util.List;
 
-public class BasketActivity extends Activity  {
+public class BasketActivity extends Activity {
 
     private ParseQueryAdapter<ParseObject> mainAdapter;
     private ListView lvBasket;
@@ -61,8 +53,13 @@ public class BasketActivity extends Activity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_settings:
+                return true;
+            case R.id.action_dispatch:
+                intent = new Intent(this, DispatchActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.action_clearbasket:
                 ParseQuery<Basket> query = Basket.getQuery();
@@ -75,7 +72,7 @@ public class BasketActivity extends Activity  {
                         ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
                                     @Override
                                     public void done(ParseException e) {
-                                        ParseObject.pinAllInBackground("Basket",baskets);
+                                        ParseObject.pinAllInBackground("Basket", baskets);
                                     }
                                 }
                         );
@@ -88,7 +85,6 @@ public class BasketActivity extends Activity  {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
 }

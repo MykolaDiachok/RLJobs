@@ -3,15 +3,12 @@ package com.radioline.master.basic;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.radioline.master.myapplication.R;
@@ -52,7 +49,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
         super.getItemView(object, v, parent);
         ImageView itemImage = (ImageView) v.findViewById(R.id.ivItem);
         ImageDownloaderSOAP getimage = new ImageDownloaderSOAP();
-        getimage.download(object.getProductId(),itemImage,null,false);
+        getimage.download(object.getProductId(), itemImage, null, false);
 
 
         TextView tvItemName = (TextView) v.findViewById(R.id.tvItemName);
@@ -60,10 +57,10 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
 
         DecimalFormat dec = new DecimalFormat("0.00");
         TextView tvItemUSD = (TextView) v.findViewById(R.id.tvItemUSD);
-        tvItemUSD.setText("$ " + dec.format(object.getQuantity()*object.getRequiredpriceUSD()));
+        tvItemUSD.setText("$ " + dec.format(object.getQuantity() * object.getRequiredpriceUSD()));
 
         TextView tvItemUAH = (TextView) v.findViewById(R.id.tvItemUAH);
-        tvItemUAH.setText("₴ " + dec.format(object.getQuantity()*object.getRequiredpriceUAH()));
+        tvItemUAH.setText("₴ " + dec.format(object.getQuantity() * object.getRequiredpriceUAH()));
 
         TextView tvQuantity = (TextView) v.findViewById(R.id.tvQuantity);
         tvQuantity.setText(String.valueOf(object.getQuantity()));
@@ -98,8 +95,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
         });
     }
 
-    private void addItem (Basket object)
-    {
+    private void addItem(Basket object) {
         //int pos = Integer.parseInt(v.getTag().toString());
         //Item finalitem = itemArrayList.get(pos);
         ParseQuery<Basket> query = Basket.getQuery();
@@ -131,6 +127,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
             }
             localbasket.setQuantity(currentcount);
             localbasket.pinInBackground();
+            localbasket.unpinInBackground();
         } catch (ParseException e) {
             e.printStackTrace();
         }

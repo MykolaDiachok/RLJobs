@@ -23,6 +23,23 @@ public class Link {
     private String nameSpace;
     private String url;
     private boolean debug = false;
+    private Boolean workUrl;
+
+    public Link() {
+        nameSpace = "http://www.rl.ua";
+        //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
+        workUrl = false;
+        if (isConnectedToServer("https://of.rl.com.ua:6443/", 3000)) {
+            url = "https://of.rl.com.ua:6443/GlobalBase1/ws/wsPrice.1cws";
+            workUrl = true;
+        } else if (isConnectedToServer("http://mws-01.rl.int/", 3000)) {
+            url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+            workUrl = true;
+        }
+        //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+    }
+
+
 
     public Boolean getISWorkUrl() {
         return workUrl;
@@ -31,8 +48,6 @@ public class Link {
     public void setIsWorkUrl(Boolean workUrl) {
         this.workUrl = workUrl;
     }
-
-    private Boolean workUrl;
 
     public String getNameSpace() {
         return nameSpace;
@@ -60,8 +75,7 @@ public class Link {
             return true;
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -69,21 +83,7 @@ public class Link {
 
     }
 
-    public Link(){
-        nameSpace = "http://www.rl.ua";
-        //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
-        workUrl = false;
-        if (isConnectedToServer("https://of.rl.com.ua:6443/",3000)){
-            url = "https://of.rl.com.ua:6443/GlobalBase1/ws/wsPrice.1cws";
-            workUrl = true;}
-        else if (isConnectedToServer("http://mws-01.rl.int/",3000)){
-            url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
-            workUrl = true;}
-        //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
-    }
-
-    public SoapPrimitive getFromServerSoapPrimitive(String methodName)
-    {
+    public SoapPrimitive getFromServerSoapPrimitive(String methodName) {
         String soapAction = nameSpace + "/" + methodName;
         //SoapObject resultRequestSoap;
         SoapObject request = new SoapObject(nameSpace,
@@ -98,7 +98,7 @@ public class Link {
             envelope.dotNet = false;
             envelope.setOutputSoapObject(request);
             httpTransport.call(soapAction, envelope);
-            return (SoapPrimitive)envelope.getResponse();
+            return (SoapPrimitive) envelope.getResponse();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (SoapFault soapFault) {
@@ -111,13 +111,12 @@ public class Link {
         return null;
     }
 
-    public SoapPrimitive getFromServerSoapPrimitive(String methodName, PropertyInfo[] properties)
-    {
+    public SoapPrimitive getFromServerSoapPrimitive(String methodName, PropertyInfo[] properties) {
         String soapAction = nameSpace + "/" + methodName;
         //SoapObject resultRequestSoap;
         SoapObject request = new SoapObject(nameSpace,
                 methodName);
-        for (PropertyInfo propertyInfo:properties) {
+        for (PropertyInfo propertyInfo : properties) {
             request.addProperty(propertyInfo);
         }
 
@@ -131,7 +130,7 @@ public class Link {
             envelope.dotNet = false;
             envelope.setOutputSoapObject(request);
             httpTransport.call(soapAction, envelope);
-            return (SoapPrimitive)envelope.getResponse();
+            return (SoapPrimitive) envelope.getResponse();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (SoapFault soapFault) {
@@ -145,13 +144,12 @@ public class Link {
     }
 
 
-    public SoapObject getFromServerSoapObject(String methodName, PropertyInfo[] properties)
-    {
+    public SoapObject getFromServerSoapObject(String methodName, PropertyInfo[] properties) {
         String soapAction = nameSpace + "/" + methodName;
         //SoapObject resultRequestSoap;
         SoapObject request = new SoapObject(nameSpace,
                 methodName);
-        for (PropertyInfo propertyInfo:properties) {
+        for (PropertyInfo propertyInfo : properties) {
             request.addProperty(propertyInfo);
         }
         //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
@@ -164,7 +162,7 @@ public class Link {
             envelope.dotNet = false;
             envelope.setOutputSoapObject(request);
             httpTransport.call(soapAction, envelope);
-            return (SoapObject)envelope.getResponse();
+            return (SoapObject) envelope.getResponse();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (SoapFault soapFault) {
@@ -178,8 +176,7 @@ public class Link {
     }
 
 
-    public SoapObject getFromServerSoapObject(String methodName)
-    {
+    public SoapObject getFromServerSoapObject(String methodName) {
         String soapAction = nameSpace + "/" + methodName;
         //SoapObject resultRequestSoap;
         SoapObject request = new SoapObject(nameSpace,
@@ -194,7 +191,7 @@ public class Link {
             envelope.dotNet = false;
             envelope.setOutputSoapObject(request);
             httpTransport.call(soapAction, envelope);
-            return (SoapObject)envelope.getResponse();
+            return (SoapObject) envelope.getResponse();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (SoapFault soapFault) {
@@ -206,7 +203,6 @@ public class Link {
         }
         return null;
     }
-
 
 
 }
