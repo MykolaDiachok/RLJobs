@@ -61,7 +61,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
         tvItemUAH.setText("₴ " + dec.format(object.getQuantity() * object.getRequiredpriceUAH()));
 
         TextView tvQuantity = (TextView) v.findViewById(R.id.tvQuantity);
-        tvQuantity.setText(String.valueOf(object.getQuantity()));
+        tvQuantity.setText("Quantity:" + String.valueOf(object.getQuantity()));
 
         Button btAdd = (Button) v.findViewById(R.id.btAdd);
 

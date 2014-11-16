@@ -22,7 +22,7 @@ import static java.util.Collections.sort;
  * Created by master on 01.11.2014.
  */
 public class Converts {
-    final String NULL1C="00000000-0000-0000-0000-000000000000";
+    final String NULL1C = "00000000-0000-0000-0000-000000000000";
 
     LinkAsyncTaskGetSoapObject linkAsync;
     LinkAsyncTaskGetSoapPrimitive linkAsyncTaskGetSoapPrimitive;
@@ -31,17 +31,17 @@ public class Converts {
         final String method_name = "GetAllGroups";
 
 
-       // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
+        // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
         linkAsync = new LinkAsyncTaskGetSoapObject(method_name);
         //linkAsync.execute();
 
         SoapObject tSoap = linkAsync.execute().get();
-        SoapObject itemsGroups = (SoapObject)tSoap.getProperty("ItemsGroups");
+        SoapObject itemsGroups = (SoapObject) tSoap.getProperty("ItemsGroups");
 
         int groupsCount = itemsGroups.getPropertyCount();
         Group[] Groups = new Group[groupsCount];
-        for (int curCount=0;curCount<groupsCount;curCount++) {
-            SoapObject item = (SoapObject)itemsGroups.getProperty(curCount);
+        for (int curCount = 0; curCount < groupsCount; curCount++) {
+            SoapObject item = (SoapObject) itemsGroups.getProperty(curCount);
             Groups[curCount] = new Group(item);
         }
         return Groups;
@@ -61,15 +61,15 @@ public class Converts {
         //pi.setType("5374706f-daf0-11e1-937d-00155d040a09".getClass());
         pi.setType(String.class);
         SoapObject tSoap = linkAsync.execute(pi).get();
-        if (tSoap==null) {
+        if (tSoap == null) {
             return null;
         }
-        SoapObject itemsGroups = (SoapObject)tSoap.getProperty("ItemsGroups");
+        SoapObject itemsGroups = (SoapObject) tSoap.getProperty("ItemsGroups");
 
         int groupsCount = itemsGroups.getPropertyCount();
         ArrayList<Group> Groups = new ArrayList<Group>();
-        for (int curCount=0;curCount<groupsCount;curCount++) {
-            SoapObject item = (SoapObject)itemsGroups.getProperty(curCount);
+        for (int curCount = 0; curCount < groupsCount; curCount++) {
+            SoapObject item = (SoapObject) itemsGroups.getProperty(curCount);
             Groups.add(new Group(item));
         }
 
@@ -135,22 +135,27 @@ public class Converts {
         //pi.setType("5374706f-daf0-11e1-937d-00155d040a09".getClass());
         pi.setType(String.class);
         SoapObject tSoap = linkAsync.execute(pi).get();
-        SoapObject itemsGroups = (SoapObject)tSoap.getProperty("ItemsGroups");
+        try {
+            SoapObject itemsGroups = (SoapObject) tSoap.getProperty("ItemsGroups");
 
-        int groupsCount = itemsGroups.getPropertyCount();
-        ArrayList<Group> Groups = new ArrayList<Group>();
-        for (int curCount=0;curCount<groupsCount;curCount++) {
-            SoapObject item = (SoapObject)itemsGroups.getProperty(curCount);
-            Groups.add(new Group(item));
-        }
-
-        sort(Groups, new Comparator<Group>() {
-            public int compare(Group p1, Group p2) {
-                return p1.getSortcode().compareToIgnoreCase(
-                        p2.getSortcode());
+            int groupsCount = itemsGroups.getPropertyCount();
+            ArrayList<Group> Groups = new ArrayList<Group>();
+            for (int curCount = 0; curCount < groupsCount; curCount++) {
+                SoapObject item = (SoapObject) itemsGroups.getProperty(curCount);
+                Groups.add(new Group(item));
             }
-        });
-        return Groups;
+
+            sort(Groups, new Comparator<Group>() {
+                public int compare(Group p1, Group p2) {
+                    return p1.getSortcode().compareToIgnoreCase(
+                            p2.getSortcode());
+                }
+            });
+            return Groups;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -189,12 +194,11 @@ public class Converts {
     }
 
 
-
-    public ArrayList<Item> getItemsArrayListFromServer(String IdGroup) throws ExecutionException, InterruptedException{
-        return getItemsArrayListFromServer(IdGroup,false);
+    public ArrayList<Item> getItemsArrayListFromServer(String IdGroup) throws ExecutionException, InterruptedException {
+        return getItemsArrayListFromServer(IdGroup, false);
     }
 
-    public ArrayList<Item> getItemsArrayListFromServer(String IdGroup,Boolean full) throws ExecutionException, InterruptedException {
+    public ArrayList<Item> getItemsArrayListFromServer(String IdGroup, Boolean full) throws ExecutionException, InterruptedException {
         final String method_name = "GetPriceUseParentGroup";
 
 
@@ -212,20 +216,19 @@ public class Converts {
         pi1.setType(String.class);
 
 
-
         PropertyInfo pi2 = new PropertyInfo();
         pi2.setName("Simple");
         pi2.setValue(!full);
         pi2.setType(Boolean.class);
 
-        SoapObject tSoap = linkAsync.execute(pi0,pi1,pi2).get();
-        SoapObject items = (SoapObject)tSoap.getProperty("Prices");
+        SoapObject tSoap = linkAsync.execute(pi0, pi1, pi2).get();
+        SoapObject items = (SoapObject) tSoap.getProperty("Prices");
         //SoapObject items = (SoapObject)prices.getProperty("Item");
 
         int itemsCount = items.getPropertyCount();
         ArrayList<Item> Items = new ArrayList<Item>();
-        for (int curCount=0;curCount<itemsCount;curCount++) {
-            SoapObject item = (SoapObject)items.getProperty(curCount);
+        for (int curCount = 0; curCount < itemsCount; curCount++) {
+            SoapObject item = (SoapObject) items.getProperty(curCount);
             Items.add(new Item(item));
         }
 
@@ -368,9 +371,7 @@ public class Converts {
     }
 
 
-
-
-    public ArrayList<Item> getItemsArrayListFromServerWithBarcode(String barcode,Boolean full) throws ExecutionException, InterruptedException {
+    public ArrayList<Item> getItemsArrayListFromServerWithBarcode(String barcode, Boolean full) throws ExecutionException, InterruptedException {
         final String method_name = "GetPriceOnBarCode";
 
 
@@ -388,23 +389,22 @@ public class Converts {
         pi1.setType(String.class);
 
 
-
         PropertyInfo pi2 = new PropertyInfo();
         pi2.setName("SimpleFields");
         pi2.setValue(!full);
         pi2.setType(Boolean.class);
 
-        SoapObject tSoap = linkAsync.execute(pi0,pi1,pi2).get();
-        if (tSoap==null){
+        SoapObject tSoap = linkAsync.execute(pi0, pi1, pi2).get();
+        if (tSoap == null) {
             return null;
         }
-        SoapObject items = (SoapObject)tSoap.getProperty("Prices");
+        SoapObject items = (SoapObject) tSoap.getProperty("Prices");
         //SoapObject items = (SoapObject)prices.getProperty("Item");
 
         int itemsCount = items.getPropertyCount();
         ArrayList<Item> Items = new ArrayList<Item>();
-        for (int curCount=0;curCount<itemsCount;curCount++) {
-            SoapObject item = (SoapObject)items.getProperty(curCount);
+        for (int curCount = 0; curCount < itemsCount; curCount++) {
+            SoapObject item = (SoapObject) items.getProperty(curCount);
             Items.add(new Item(item));
         }
 
@@ -417,7 +417,7 @@ public class Converts {
         return Items;
     }
 
-    public Bitmap getBitMapFromServer(String idItem)throws ExecutionException, InterruptedException{
+    public Bitmap getBitMapFromServer(String idItem) throws ExecutionException, InterruptedException {
         final String method_name = "GetPNG";
 
 
@@ -433,12 +433,12 @@ public class Converts {
         String base64String = linkAsyncTaskGetSoapPrimitive.execute(pi).get().toString();
         byte[] bytearray = Base64.decode(base64String);
 
-        return BitmapFactory.decodeByteArray(bytearray,0,bytearray.length);
+        return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
 
     }
 
 
-    public Bitmap getBitMapFromServer(String idItem, int Height, int Width, int Quality,Boolean HardCompression)throws ExecutionException, InterruptedException{
+    public Bitmap getBitMapFromServer(String idItem, int Height, int Width, int Quality, Boolean HardCompression) throws ExecutionException, InterruptedException {
         final String method_name = "GetPNGWithSize";
 
 
@@ -471,18 +471,16 @@ public class Converts {
         piHardCompression.setValue(HardCompression);
         piHardCompression.setType(Boolean.class);
 
-        SoapPrimitive runSoap = linkAsyncTaskGetSoapPrimitive.execute(piidItem,piHeight,piWidth,piQuality,piHardCompression).get();
-        if (runSoap==null){
+        SoapPrimitive runSoap = linkAsyncTaskGetSoapPrimitive.execute(piidItem, piHeight, piWidth, piQuality, piHardCompression).get();
+        if (runSoap == null) {
             return null;
         }
         String base64String = runSoap.toString();
         byte[] bytearray = Base64.decode(base64String);
 
-        return BitmapFactory.decodeByteArray(bytearray,0,bytearray.length);
+        return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
 
     }
-
-
 
 
 }

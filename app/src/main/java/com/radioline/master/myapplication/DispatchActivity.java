@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -16,10 +17,13 @@ import com.parse.ParseQuery;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.SystemService;
 
+import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.serialization.SoapObject;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
-public class DispatchActivity extends Activity implements CompoundButton.OnCheckedChangeListener {
+public class DispatchActivity extends Activity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private EditText etComments;
     private Switch swCurrency;
@@ -38,7 +42,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
         btSendToServer = (Button) findViewById(R.id.btSendToServer);
         setSumBasket(true);
         SystemService ss = new SystemService(this);
-        if (ss.isNetworkAvailable()) {
+        if (!ss.isNetworkAvailable()) {
             btSendToServer.setEnabled(false);
         }
 
@@ -100,5 +104,42 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                 setSumBasket(!b);
                 break;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btSendToServer:
+                SentToServer();
+                break;
+        }
+    }
+
+    private void SentToServer() {
+        //Method SetOrder
+        //Input Order
+        /* ***************order***********
+        OrderNumber
+        PartnerId
+        ContractId
+        NewOrder
+        Description
+        DeliveryDate
+        Table
+        *******************Table***************
+        * RowOrder
+        ProductId
+        ProductCode
+        ProductArticle
+        ProductPartNumber
+        Quantity
+        RequiredPrice
+        *
+         */
+        SoapObject Order = new SoapObject();
+        //Order.
+        PropertyInfo pi = new PropertyInfo();
+        pi.setValue(Order);
+        pi.setType(Order.getClass());
     }
 }
