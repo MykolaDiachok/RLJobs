@@ -29,7 +29,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
             public ParseQuery create() {
                 ParseQuery query = Basket.getQuery();
                 query.fromLocalDatastore();
-                //query.whereGreaterThan("quantity", 0);
+                query.whereGreaterThan("quantity", 0);
                 return query;
             }
         });
@@ -105,6 +105,7 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
             currentcount = localbasket.getQuantity() + 1;
             localbasket.setQuantity(currentcount);
             localbasket.pinInBackground();
+            this.notifyDataSetChanged();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -125,7 +126,8 @@ public class BasketViewAdapter extends ParseQueryAdapter<Basket> {
             }
             localbasket.setQuantity(currentcount);
             localbasket.pinInBackground();
-            localbasket.unpinInBackground();
+            //localbasket.unpinInBackground();
+            this.notifyDataSetChanged();
         } catch (ParseException e) {
             e.printStackTrace();
         }
