@@ -267,24 +267,34 @@ public class Converts {
         pi2.setType(Boolean.class);
 
         //SoapObject tSoap = linkAsync.execute(pi0,pi1,pi2).get();
-        SoapObject tSoap = link.getFromServerSoapObject(method_name, new PropertyInfo[]{pi0, pi1, pi2});
-        SoapObject items = (SoapObject) tSoap.getProperty("Prices");
-        //SoapObject items = (SoapObject)prices.getProperty("Item");
+        try {
+            SoapObject tSoap = link.getFromServerSoapObject(method_name, new PropertyInfo[]{pi0, pi1, pi2});
+            if (tSoap == null)
+                return null;
+            SoapObject items = (SoapObject) tSoap.getProperty("Prices");
+            if (items == null)
+                return null;
+            //SoapObject items = (SoapObject)prices.getProperty("Item");
 
-        int itemsCount = items.getPropertyCount();
-        ArrayList<Item> Items = new ArrayList<Item>();
-        for (int curCount = 0; curCount < itemsCount; curCount++) {
-            SoapObject item = (SoapObject) items.getProperty(curCount);
-            Items.add(new Item(item));
-        }
+            int itemsCount = items.getPropertyCount();
+            ArrayList<Item> Items = new ArrayList<Item>();
 
-        Collections.sort(Items, new Comparator<Item>() {
-            public int compare(Item p1, Item p2) {
-                return p1.getName().compareToIgnoreCase(
-                        p2.getName());
+            for (int curCount = 0; curCount < itemsCount; curCount++) {
+                SoapObject item = (SoapObject) items.getProperty(curCount);
+                Items.add(new Item(item));
             }
-        });
-        return Items;
+
+            Collections.sort(Items, new Comparator<Item>() {
+                public int compare(Item p1, Item p2) {
+                    return p1.getName().compareToIgnoreCase(
+                            p2.getName());
+                }
+            });
+            return Items;
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

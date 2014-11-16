@@ -127,43 +127,46 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         Converts tg = new Converts();
+        ArrayList<Group> groups;
+        ArrayList<Group> groups2;
+        ArrayList<Item> items;
         Boolean full = false;
         String itemID;
         try {
-            taskProgress.message = "Downloading groups..Please Wait";
+            taskProgress.message = "Downloading groups...Please Wait";
             taskProgress.percentage1 = 0;
             taskProgress.percentage2 = 0;
             publishProgress(taskProgress);
-            ArrayList<Group> groups = tg.getGroupsArrayListFromServerWithoutAsync();
+            groups = tg.getGroupsArrayListFromServerWithoutAsync();
             int lenght = groups.size();
             int total = 0;
             for (Group group : groups) {
-                taskProgress.message = "Downloading groups " + group.getName() + "..Please Wait";
+                taskProgress.message = "Downloading groups " + group.getName() + "...Please Wait";
                 taskProgress.percentage1 = 0;
                 taskProgress.percentage2 = 0;
                 publishProgress(taskProgress);
                 if (group == null)
                     continue;
-                ArrayList<Group> groups2 = tg.getGroupsArrayListFromServerWithoutAsync(group.getId());
+                groups2 = tg.getGroupsArrayListFromServerWithoutAsync(group.getId());
                 if (groups2 == null)
                     continue;
                 int lenght2 = groups2.size();
                 int total2 = 0;
                 for (Group group2 : groups2) {
-                    taskProgress.message = "Downloading " + group2.getFullnamegroup() + "..Please Wait";
+                    taskProgress.message = "Downloading " + group2.getFullnamegroup() + "...Please Wait";
                     taskProgress.percentage1 = 0;
                     taskProgress.percentage2 = 0;
                     publishProgress(taskProgress);
                     if (group2 == null)
                         continue;
-                    ArrayList<Item> items = tg.getItemsArrayListFromServerWithoutAsync(group2.getId(), false);
+                    items = tg.getItemsArrayListFromServerWithoutAsync(group2.getId(), false);
                     if (items == null)
                         continue;
                     int lenghtItem = items.size();
 
                     int totalItem = 0;
                     for (Item item : items) {
-                        taskProgress.message = "Downloading " + group2.getFullnamegroup() + "..Please Wait";
+                        taskProgress.message = "Downloading " + group2.getFullnamegroup() + "...Please Wait";
                         taskProgress.percentage1 = ((totalItem * 100) / lenghtItem);
                         taskProgress.percentage2 = ((total2 * 100) / lenght2);
                         publishProgress(taskProgress);
@@ -179,14 +182,20 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                         } else {
                             filename = itemID;
                         }
+
                         File f = new File(getCacheDirectory(mContext), filename);
+                        if (f.exists())
+                            continue;
                         Bitmap bmp = downloadBitmap(itemID, full);
-                        if (bmp != null)
+                        if (bmp != null) {
                             writeFile(bmp, f);
-
-
+                            bmp.recycle();
+                        }
+                        bmp = null;
                         if (isCancelled()) break;
                     }
+                    items = null;
+                    System.gc();
                     if (isCancelled()) break;
                 }
                 if (isCancelled()) break;
@@ -208,7 +217,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
     @Override
     protected void onProgressUpdate(TaskProgress... progress) {
         progressDialog.setProgress(progress[0].percentage1);
-        progressDialog.setSecondaryProgress(progress[0].percentage1);
+        progressDialog.setSecondaryProgress(progress[0].percentage2);
         progressDialog.setMessage(progress[0].message);
 
 
@@ -217,7 +226,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
     @Override
     public void onPreExecute() {
         progressDialog = new ProgressDialog(mContext);
-        progressDialog.setMessage("Downloading..Please Wait");
+        progressDialog.setMessage("Downloading...Please Wait");
         progressDialog.setIndeterminate(false);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(true);
