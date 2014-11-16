@@ -19,6 +19,7 @@ import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
+import com.radioline.master.soapconnector.MultiLoadingImage;
 import com.splunk.mint.Mint;
 
 import java.util.concurrent.ExecutionException;
@@ -26,12 +27,14 @@ import java.util.concurrent.ExecutionException;
 
 public class FirstGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
+    public static final int progress_bar_type = 0;
     //https://play.google.com/apps/
     //https://code.google.com/p/android-query/wiki/API
     private ListView listView;
     private WeakHandler handler;
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
+    private ProgressDialog prgDialog;
 
     @Override
     protected void onResume() {
@@ -131,9 +134,19 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
                 return true;
             case R.id.action_settings:
                 return true;
+            case R.id.action_updateallimages:
+                downloadAllImages();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+    }
+
+    private void downloadAllImages() {
+        MultiLoadingImage mli = new MultiLoadingImage(FirstGroupActivity.this);
+        mli.execute();
+
 
     }
 

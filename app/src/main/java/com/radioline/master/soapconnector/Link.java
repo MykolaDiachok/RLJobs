@@ -29,10 +29,10 @@ public class Link {
         nameSpace = "http://www.rl.ua";
         //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
         workUrl = false;
-        if (isConnectedToServer("https://of.rl.com.ua:6443/", 3000)) {
+        if (isConnectedToServer("https://of.rl.com.ua:6443/", 1000)) {
             url = "https://of.rl.com.ua:6443/GlobalBase1/ws/wsPrice.1cws";
             workUrl = true;
-        } else if (isConnectedToServer("http://mws-01.rl.int/", 3000)) {
+        } else if (isConnectedToServer("http://mws-01.rl.int/", 1000)) {
             url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;
         }

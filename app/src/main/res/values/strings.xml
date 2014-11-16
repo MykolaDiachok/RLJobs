@@ -24,6 +24,7 @@
     <string name="title_activity_basket">Basket</string>
     <string name="action_clearBasket">Clear</string>
     <string name="action_dispatch">Send to centre</string>
+    <string name="action_downloadallimages">Downloding images</string>
     <string name="btSearchBarcode">Search</string>
     <string name="title_activity_dispatch">Dispatch</string>
     <string name="tvComments">Comments</string>

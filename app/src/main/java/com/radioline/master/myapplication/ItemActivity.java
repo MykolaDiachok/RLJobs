@@ -2,7 +2,6 @@ package com.radioline.master.myapplication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,12 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
-
-import com.parse.Parse;
-import com.radioline.master.SwipeDetector.SwipeDetector;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.soapconnector.Converts;
@@ -33,7 +28,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
-    private SwipeDetector swipeDetector;
+    //private SwipeDetector swipeDetector;
 
     @Override
     protected void onResume() {
@@ -63,10 +58,10 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_item);
 
         this.setTitle(getIntent().getStringExtra("Name"));
-        swipeDetector = new SwipeDetector();
+        //swipeDetector = new SwipeDetector();
         lvItem = (ListView)findViewById(R.id.lvItem);
         lvItem.setOnItemClickListener(this);
-        lvItem.setOnTouchListener(swipeDetector);
+        //lvItem.setOnTouchListener(swipeDetector);
 //        Converts tg = new Converts();
 //        try {
 //            ItemViewAdapter itemViewAdapter = new ItemViewAdapter(this, tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid")));

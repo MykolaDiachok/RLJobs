@@ -3,7 +3,6 @@ package com.radioline.master.soapconnector;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -15,27 +14,15 @@ import android.widget.ImageView;
 
 import com.radioline.master.myapplication.R;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.CoreProtocolPNames;
-import org.apache.http.params.HttpParams;
 import org.kobjects.base64.Base64;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapPrimitive;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class ImageDownloaderSOAP {
@@ -45,53 +32,6 @@ public class ImageDownloaderSOAP {
     public ImageDownloaderSOAP() {
         imageCache = new HashMap<String, Bitmap>();
 
-    }
-
-    // download function
-    public void download(String itemID, ImageView imageView,Activity currentActivity,Boolean full) {
-        if (cancelPotentialDownload(itemID, imageView)) {
-
-            // Caching code right here
-            String filename;
-            if (full){
-                filename = "full_"+itemID;}
-            else
-            {
-                filename = itemID;}
-            File f = new File(getCacheDirectory(imageView.getContext()),filename);
-
-            // Is the bitmap in our memory cache?
-            Bitmap bitmap = null;
-
-            bitmap = (Bitmap) imageCache.get(f.getPath());
-
-            if (bitmap == null) {
-
-                bitmap = BitmapFactory.decodeFile(f.getPath());
-
-                if (bitmap != null) {
-                    imageCache.put(f.getPath(), bitmap);
-                }
-
-            }
-            // No? download it
-            if (bitmap == null) {
-                try {
-                    BitmapDownloaderTask task = new BitmapDownloaderTask(
-                            imageView, currentActivity);
-                    DownloadedDrawable downloadedDrawable = new DownloadedDrawable(
-                            task);
-                    imageView.setImageDrawable(downloadedDrawable);
-                    task.execute(itemID,full);
-                } catch (Exception e) {
-                    Log.e("Error==>", e.toString());
-                }
-
-            } else {
-                // Yes? set the image
-                imageView.setImageBitmap(bitmap);
-            }
-        }
     }
 
     // cancel a download (internal only)
@@ -143,6 +83,115 @@ public class ImageDownloaderSOAP {
         return cacheDir;
     }
 
+    // the actual download code
+    static Bitmap downloadBitmap(String itemID, Boolean full) throws ExecutionException, InterruptedException {
+        SoapPrimitive runSoap;
+        Link link = new Link();
+        if (!link.getISWorkUrl()) {
+            return null;
+        }
+        if (!full) {
+            final String method_name = "GetPNGWithSize";
+
+
+            // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
+            //LinkAsyncTaskGetSoapPrimitive linkAsyncTaskGetSoapPrimitive = new LinkAsyncTaskGetSoapPrimitive(method_name);
+            //linkAsync.execute();
+            PropertyInfo piidItem = new PropertyInfo();
+            piidItem.setName("ItemId");
+            piidItem.setValue(itemID);
+            //piidItem.setValue("e3dd8ed4-8fa6-11e2-b51b-00155d060502");
+            piidItem.setType(String.class);
+
+            PropertyInfo piHeight = new PropertyInfo();
+            piHeight.setName("Height");
+            piHeight.setValue(200);
+            piHeight.setType(Integer.class);
+
+            PropertyInfo piWidth = new PropertyInfo();
+            piWidth.setName("Width");
+            piWidth.setValue(200);
+            piWidth.setType(Integer.class);
+
+            PropertyInfo piQuality = new PropertyInfo();
+            piQuality.setName("Quality");
+            piQuality.setValue(50);
+            piQuality.setType(Integer.class);
+
+            PropertyInfo piHardCompression = new PropertyInfo();
+            piHardCompression.setName("HardCompression");
+            piHardCompression.setValue(true);
+            piHardCompression.setType(Boolean.class);
+
+
+            runSoap = link.getFromServerSoapPrimitive(method_name, new PropertyInfo[]{piidItem, piHeight, piWidth, piQuality, piHardCompression});
+        } else {
+            final String method_name = "GetPNG";
+            PropertyInfo piidItem = new PropertyInfo();
+            piidItem.setName("ItemId");
+            piidItem.setValue(itemID);
+            piidItem.setType(String.class);
+            //Link link = new Link();
+            runSoap = link.getFromServerSoapPrimitive(method_name, new PropertyInfo[]{piidItem});
+        }
+
+
+        if (runSoap == null) {
+            return null;
+        }
+
+        String base64String = runSoap.toString();
+        byte[] bytearray = Base64.decode(base64String);
+
+        return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
+
+    }
+
+    // download function
+    public void download(String itemID, ImageView imageView, Activity currentActivity, Boolean full) {
+        if (cancelPotentialDownload(itemID, imageView)) {
+
+            // Caching code right here
+            String filename;
+            if (full) {
+                filename = "full_" + itemID;
+            } else {
+                filename = itemID;
+            }
+            File f = new File(getCacheDirectory(imageView.getContext()), filename);
+
+
+            Bitmap bitmap = (Bitmap) imageCache.get(f.getPath());
+
+            if (bitmap == null) {
+
+                bitmap = BitmapFactory.decodeFile(f.getPath());
+
+                if (bitmap != null) {
+                    imageCache.put(f.getPath(), bitmap);
+                }
+
+            }
+            // No? download it
+            if (bitmap == null) {
+                try {
+                    BitmapDownloaderTask task = new BitmapDownloaderTask(
+                            imageView, currentActivity);
+                    DownloadedDrawable downloadedDrawable = new DownloadedDrawable(
+                            task);
+                    imageView.setImageDrawable(downloadedDrawable);
+                    task.execute(itemID, full);
+                } catch (Exception e) {
+                    Log.e("Error==>", e.toString());
+                }
+
+            } else {
+                // Yes? set the image
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
     private void writeFile(Bitmap bmp, File f) {
         FileOutputStream out = null;
 
@@ -160,11 +209,25 @@ public class ImageDownloaderSOAP {
         }
     }
 
+    static class DownloadedDrawable extends ColorDrawable {
+        private final WeakReference<BitmapDownloaderTask> bitmapDownloaderTaskReference;
+
+        public DownloadedDrawable(BitmapDownloaderTask bitmapDownloaderTask) {
+            super(Color.WHITE);
+            bitmapDownloaderTaskReference = new WeakReference<BitmapDownloaderTask>(
+                    bitmapDownloaderTask);
+        }
+
+        public BitmapDownloaderTask getBitmapDownloaderTask() {
+            return bitmapDownloaderTaskReference.get();
+        }
+    }
+
     // download asynctask
     public class BitmapDownloaderTask extends AsyncTask<Object, Void, Bitmap> {
+        private final WeakReference<ImageView> imageViewReference;
         private String itemID;
         private Boolean full;
-        private final WeakReference<ImageView> imageViewReference;
         private Activity currentActivity;
         private ProgressDialog progress;
 
@@ -176,14 +239,16 @@ public class ImageDownloaderSOAP {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (currentActivity!=null){
+            if (currentActivity != null) {
 
                 progress = new ProgressDialog(currentActivity);
                 progress.setTitle(currentActivity.getString(R.string.ProgressDialogTitle));
                 progress.setMessage(currentActivity.getString(R.string.ProgressDialogMessage));
                 progress.setIndeterminate(true);
-                progress.show();}
+                progress.show();
+            }
         }
+
 
         @Override
         // Actual download method, run in the task thread
@@ -193,7 +258,7 @@ public class ImageDownloaderSOAP {
             full = (Boolean) params[1];
 
             try {
-                return downloadBitmap(itemID,full);
+                return downloadBitmap(itemID, full);
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -201,7 +266,6 @@ public class ImageDownloaderSOAP {
             }
             return null;
         }
-
 
 
         @Override
@@ -222,11 +286,11 @@ public class ImageDownloaderSOAP {
                     // cache the image
 
                     String filename;
-                    if (full){
-                        filename = "full_"+itemID;}
-                    else
-                    {
-                        filename = itemID;}
+                    if (full) {
+                        filename = "full_" + itemID;
+                    } else {
+                        filename = itemID;
+                    }
                     File f = new File(
                             getCacheDirectory(imageView.getContext()), filename);
 
@@ -235,89 +299,10 @@ public class ImageDownloaderSOAP {
                     writeFile(bitmap, f);
                 }
             }
-            if ((progress!=null) && (progress.isShowing()))
-            {
+            if ((progress != null) && (progress.isShowing())) {
                 progress.dismiss();
             }
         }
-
-    }
-
-    static class DownloadedDrawable extends ColorDrawable {
-        private final WeakReference<BitmapDownloaderTask> bitmapDownloaderTaskReference;
-
-        public DownloadedDrawable(BitmapDownloaderTask bitmapDownloaderTask) {
-            super(Color.WHITE);
-            bitmapDownloaderTaskReference = new WeakReference<BitmapDownloaderTask>(
-                    bitmapDownloaderTask);
-        }
-
-        public BitmapDownloaderTask getBitmapDownloaderTask() {
-            return bitmapDownloaderTaskReference.get();
-        }
-    }
-
-    // the actual download code
-    static Bitmap downloadBitmap(String itemID, Boolean full) throws ExecutionException, InterruptedException {
-        SoapPrimitive runSoap;
-        Link link = new Link();
-        if (!link.getISWorkUrl()) {
-            return null;
-        }
-            if (!full) {
-                final String method_name = "GetPNGWithSize";
-
-
-                // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
-                //LinkAsyncTaskGetSoapPrimitive linkAsyncTaskGetSoapPrimitive = new LinkAsyncTaskGetSoapPrimitive(method_name);
-                //linkAsync.execute();
-                PropertyInfo piidItem = new PropertyInfo();
-                piidItem.setName("ItemId");
-                piidItem.setValue(itemID);
-                //piidItem.setValue("e3dd8ed4-8fa6-11e2-b51b-00155d060502");
-                piidItem.setType(String.class);
-
-                PropertyInfo piHeight = new PropertyInfo();
-                piHeight.setName("Height");
-                piHeight.setValue(200);
-                piHeight.setType(Integer.class);
-
-                PropertyInfo piWidth = new PropertyInfo();
-                piWidth.setName("Width");
-                piWidth.setValue(200);
-                piWidth.setType(Integer.class);
-
-                PropertyInfo piQuality = new PropertyInfo();
-                piQuality.setName("Quality");
-                piQuality.setValue(50);
-                piQuality.setType(Integer.class);
-
-                PropertyInfo piHardCompression = new PropertyInfo();
-                piHardCompression.setName("HardCompression");
-                piHardCompression.setValue(true);
-                piHardCompression.setType(Boolean.class);
-
-
-                runSoap = link.getFromServerSoapPrimitive(method_name, new PropertyInfo[]{piidItem, piHeight, piWidth, piQuality, piHardCompression});
-            } else {
-                final String method_name = "GetPNG";
-                PropertyInfo piidItem = new PropertyInfo();
-                piidItem.setName("ItemId");
-                piidItem.setValue(itemID);
-                piidItem.setType(String.class);
-                //Link link = new Link();
-                runSoap = link.getFromServerSoapPrimitive(method_name, new PropertyInfo[]{piidItem});
-            }
-
-
-            if (runSoap == null) {
-                return null;
-            }
-
-            String base64String = runSoap.toString();
-            byte[] bytearray = Base64.decode(base64String);
-
-            return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
 
     }
 }
