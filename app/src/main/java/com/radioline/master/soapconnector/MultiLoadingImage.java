@@ -113,7 +113,8 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
 
         String base64String = runSoap.toString();
         byte[] bytearray = Base64.decode(base64String);
-
+        base64String = null;
+        runSoap = null;
         return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
 
     }
@@ -141,6 +142,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
             int lenght = groups.size();
             int total = 0;
             for (Group group : groups) {
+                total++;
                 taskProgress.message = "Downloading groups " + group.getName() + "...Please Wait";
                 taskProgress.percentage1 = 0;
                 taskProgress.percentage2 = 0;
@@ -153,9 +155,10 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                 int lenght2 = groups2.size();
                 int total2 = 0;
                 for (Group group2 : groups2) {
+                    total2++;
                     taskProgress.message = "Downloading " + group2.getFullnamegroup() + "...Please Wait";
                     taskProgress.percentage1 = 0;
-                    taskProgress.percentage2 = 0;
+                    taskProgress.percentage2 = (total2 * 100) / lenght2;
                     publishProgress(taskProgress);
                     if (group2 == null)
                         continue;
@@ -172,8 +175,8 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                         publishProgress(taskProgress);
                         if (item == null)
                             continue;
-                        total++;
-                        total2++;
+
+
                         totalItem++;
                         itemID = item.getId();
                         String filename;
@@ -190,12 +193,12 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                         if (bmp != null) {
                             writeFile(bmp, f);
                             bmp.recycle();
+                            System.gc();
                         }
                         bmp = null;
                         if (isCancelled()) break;
                     }
                     items = null;
-                    System.gc();
                     if (isCancelled()) break;
                 }
                 if (isCancelled()) break;
@@ -227,7 +230,9 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
     public void onPreExecute() {
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("Downloading...Please Wait");
-        progressDialog.setIndeterminate(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMax(100);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(true);
         progressDialog.show();
