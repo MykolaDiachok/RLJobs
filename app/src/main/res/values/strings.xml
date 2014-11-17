@@ -36,5 +36,7 @@
     <string name="title_activity_search">Search</string>
     <string name="btSearchByName">Search</string>
     <string name="etSearchByName">Input string for search</string>
+    <string name="tvDeliveryDate">Delivery date:</string>
+    <string name="hintetDeliveryDate">Input the date of delivery</string>
 
 </resources>

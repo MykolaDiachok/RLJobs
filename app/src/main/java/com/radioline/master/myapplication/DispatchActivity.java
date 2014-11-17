@@ -2,11 +2,13 @@ package com.radioline.master.myapplication;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.List;
 
 public class DispatchActivity extends Activity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
@@ -29,6 +32,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
     private Switch swCurrency;
     private Button btSendToServer;
     private TextView tvSum;
+    private DatePicker dpDeliveryDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,15 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
         if (!ss.isNetworkAvailable()) {
             btSendToServer.setEnabled(false);
         }
+
+        dpDeliveryDate = (DatePicker) findViewById(R.id.dpDeliveryDate);
+        dpDeliveryDate.setCalendarViewShown(false);
+        Time now = new Time();
+        now.setToNow();
+        dpDeliveryDate.setMinDate(now.toMillis(false));
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 14);
+        dpDeliveryDate.setMaxDate(calendar.getTimeInMillis());
 
     }
 
@@ -136,7 +149,10 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
         RequiredPrice
         *
          */
-        SoapObject Order = new SoapObject();
+        SoapObject Order = new SoapObject("http://www.rl.ua", "items");
+        Order.addProperty("PartnerId", "a27889a9-4e9f-11e2-8faf-00155d040a09");
+        Order.addProperty("NewOrder", true);
+        Order.addProperty("Description", etComments.getText().toString());
         //Order.
         PropertyInfo pi = new PropertyInfo();
         pi.setValue(Order);
