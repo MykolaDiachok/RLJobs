@@ -123,9 +123,14 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()) {
+            case R.id.action_search:
+                intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_scan:
-                Intent intent = new Intent(this, ScanActivity.class);
+                intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_basket:

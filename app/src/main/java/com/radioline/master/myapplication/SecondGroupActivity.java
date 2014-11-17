@@ -19,7 +19,7 @@ import com.splunk.mint.Mint;
 import java.util.concurrent.ExecutionException;
 
 
-public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener,View.OnClickListener {
+public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     private ListView lvSecond;
     private WeakHandler handler = new WeakHandler();
@@ -40,7 +40,6 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +48,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
         //Mint.enableDebug();
 
         setContentView(R.layout.activity_secondgroup);
-        lvSecond = (ListView)findViewById(R.id.lvSecond);
+        lvSecond = (ListView) findViewById(R.id.lvSecond);
         lvSecond.setOnItemClickListener(this);
         this.setTitle(getIntent().getStringExtra("Name"));
 //        Converts tg = new Converts();
@@ -78,17 +77,19 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if (dialog!=null){
-                            if (dialog.isShowing()){
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
                                 try {
                                     dialog.dismiss();
-                                }  catch (IllegalArgumentException e){
+                                } catch (IllegalArgumentException e) {
                                     e.printStackTrace();
-                                };
+                                }
+                                ;
                             }
                         }
-                        if (groupViewAdapter!=null){
-                        lvSecond.setAdapter(groupViewAdapter);}
+                        if (groupViewAdapter != null) {
+                            lvSecond.setAdapter(groupViewAdapter);
+                        }
                     }
                 });
             }
@@ -111,12 +112,15 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.action_search:
+                intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
             case R.id.action_scan:
                 intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_basket:
-                intent = new Intent(this,BasketActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -129,9 +133,9 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
-        Intent intent = new Intent(this,ItemActivity.class);
-        intent.putExtra("parentid",itemgroup.getId());
-        intent.putExtra("Name",itemgroup.getName());
+        Intent intent = new Intent(this, ItemActivity.class);
+        intent.putExtra("parentid", itemgroup.getId());
+        intent.putExtra("Name", itemgroup.getName());
         startActivity(intent);
     }
 

@@ -427,6 +427,62 @@ public class Converts {
         return Items;
     }
 
+
+    public ArrayList<Item> getItemsArrayListFromServerSearchByName(String SubString, Boolean full) throws ExecutionException, InterruptedException {
+        final String method_name = "GetPriceOnSearchName";
+
+
+        // SoapObject tSoap = getFromServerSoapObject(method_name,soap_action);
+        linkAsync = new LinkAsyncTaskGetSoapObject(method_name);
+        //linkAsync.execute();
+        PropertyInfo pi0 = new PropertyInfo();
+        pi0.setName("PartnerId");
+        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setType(String.class);
+
+        PropertyInfo pi1 = new PropertyInfo();
+        pi1.setName("SubString");
+        pi1.setValue(SubString);
+        pi1.setType(String.class);
+
+
+        PropertyInfo pi2 = new PropertyInfo();
+        pi2.setName("SimpleFields");
+        pi2.setValue(!full);
+        pi2.setType(Boolean.class);
+
+        SoapObject tSoap = linkAsync.execute(pi0, pi1, pi2).get();
+        pi0 = null;
+        pi1 = null;
+        pi2 = null;
+
+        if (tSoap == null) {
+            return null;
+        }
+        SoapObject items = (SoapObject) tSoap.getProperty("Prices");
+        tSoap = null;
+        //SoapObject items = (SoapObject)prices.getProperty("Item");
+
+        int itemsCount = items.getPropertyCount();
+        ArrayList<Item> arrayItems = new ArrayList<Item>();
+        if (arrayItems == null) return null;
+        for (int curCount = 0; curCount < itemsCount; curCount++) {
+            SoapObject item = (SoapObject) items.getProperty(curCount);
+            if (item != null)
+                arrayItems.add(new Item(item));
+        }
+        items = null;
+        Collections.sort(arrayItems, new Comparator<Item>() {
+            public int compare(Item p1, Item p2) {
+                return p1.getName().compareToIgnoreCase(
+                        p2.getName());
+            }
+        });
+        return arrayItems;
+    }
+
+
+
     public Bitmap getBitMapFromServer(String idItem) throws ExecutionException, InterruptedException {
         final String method_name = "GetPNG";
 

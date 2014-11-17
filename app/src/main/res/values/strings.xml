@@ -14,7 +14,7 @@
     <string name="ProgressDialogMessage">Loading, please wait..</string>
     <string name="title_activity_image">Image</string>
     <string name="hello_world">Hello world!</string>
-    <string name="title_activity_scan">ScanActivity</string>
+    <string name="title_activity_scan">Scan</string>
     <string name="btScan">Scan</string>
     <string name="action_scan">Scaning</string>
     <string name="action_basket">Basket</string>
@@ -32,6 +32,8 @@
     <string name="btSendToServer">Send</string>
     <string name="ProgressDialogTitleSending">Sending</string>
     <string name="ProgressDialogMessageSending">Sending, please wait..</string>
-    <string name="NoConnect">Connection to the server is not possible, try again..</string>
+    <string name="NoConnect">Connection to the server is not possible, try again...</string>
+    <string name="title_activity_search">Search</string>
+    <string name="btSearchByName">Search</string>
 
 </resources>

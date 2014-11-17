@@ -121,8 +121,10 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
 
     @Override
     protected void onCancelled() {
-        super.onCancelled();
         isCancelled = true;
+        taskProgress.isCancelled = true;
+        super.onCancelled();
+
     }
 
     @Override
@@ -157,7 +159,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                 for (Group group2 : groups2) {
                     total2++;
                     taskProgress.message = "Downloading " + group2.getFullnamegroup() + "...Please Wait";
-                    taskProgress.percentage1 = 0;
+                    //taskProgress.percentage1 = 0;
                     taskProgress.percentage2 = (total2 * 100) / lenght2;
                     publishProgress(taskProgress);
                     if (group2 == null)
@@ -169,15 +171,17 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
 
                     int totalItem = 0;
                     for (Item item : items) {
+                        totalItem++;
+                        int CurrentProgress = progressDialog.getProgress();
+                        int secondaryProgress = (CurrentProgress + 100 * total2) / lenght2;
                         taskProgress.message = "Downloading " + group2.getFullnamegroup() + "...Please Wait";
                         taskProgress.percentage1 = ((totalItem * 100) / lenghtItem);
-                        taskProgress.percentage2 = ((total2 * 100) / lenght2);
+                        taskProgress.percentage2 = secondaryProgress;
                         publishProgress(taskProgress);
                         if (item == null)
                             continue;
 
 
-                        totalItem++;
                         itemID = item.getId();
                         String filename;
                         if (full) {
@@ -196,12 +200,12 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                             System.gc();
                         }
                         bmp = null;
-                        if (isCancelled()) break;
+                        if (taskProgress.isCancelled) break;
                     }
                     items = null;
-                    if (isCancelled()) break;
+                    if (taskProgress.isCancelled) break;
                 }
-                if (isCancelled()) break;
+                if (taskProgress.isCancelled) break;
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -213,6 +217,8 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        isCancelled = true;
+        taskProgress.isCancelled = true;
         super.onPostExecute(aVoid);
         progressDialog.dismiss();
     }
@@ -222,7 +228,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
         progressDialog.setProgress(progress[0].percentage1);
         progressDialog.setSecondaryProgress(progress[0].percentage2);
         progressDialog.setMessage(progress[0].message);
-
+        progress[0].isCancelled = !progressDialog.isShowing();
 
     }
 
@@ -230,13 +236,13 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
     public void onPreExecute() {
         progressDialog = new ProgressDialog(mContext);
         progressDialog.setMessage("Downloading...Please Wait");
-        progressDialog.setIndeterminate(true);
+        progressDialog.setIndeterminate(false);
         progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setMax(100);
+        //progressDialog.setMax(100);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setCancelable(true);
         progressDialog.show();
-
+        taskProgress.isCancelled = false;
 
     }
 

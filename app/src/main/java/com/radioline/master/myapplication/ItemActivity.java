@@ -123,6 +123,9 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
+            case R.id.action_search:
+                intent = new Intent(this, SearchActivity.class);
+                startActivity(intent);
             case R.id.action_scan:
                 intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
