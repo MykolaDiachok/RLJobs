@@ -35,5 +35,6 @@
     <string name="NoConnect">Connection to the server is not possible, try again...</string>
     <string name="title_activity_search">Search</string>
     <string name="btSearchByName">Search</string>
+    <string name="etSearchByName">Input string for search</string>
 
 </resources>

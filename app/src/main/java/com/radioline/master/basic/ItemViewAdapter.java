@@ -1,8 +1,7 @@
 package com.radioline.master.basic;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.text.Html;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,30 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
+import com.radioline.master.myapplication.PicActivity;
 import com.radioline.master.myapplication.R;
-import com.radioline.master.soapconnector.Converts;
-import com.radioline.master.soapconnector.DownloadImageInBackground;
 import com.radioline.master.soapconnector.ImageDownloaderSOAP;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by master on 06.11.2014.
  */
 public class ItemViewAdapter extends ArrayAdapter<Item> {
 
-    Context context;
     private final ArrayList<Item> itemArrayList;
+    Context context;
 
 
     public ItemViewAdapter(Context context, ArrayList<Item> itemsArrayList) {
@@ -43,17 +34,6 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
         this.context = context;
         this.itemArrayList = itemsArrayList;
-    }
-
-
-    static class ViewHolder {
-        public TextView tvItemName;
-        public TextView tvItemUSD;
-        public TextView tvItemUAH;
-        public ImageView ivItem;
-        public Button btAdd;
-        public Button btDel;
-
     }
 
     @Override
@@ -80,7 +60,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         }
         this.setOnClickListener(holder.btAdd, itemArrayList.get(position));
         this.setOnClickListener(holder.btDel, itemArrayList.get(position));
-
+        this.setOnClickListener(holder.ivItem, itemArrayList.get(position));
         holder.tvItemName.setText(itemArrayList.get(position).getName());
 
 
@@ -107,8 +87,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             if (currentcount < 0) {
                 currentcount = 0;
                 localbasket.unpin();
-            }
-            else {
+            } else {
                 localbasket.setQuantity(currentcount);
                 localbasket.pin();
             }
@@ -119,7 +98,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         Toast.makeText(context, "del: " + finalitem.getName() + "-1=" + currentcount, Toast.LENGTH_SHORT).show();
     }
 
-    private void addItem(Item finalitem){
+    private void addItem(Item finalitem) {
         //int pos = Integer.parseInt(v.getTag().toString());
         //Item finalitem = itemArrayList.get(pos);
         ParseQuery<Basket> query = Basket.getQuery();
@@ -149,12 +128,17 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         Toast.makeText(context, "add: " + finalitem.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
     }
 
-    private void setOnClickListener(Button btListener, final Item finalitem) {
+    private void setOnClickListener(View view, final Item finalitem) {
 
-        btListener.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
+                    case R.id.ivItem:
+                        Intent intent = new Intent(context, PicActivity.class);
+                        intent.putExtra("itemid", finalitem.getId());
+                        intent.putExtra("Name", finalitem.getName());
+                        context.startActivity(intent);
                     case R.id.btAdd:
                         addItem(finalitem);
                         break;
@@ -165,5 +149,15 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
 
             }
         });
+    }
+
+    static class ViewHolder {
+        public TextView tvItemName;
+        public TextView tvItemUSD;
+        public TextView tvItemUAH;
+        public ImageView ivItem;
+        public Button btAdd;
+        public Button btDel;
+
     }
 }
