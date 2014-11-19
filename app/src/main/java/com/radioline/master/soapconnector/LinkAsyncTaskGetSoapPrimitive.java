@@ -12,6 +12,7 @@ import org.ksoap2.serialization.SoapPrimitive;
 public class LinkAsyncTaskGetSoapPrimitive extends AsyncTask<PropertyInfo, Void, SoapPrimitive> {
 
     private String method_name;
+    private final Link link = new Link();
 
     public LinkAsyncTaskGetSoapPrimitive(String method_name) {
         this.method_name = method_name;
@@ -27,16 +28,15 @@ public class LinkAsyncTaskGetSoapPrimitive extends AsyncTask<PropertyInfo, Void,
 
     @Override
     protected SoapPrimitive doInBackground(PropertyInfo... propertiesInfo) {
-        Link link = new Link();
         if (link.getISWorkUrl()){
-        return link.getFromServerSoapPrimitive(method_name,propertiesInfo);}
+            return link.getFromServerSoapPrimitive(method_name, propertiesInfo);
+        }
         return null;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
 
     }
 

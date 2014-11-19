@@ -17,6 +17,7 @@ import com.parse.ParseObject;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
+import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.MultiLoadingImage;
@@ -56,6 +57,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
         ParseObject.registerSubclass(Basket.class);
+        //ParseObject.registerSubclass(ParseGroups.class);
         Parse.enableLocalDatastore(getApplicationContext());
 
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");

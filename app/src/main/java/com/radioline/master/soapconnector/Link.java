@@ -123,11 +123,12 @@ public class Link {
         //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
         SSLConection.allowAllSSL();
         HttpTransportSE httpTransport = new HttpTransportSE(url);
-        httpTransport.debug = this.debug;
+        //httpTransport.debug = this.debug;
+        httpTransport.debug = true;
         try {
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
             envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
-            envelope.dotNet = false;
+            envelope.dotNet = true;
             envelope.setOutputSoapObject(request);
             httpTransport.call(soapAction, envelope);
             return (SoapPrimitive) envelope.getResponse();
