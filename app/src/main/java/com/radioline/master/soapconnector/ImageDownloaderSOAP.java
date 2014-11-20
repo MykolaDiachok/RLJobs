@@ -197,7 +197,8 @@ public class ImageDownloaderSOAP {
 
         try {
             out = new FileOutputStream(f);
-            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
+            if (out != null)
+                bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -284,7 +285,7 @@ public class ImageDownloaderSOAP {
                     imageView.setImageBitmap(bitmap);
 
                     // cache the image
-
+                    if (bitmap != null) {
                     String filename;
                     if (full) {
                         filename = "full_" + itemID;
@@ -296,7 +297,8 @@ public class ImageDownloaderSOAP {
 
                     imageCache.put(f.getPath(), bitmap);
 
-                    writeFile(bitmap, f);
+                        writeFile(bitmap, f);
+                    }
                 }
             }
             if ((progress != null) && (progress.isShowing())) {

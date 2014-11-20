@@ -29,16 +29,15 @@ public class Link {
         nameSpace = "http://www.rl.ua";
         //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
         workUrl = false;
-        if (isConnectedToServer("https://of.rl.com.ua:6443/", 1000)) {
-            url = "https://of.rl.com.ua:6443/GlobalBase1/ws/wsPrice.1cws";
+        if (isConnectedToServer("https://of.rl.com.ua:6443", 5000)) {
+            url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;
-        } else if (isConnectedToServer("http://mws-01.rl.int/", 1000)) {
-            url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+        } else if (isConnectedToServer("http://srv-1c-01.rl.int/", 5000)) {
+            url = "http://srv-1c-01.rl.int/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;
         }
         //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
     }
-
 
 
     public Boolean getISWorkUrl() {
@@ -66,20 +65,37 @@ public class Link {
     }
 
     public boolean isConnectedToServer(String urlsite, int timeout) {
+        Boolean ret = false;
+//        try {
+////            Pattern p = Pattern.compile("[https]://([\\w\\d\\.-]+)[:\\d]*/");
+////            Matcher m = p.matcher(urlsite);
+////            if (m.matches()) {
+////                String searchsite = m.group(1);
+//                InetAddress inet = InetAddress.getByName(urlsite);//.getByAddress(new byte[]{(byte) 173, (byte) 194, 32, 38});
+//                ret = inet.isReachable(5000);
+////            }
+//
+//
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
         try {
             URL myUrl = new URL(urlsite);
             SSLConection.allowAllSSL();
             URLConnection connection = myUrl.openConnection();
             connection.setConnectTimeout(timeout);
             connection.connect();
-            return true;
+            ret = true;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return false;
+        return ret;
 
     }
 

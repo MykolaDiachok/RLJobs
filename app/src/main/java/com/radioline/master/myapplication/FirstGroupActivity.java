@@ -56,11 +56,15 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         handler = new WeakHandler();
         Mint.initAndStartSession(this, "3b65ddeb");
         //Mint.enableDebug();
-        ParseObject.registerSubclass(Basket.class);
-        //ParseObject.registerSubclass(ParseGroups.class);
-        Parse.enableLocalDatastore(getApplicationContext());
 
-        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+        //ParseObject.registerSubclass(ParseGroups.class);
+        try {
+            ParseObject.registerSubclass(Basket.class);
+            Parse.enableLocalDatastore(getApplicationContext());
+            Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
 
 
         setContentView(R.layout.activity_firstgroup);
@@ -77,9 +81,9 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
                     Converts tg = new Converts();
                     try {
                         ArrayList<Group> gr = tg.getGroupsArrayListFromServer();
-                        if ((gr == null) || (gr.isEmpty())) {
+                        if ((gr == null)) {
                             gr = null;
-                            Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
                         } else {
                             groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this, gr);
                         }
@@ -106,6 +110,8 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
                             }
                             if (groupViewAdapter != null) {
                                 listView.setAdapter(groupViewAdapter);
+                            } else {
+                                Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
                             }
                         }
 
