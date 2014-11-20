@@ -3,7 +3,6 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.text.format.Time;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,24 +21,26 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Basket;
-import com.radioline.master.basic.GroupViewAdapter;
-import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.basic.SystemService;
-import com.radioline.master.soapconnector.Converts;
-import com.radioline.master.soapconnector.LinkAsyncTaskGetSoapObject;
-import com.radioline.master.soapconnector.LinkAsyncTaskGetSoapPrimitive;
+import com.radioline.master.soapconnector.SSLConection;
 import com.splunk.mint.Mint;
 
-import org.ksoap2.serialization.PropertyInfo;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpResponseException;
+import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.TimeZone;
 
 public class DispatchActivity extends Activity implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -50,6 +51,19 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
     private DatePicker dpDeliveryDate;
     private WeakHandler handler;
     private ProgressDialog dialog;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +93,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
 
         dpDeliveryDate = (DatePicker) findViewById(R.id.dpDeliveryDate);
         // dpDeliveryDate.setCalendarViewShown(false);
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         calendar.add(Calendar.DATE, 1);
         dpDeliveryDate.setMinDate(calendar.getTimeInMillis());
         calendar.add(Calendar.DATE, 13);
@@ -186,45 +200,88 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
 
 
                     SoapObject Order = new SoapObject("http://www.rl.ua", "Order");
-                    Order.addProperty("PartnerId", "a27889a9-4e9f-11e2-8faf-00155d040a09");
-                    Order.addProperty("ContractId", "a27889ab-4e9f-11e2-8faf-00155d040a09");
+                    Order.addProperty("PartnerId", "0de7fab4-baac-11e0-a8f7-003048dcc0b1"); //НЕОПОЗНАНО!!!!!!!!!!!!!!!!!!!!!!!!
+                    Order.addProperty("ContractId", "857aa2f9-bc3e-11e0-b883-00e081c3bb9e"); // Основной договор
                     Order.addProperty("NewOrder", true);
-                    //Order.addProperty("Description", etComments.getText().toString());
-                    //Order.addProperty("DeliveryDate", new Date(dpDeliveryDate.getYear(),dpDeliveryDate.getMonth(),dpDeliveryDate.getDayOfMonth(),0,0,0));
+                    Order.addProperty("Description", "" + etComments.getText().toString());
+                    SimpleDateFormat dateFormat = new SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss");
+                    Date nD = new Date();
+                    nD.setYear(dpDeliveryDate.getYear() - 1900);
+                    nD.setMonth(dpDeliveryDate.getMonth());
+                    nD.setDate(dpDeliveryDate.getDayOfMonth());
+                    String dd = dateFormat.format(nD);
+                    Order.addProperty("DeliveryDate", dd);
 
                     //ArrayList<SoapObject> rowOrders = new ArrayList<SoapObject>();
                     SoapObject rowOrders = new SoapObject("http://www.rl.ua", "RowOrders");
+
+
                     ParseQuery<Basket> query = Basket.getQuery();
                     query.fromLocalDatastore();
                     try {
                         List<Basket> basketList = query.find();
                         for (Basket ibasket : basketList) {
                             SoapObject rowOrder = new SoapObject("http://www.rl.ua", "RowOrder");
-                            rowOrder.addProperty("ProductId", ibasket.getProductId());
-                            rowOrder.addProperty("Quantity", ibasket.getQuantity());
-                            rowOrder.addProperty("RequiredPrice", ibasket.getRequiredpriceUSD());
+                            rowOrder.addProperty("ProductId", ibasket.getProductId().toString());
+                            rowOrder.addProperty("Quantity", +ibasket.getQuantity());
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String fPrice = df.format(ibasket.getRequiredpriceUSD());
+                            rowOrder.addProperty("RequiredPrice", fPrice);
+
                             rowOrders.addSoapObject(rowOrder);
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    Order.addProperty("RowOrders", rowOrders);
-                    //Order.addPropertyIfValue("Table", rowOrders);
-                    PropertyInfo pi = new PropertyInfo();
-                    pi.setValue(Order);
-                    pi.setType(Order.getClass());
 
-                    LinkAsyncTaskGetSoapPrimitive linkAsync = new LinkAsyncTaskGetSoapPrimitive("SetOrder");
+
+                    String nameSpace = "http://www.rl.ua";
+                    String methodName = "SetOrder";
+                    String soapAction = nameSpace + "/" + methodName;
+                    SoapObject request = new SoapObject(nameSpace,
+                            methodName);
+
+                    request.addSoapObject(Order);
+                    request.addSoapObject(rowOrders);
+                    //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
+                    SSLConection.allowAllSSL();
+                    HttpTransportSE httpTransport = new HttpTransportSE("http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws");
+                    //httpTransport.debug = this.debug;
+                    httpTransport.debug = true;
                     try {
-                        SoapPrimitive tSoap = linkAsync.execute(pi).get();
-                        if (tSoap != null) {
-                            String sss = tSoap.toString();
-                        }
-                    } catch (InterruptedException e) {
+                        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+                        envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
+                        envelope.dotNet = true;
+                        envelope.setOutputSoapObject(request);
+                        httpTransport.call(soapAction, envelope);
+                        SoapPrimitive bl = (SoapPrimitive) envelope.getResponse();
+                        String ssss = bl.toString();
+                    } catch (XmlPullParserException e) {
                         e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (SoapFault soapFault) {
+                        soapFault.printStackTrace();
+                    } catch (HttpResponseException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+
+                    //                  Link link = new Link();
+                    //                   SoapObject soapObject = link.getFromServerSoapObject("SetOrder",new PropertyInfo[]{pi0,pi1});
+//                    String sss = soapObject.toString();
+//                    LinkAsyncTaskGetSoapObject linkAsync = new LinkAsyncTaskGetSoapObject("SetOrder");
+//                    try {
+//                        SoapObject tSoap = linkAsync.execute(pi0,pi1).get();
+//                        if (tSoap != null) {
+//                            String sss = tSoap.toString();
+//                        }
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (ExecutionException e) {
+//                        e.printStackTrace();
+//                    }
 
                     handler.post(new Runnable() {
                         public void run() {

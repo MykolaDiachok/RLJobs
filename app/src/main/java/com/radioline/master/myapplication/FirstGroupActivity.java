@@ -17,12 +17,12 @@ import com.parse.ParseObject;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
-import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.MultiLoadingImage;
 import com.splunk.mint.Mint;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -76,7 +76,13 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
                 public void run() {
                     Converts tg = new Converts();
                     try {
-                        groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this, tg.getGroupsArrayListFromServer());
+                        ArrayList<Group> gr = tg.getGroupsArrayListFromServer();
+                        if ((gr == null) || (gr.isEmpty())) {
+                            gr = null;
+                            Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+                        } else {
+                            groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this, gr);
+                        }
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();
