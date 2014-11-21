@@ -22,19 +22,12 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.SystemService;
-import com.radioline.master.soapconnector.SSLConection;
+import com.radioline.master.soapconnector.Link;
 import com.splunk.mint.Mint;
 
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpResponseException;
-import org.ksoap2.transport.HttpTransportSE;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,6 +44,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
     private DatePicker dpDeliveryDate;
     private WeakHandler handler;
     private ProgressDialog dialog;
+
 
     @Override
     protected void onStop() {
@@ -235,53 +229,53 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                         e.printStackTrace();
                     }
 
-
-                    String nameSpace = "http://www.rl.ua";
-                    String methodName = "SetOrder";
-                    String soapAction = nameSpace + "/" + methodName;
-                    SoapObject request = new SoapObject(nameSpace,
-                            methodName);
-
-                    request.addSoapObject(Order);
-                    request.addSoapObject(rowOrders);
-                    //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
-                    SSLConection.allowAllSSL();
-                    HttpTransportSE httpTransport = new HttpTransportSE("http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws");
-                    //httpTransport.debug = this.debug;
-                    httpTransport.debug = true;
-                    try {
-                        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-                        envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
-                        envelope.dotNet = true;
-                        envelope.setOutputSoapObject(request);
-                        httpTransport.call(soapAction, envelope);
-                        SoapPrimitive bl = (SoapPrimitive) envelope.getResponse();
-                        String ssss = bl.toString();
-                    } catch (XmlPullParserException e) {
-                        e.printStackTrace();
-                    } catch (SoapFault soapFault) {
-                        soapFault.printStackTrace();
-                    } catch (HttpResponseException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    Link link = new Link();
+                    SoapPrimitive returnSoapPrimitive = link.setToServerSoapObjectgetSoapPrimitive("SetOrder", Order, rowOrders);
+                    Boolean rt = false;
+                    if (returnSoapPrimitive != null) {
+                        rt = Boolean.valueOf(returnSoapPrimitive.getValue().toString());
                     }
-
-
-                    //                  Link link = new Link();
-                    //                   SoapObject soapObject = link.getFromServerSoapObject("SetOrder",new PropertyInfo[]{pi0,pi1});
-//                    String sss = soapObject.toString();
-//                    LinkAsyncTaskGetSoapObject linkAsync = new LinkAsyncTaskGetSoapObject("SetOrder");
+                    final Boolean rtToToast = rt;
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (rtToToast) {
+                                Toast.makeText(DispatchActivity.this, getString(R.string.OrderSendGood), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(DispatchActivity.this, getString(R.string.OrderSendBad), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+//                    String nameSpace = "http://www.rl.ua";
+//                    String methodName = "SetOrder";
+//                    String soapAction = nameSpace + "/" + methodName;
+//                    SoapObject request = new SoapObject(nameSpace,
+//                            methodName);
+//
+//                    request.addSoapObject(Order);
+//                    request.addSoapObject(rowOrders);
+//                    //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
+//                    SSLConection.allowAllSSL();
+//                    HttpTransportSE httpTransport = new HttpTransportSE("http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws");
+//                    //httpTransport.debug = this.debug;
+//                    httpTransport.debug = true;
 //                    try {
-//                        SoapObject tSoap = linkAsync.execute(pi0,pi1).get();
-//                        if (tSoap != null) {
-//                            String sss = tSoap.toString();
-//                        }
-//                    } catch (InterruptedException e) {
+//                        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+//                        envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
+//                        envelope.dotNet = true;
+//                        envelope.setOutputSoapObject(request);
+//                        httpTransport.call(soapAction, envelope);
+//                        SoapPrimitive bl = (SoapPrimitive) envelope.getResponse();
+//                        String ssss = bl.toString();
+//                    } catch (XmlPullParserException e) {
 //                        e.printStackTrace();
-//                    } catch (ExecutionException e) {
+//                    } catch (SoapFault soapFault) {
+//                        soapFault.printStackTrace();
+//                    } catch (HttpResponseException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
 //                        e.printStackTrace();
 //                    }
+
 
                     handler.post(new Runnable() {
                         public void run() {

@@ -38,5 +38,7 @@
     <string name="etSearchByName">Input string for search</string>
     <string name="tvDeliveryDate">Delivery date:</string>
     <string name="hintetDeliveryDate">Input the date of delivery</string>
+    <string name="OrderSendGood">The current order has been successfully delivered!</string>
+    <string name="OrderSendBad">Failed to send the order, again later</string>
 
 </resources>

@@ -33,7 +33,7 @@ public class Link {
             url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;
         } else if (isConnectedToServer("http://srv-1c-01.rl.int/", 5000)) {
-            url = "http://srv-1c-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+            url = "http://srv-1c-01.rl.int/GlobalBase1/ws/wsPrice.1cws";
             workUrl = true;
         }
         //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
@@ -221,6 +221,38 @@ public class Link {
         return null;
     }
 
+    public SoapPrimitive setToServerSoapObjectgetSoapPrimitive(String methodName, SoapObject... soapObjects) {
+        //String nameSpace = "http://www.rl.ua";
+        //String methodName = "SetOrder";
+        String soapAction = nameSpace + "/" + methodName;
+        SoapObject request = new SoapObject(nameSpace,
+                methodName);
+        for (SoapObject soapObject : soapObjects) {
+            request.addSoapObject(soapObject);
+        }
+        //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
+        SSLConection.allowAllSSL();
+        HttpTransportSE httpTransport = new HttpTransportSE(url);
+        //httpTransport.debug = this.debug;
+        httpTransport.debug = this.debug;
+        try {
+            SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
+            envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
+            envelope.dotNet = true;
+            envelope.setOutputSoapObject(request);
+            httpTransport.call(soapAction, envelope);
+            return (SoapPrimitive) envelope.getResponse();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        } catch (HttpResponseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
 
