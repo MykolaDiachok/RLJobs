@@ -54,7 +54,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new WeakHandler();
-        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
 
         //ParseObject.registerSubclass(ParseGroups.class);

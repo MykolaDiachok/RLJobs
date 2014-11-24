@@ -13,12 +13,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="com.radioline.master.myapplication.FirstGroupActivity"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:label="@string/app_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.radioline.master.myapplication.LoginActivity" />
         </activity>
         <activity
             android:name="com.radioline.master.myapplication.SecondGroupActivity"
@@ -26,7 +25,7 @@
             android:parentActivityName="com.radioline.master.myapplication.FirstGroupActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.radioline.master.myapplication.Login" />
+                android:value="com.radioline.master.myapplication.FirstGroupActivity" />
         </activity>
         <activity
             android:name="com.radioline.master.myapplication.ItemActivity"
@@ -63,7 +62,16 @@
         <activity
             android:name="com.radioline.master.myapplication.SearchActivity"
             android:icon="@drawable/ic_search"
-            android:label="@string/title_activity_search"></activity>
+            android:label="@string/title_activity_search" />
+        <activity
+            android:name="com.radioline.master.myapplication.LoginActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

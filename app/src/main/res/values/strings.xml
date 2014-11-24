@@ -40,5 +40,12 @@
     <string name="hintetDeliveryDate">Input the date of delivery</string>
     <string name="OrderSendGood">The current order has been successfully delivered!</string>
     <string name="OrderSendBad">Failed to send the order, again later</string>
+    <string name="title_activity_login">Login</string>
+    <string name="tvUserId">User id:</string>
+    <string name="tvPasswordId">Password:</string>
+    <string name="btExit">Exit</string>
+    <string name="btLogin">Login</string>
+    <string name="NonLoginAndPassword">Please input login and password</string>
+    <string name="mint">3b65ddeb</string>
 
 </resources>
