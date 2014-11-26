@@ -78,6 +78,7 @@ public class BasketActivity extends Activity {
                     for (Basket ibasket : basketList) {
                         ibasket.unpinInBackground();
                     }
+                    basketViewAdapter.notifyDataSetChanged();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
