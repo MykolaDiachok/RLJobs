@@ -26,7 +26,7 @@ public class PicActivity extends Activity {
     private ImageView imageView2;
     private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
-    private  ArrayList<Item> itemlist;
+    private ArrayList<Item> itemlist;
     private TextView tvProperties;
     private TextView tvPriceUSD;
     private TextView tvPriceUAH;
@@ -51,7 +51,7 @@ public class PicActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
 
         setContentView(R.layout.activity_pic);
@@ -70,7 +70,7 @@ public class PicActivity extends Activity {
             public void run() {
                 Converts tg = new Converts();
                 try {
-                    itemlist = tg.getItemsArrayListFromServer(getIntent().getStringExtra("itemid"),true);
+                    itemlist = tg.getItemsArrayListFromServer(getIntent().getStringExtra("itemid"), true);
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -80,66 +80,67 @@ public class PicActivity extends Activity {
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if (dialog!=null){
-                            if (dialog.isShowing()){
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
                                 try {
                                     dialog.dismiss();
-                                }  catch (IllegalArgumentException e){
+                                } catch (IllegalArgumentException e) {
                                     e.printStackTrace();
-                                };
+                                }
+                                ;
                             }
                         }
-                        if ((itemlist==null)&&(itemlist.isEmpty()))
+                        if ((itemlist == null) && (itemlist.isEmpty()))
                             return;
 
                         Item item = itemlist.get(0);
                         String properties = "";
-                        if ((item.getFullNameGroup()!=null)&&(item.getFullNameGroup().length()!=0))
-                            properties = properties + "<b>groups:</b>"+item.getFullNameGroup()+"<br>";
+                        if ((item.getFullNameGroup() != null) && (item.getFullNameGroup().length() != 0))
+                            properties = properties + "<b>groups:</b>" + item.getFullNameGroup() + "<br>";
 
-                        if ((item.getType()!=null)&&(item.getType().length()!=0))
-                            properties = properties + "<b>type:</b>"+item.getType()+"<br>";
-                        if (item.getBrand()!=null&&(item.getBrand().length()!=0))
-                            properties = properties + "<b>brand:</b>"+item.getBrand()+"<br>";
-                        if ((item.getModel()!=null)&&(item.getModel().length()!=0))
-                            properties = properties + "<b>model:</b>"+item.getModel()+"<br>";
-                        if ((item.getModelCharacteristic()!=null)&&(item.getModelCharacteristic().length()!=0))
-                            properties = properties + "<b>characteristic:</b>"+item.getModelCharacteristic()+"<br>";
-                        if ((item.getColoration()!=null)&&(item.getColoration().length()!=0))
-                            properties = properties + "<b>color:</b>"+item.getColoration()+"<br>";
-                        if ((item.getWarranty()!=null)&&(item.getWarranty().length()!=0))
-                            properties = properties + "<b>waranty:</b>"+item.getWarranty()+"<br>";
+                        if ((item.getType() != null) && (item.getType().length() != 0))
+                            properties = properties + "<b>type:</b>" + item.getType() + "<br>";
+                        if (item.getBrand() != null && (item.getBrand().length() != 0))
+                            properties = properties + "<b>brand:</b>" + item.getBrand() + "<br>";
+                        if ((item.getModel() != null) && (item.getModel().length() != 0))
+                            properties = properties + "<b>model:</b>" + item.getModel() + "<br>";
+                        if ((item.getModelCharacteristic() != null) && (item.getModelCharacteristic().length() != 0))
+                            properties = properties + "<b>characteristic:</b>" + item.getModelCharacteristic() + "<br>";
+                        if ((item.getColoration() != null) && (item.getColoration().length() != 0))
+                            properties = properties + "<b>color:</b>" + item.getColoration() + "<br>";
+                        if ((item.getWarranty() != null) && (item.getWarranty().length() != 0))
+                            properties = properties + "<b>waranty:</b>" + item.getWarranty() + "<br>";
 
-                        if ((item.getCode()!=null)&&(item.getCode().length()!=0))
-                            properties = properties + "<b>code:</b>"+item.getCode()+"<br>";
+                        if ((item.getCode() != null) && (item.getCode().length() != 0))
+                            properties = properties + "<b>code:</b>" + item.getCode() + "<br>";
                         //String Article
-                        if ((item.getPartNumber()!=null)&&(item.getPartNumber().length()!=0))
-                            properties = properties+"<b>part #:</b>"+item.getPartNumber()+"<br>";
-                        if ((item.getDescription()!=null)&&(item.getDescription().length()!=0))
-                            properties = properties+"<b>description #:</b>"+item.getDescription()+"<br>";
+                        if ((item.getPartNumber() != null) && (item.getPartNumber().length() != 0))
+                            properties = properties + "<b>part #:</b>" + item.getPartNumber() + "<br>";
+                        if ((item.getDescription() != null) && (item.getDescription().length() != 0))
+                            properties = properties + "<b>description #:</b>" + item.getDescription() + "<br>";
 
-                        if ((item.getOurWebSite()!=null)&&(item.getOurWebSite().length()!=0)){
-                            properties = properties+"<a href=\"https://"+item.getOurWebSite()+">our site</a><br>";}
+                        if ((item.getOurWebSite() != null) && (item.getOurWebSite().length() != 0)) {
+                            properties = properties + "<a href=\"https://" + item.getOurWebSite() + ">our site</a><br>";
+                        }
 
-                        if ((item.getSite()!=null)&&(item.getSite().length()!=0)){
-                            properties = properties+"<a href=\""+item.getSite()+">product site</a><br>";}
+                        if ((item.getSite() != null) && (item.getSite().length() != 0)) {
+                            properties = properties + "<a href=\"" + item.getSite() + ">product site</a><br>";
+                        }
 
                         tvProperties.setMovementMethod(LinkMovementMethod.getInstance());
                         tvProperties.setText(Html.fromHtml(properties));
-
-
 
 
                         DecimalFormat dec = new DecimalFormat("0.00");
                         tvPriceUSD.setText("$ " + dec.format(item.getPrice()));
                         tvPriceUAH.setText("₴ " + dec.format(item.getPriceUAH()));
                         float rrpusd = item.getPriceRRP();
-                        if (rrpusd!=0)
+                        if (rrpusd != 0)
                             tvPriceRRCUSD.setText("РРЦ $ " + dec.format(rrpusd));
                         else
                             tvPriceRRCUSD.setText("");
                         float rrpuah = item.getPriceRRPUAH();
-                        if (rrpuah!=0)
+                        if (rrpuah != 0)
                             tvPriceRRCUAH.setText("РРЦ ₴ " + dec.format(rrpuah));
                         else
                             tvPriceRRCUAH.setText("");
@@ -153,7 +154,7 @@ public class PicActivity extends Activity {
 
 
         ImageDownloaderSOAP getimage = new ImageDownloaderSOAP();
-        getimage.download(getIntent().getStringExtra("itemid"),imageView2,PicActivity.this,true);
+        getimage.download(getIntent().getStringExtra("itemid"), imageView2, PicActivity.this, true);
 
 
     }

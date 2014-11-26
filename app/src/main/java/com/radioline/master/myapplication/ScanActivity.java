@@ -39,7 +39,7 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
 
     final Runnable showToastMessage = new Runnable() {
         public void run() {
-            Toast.makeText(ScanActivity.this, "It's barcode="+contents+" not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ScanActivity.this, "It's barcode=" + contents + " not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -60,7 +60,7 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mint.initAndStartSession(ScanActivity.this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
         setContentView(R.layout.activity_scan);
 
@@ -104,7 +104,6 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
                 searchOnDataBase(contents);
 
 
-
             } else {
                 //  String T = getString(R.string.result_failed_why);
             }
@@ -124,7 +123,7 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
         Intent intent;
         switch (item.getItemId()) {
             case R.id.action_basket:
-                intent = new Intent(this,BasketActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -137,9 +136,9 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Item item = (Item) adapterView.getItemAtPosition(position);
-        Intent intent = new Intent(this,PicActivity.class);
-        intent.putExtra("itemid",item.getId());
-        intent.putExtra("Name",item.getName());
+        Intent intent = new Intent(this, PicActivity.class);
+        intent.putExtra("itemid", item.getId());
+        intent.putExtra("Name", item.getName());
         startActivity(intent);
     }
 
@@ -154,7 +153,7 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
         }
     }
 
-    private void searchOnDataBase(final String searchBarCode){
+    private void searchOnDataBase(final String searchBarCode) {
 
         dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
                 getString(R.string.ProgressDialogMessage));
@@ -163,12 +162,12 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
                 Converts tg = new Converts();
                 try {
                     ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(searchBarCode, false);
-                    if (item==null){
+                    if (item == null) {
 
                         handler.post(showToastMessage);
+                    } else {
+                        itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);
                     }
-                    else{
-                        itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);}
 
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -178,17 +177,19 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if (dialog!=null){
-                            if (dialog.isShowing()){
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
                                 try {
                                     dialog.dismiss();
-                                }  catch (IllegalArgumentException e){
+                                } catch (IllegalArgumentException e) {
                                     e.printStackTrace();
-                                };
+                                }
+                                ;
                             }
                         }
-                        if (itemViewAdapter!=null){
-                            lvScan.setAdapter(itemViewAdapter);}
+                        if (itemViewAdapter != null) {
+                            lvScan.setAdapter(itemViewAdapter);
+                        }
                     }
                 });
             }

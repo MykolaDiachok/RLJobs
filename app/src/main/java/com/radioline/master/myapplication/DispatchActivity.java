@@ -20,6 +20,7 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.radioline.master.basic.BaseValues;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Link;
@@ -194,7 +195,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
 
 
                     SoapObject Order = new SoapObject("http://www.rl.ua", "Order");
-                    Order.addProperty("PartnerId", "0de7fab4-baac-11e0-a8f7-003048dcc0b1"); //НЕОПОЗНАНО!!!!!!!!!!!!!!!!!!!!!!!!
+                    Order.addProperty("PartnerId", BaseValues.GetValue("PartnerId"));
                     Order.addProperty("ContractId", "857aa2f9-bc3e-11e0-b883-00e081c3bb9e"); // Основной договор
                     Order.addProperty("NewOrder", true);
                     Order.addProperty("Description", "" + etComments.getText().toString());
@@ -245,36 +246,6 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                             }
                         }
                     });
-//                    String nameSpace = "http://www.rl.ua";
-//                    String methodName = "SetOrder";
-//                    String soapAction = nameSpace + "/" + methodName;
-//                    SoapObject request = new SoapObject(nameSpace,
-//                            methodName);
-//
-//                    request.addSoapObject(Order);
-//                    request.addSoapObject(rowOrders);
-//                    //SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(110);
-//                    SSLConection.allowAllSSL();
-//                    HttpTransportSE httpTransport = new HttpTransportSE("http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws");
-//                    //httpTransport.debug = this.debug;
-//                    httpTransport.debug = true;
-//                    try {
-//                        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
-//                        envelope.encodingStyle = SoapSerializationEnvelope.ENC2003;
-//                        envelope.dotNet = true;
-//                        envelope.setOutputSoapObject(request);
-//                        httpTransport.call(soapAction, envelope);
-//                        SoapPrimitive bl = (SoapPrimitive) envelope.getResponse();
-//                        String ssss = bl.toString();
-//                    } catch (XmlPullParserException e) {
-//                        e.printStackTrace();
-//                    } catch (SoapFault soapFault) {
-//                        soapFault.printStackTrace();
-//                    } catch (HttpResponseException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
 
 
                     handler.post(new Runnable() {

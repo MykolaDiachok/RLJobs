@@ -56,7 +56,7 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Mint.initAndStartSession(SearchActivity.this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
 
         lvSearchByName = (ListView) findViewById(R.id.lvSearchByName);
         lvSearchByName.setOnItemClickListener(this);

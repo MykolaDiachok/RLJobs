@@ -3,6 +3,7 @@ package com.radioline.master.soapconnector;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import com.radioline.master.basic.BaseValues;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.Item;
 
@@ -207,7 +208,7 @@ public class Converts {
         //linkAsync.execute();
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
         PropertyInfo pi1 = new PropertyInfo();
@@ -252,7 +253,7 @@ public class Converts {
         //linkAsync.execute();
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
         PropertyInfo pi1 = new PropertyInfo();
@@ -309,7 +310,7 @@ public class Converts {
 
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
 
@@ -349,7 +350,7 @@ public class Converts {
 
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
 
@@ -390,7 +391,7 @@ public class Converts {
         //linkAsync.execute();
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
         PropertyInfo pi1 = new PropertyInfo();
@@ -437,7 +438,7 @@ public class Converts {
         //linkAsync.execute();
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue("a27889a9-4e9f-11e2-8faf-00155d040a09");
+        pi0.setValue(BaseValues.GetValue("PartnerId"));
         pi0.setType(String.class);
 
         PropertyInfo pi1 = new PropertyInfo();
@@ -480,7 +481,6 @@ public class Converts {
         });
         return arrayItems;
     }
-
 
 
     public Bitmap getBitMapFromServer(String idItem) throws ExecutionException, InterruptedException {

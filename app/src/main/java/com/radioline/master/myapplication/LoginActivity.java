@@ -1,6 +1,7 @@
 package com.radioline.master.myapplication;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,18 +11,44 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.radioline.master.basic.BaseValues;
+import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.basic.ParseSetting;
+import com.radioline.master.basic.SystemService;
+import com.radioline.master.soapconnector.Converts;
+import com.radioline.master.soapconnector.Link;
 import com.splunk.mint.Mint;
+
+import org.ksoap2.serialization.PropertyInfo;
+
+import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends Activity {
 
+    private static String rtvalue;
     Button btExit, btLogin;
     EditText etUserId, etPasswordId;
+    private WeakHandler handler = new WeakHandler();
+    private ProgressDialog dialog;
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Mint.startSession(this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +56,7 @@ public class LoginActivity extends Activity {
         Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
 
-        //ParseObject.registerSubclass(ParseGroups.class);
+
         try {
             ParseObject.registerSubclass(ParseSetting.class);
             Parse.enableLocalDatastore(getApplicationContext());
@@ -44,32 +71,12 @@ public class LoginActivity extends Activity {
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
-        ParseQuery<ParseSetting> query = ParseSetting.getQuery();
-        query.fromLocalDatastore();
-        query.whereEqualTo("key", "UserId");
-        try {
-            ParseSetting getSet = query.getFirst();
-            if (getSet.isDataAvailable()) {
-                etUserId.setText(getSet.getValue().toString());
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
+        etUserId.setText(BaseValues.GetValue("UserId"));
 
         etPasswordId = (EditText) findViewById(R.id.etPasswordId);
+        etPasswordId.setText(BaseValues.GetValue("PasswordId"));
 
-        ParseQuery<ParseSetting> queryPass = ParseSetting.getQuery();
-        queryPass.fromLocalDatastore();
-        queryPass.whereEqualTo("key", "PasswordId");
-        try {
-            ParseSetting getSet = queryPass.getFirst();
-            if (getSet.isDataAvailable()) {
-                etPasswordId.setText(getSet.getValue().toString());
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         btExit = (Button) findViewById(R.id.btExit);
         btLogin = (Button) findViewById(R.id.btLogin);
@@ -82,79 +89,98 @@ public class LoginActivity extends Activity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ((etUserId.getText().toString().length() > 0) && (etPasswordId.getText().toString().length() > 0)) {
-                    ParseQuery<ParseSetting> queryUID = ParseSetting.getQuery();
-                    queryUID.fromLocalDatastore();
-                    queryUID.whereEqualTo("key", "UserId");
-                    try {
-                        if ((queryUID.count() > 0)) {
-                            ParseSetting getSet = queryUID.getFirst();
-                            getSet.setValue(etUserId.getText().toString());
-                        } else {
-                            ParseSetting setUID = new ParseSetting();
-                            setUID.setKey("UserId");
-                            setUID.setValue(etUserId.getText().toString());
-                            setUID.pinInBackground();
+
+                SystemService ss = new SystemService(LoginActivity.this);
+                if (ss.isNetworkAvailable()) {
+                    dialog = ProgressDialog.show(LoginActivity.this, getString(R.string.ProgressDialogTitle),
+                            getString(R.string.ProgressDialogMessage));
+                    Thread t = new Thread() {
+                        public void run() {
+
+
+                            String userId = etUserId.getText().toString();
+                            String passwordId = etPasswordId.getText().toString();
+
+                            Link link = new Link();
+                            PropertyInfo pi0 = new PropertyInfo();
+                            pi0.setName("UserId");
+                            pi0.setValue(userId);
+                            pi0.setType(String.class);
+
+                            PropertyInfo pi1 = new PropertyInfo();
+                            pi1.setName("Password");
+                            pi1.setValue(passwordId);
+                            pi1.setType(String.class);
+
+
+                            rtvalue = link.getFromServerSoapPrimitive("Login", new PropertyInfo[]{pi0, pi1}).toString();
+                            if (rtvalue.startsWith("false")) rtvalue = null;
+
+                            if ((etUserId.getText().toString().length() > 0)
+                                    && (etPasswordId.getText().toString().length() > 0)
+                                    && (rtvalue != null)) {
+                                BaseValues.SetValue("UserId", userId);
+                                BaseValues.SetValue("PasswordId", passwordId);
+                                BaseValues.SetValue("PartnerId", rtvalue);
+
+
+                            } else {
+
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        String userId = etUserId.getText().toString();
+                                        String passwordId = etPasswordId.getText().toString();
+                                        if ((userId.length() == 0) || (passwordId.length() == 0)) {
+                                            Toast.makeText(LoginActivity.this, getString(R.string.NonLoginAndPassword), Toast.LENGTH_LONG).show();
+                                            if (userId.length() == 0) {
+                                                etUserId.requestFocus();
+                                            }
+                                            if (passwordId.length() == 0) {
+                                                etPasswordId.requestFocus();
+                                            }
+                                        }
+                                        if (rtvalue == null) {
+                                            Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+
+
+                            }
+
+
+                            handler.post(new Runnable() {
+                                public void run() {
+                                    if (dialog != null) {
+                                        if (dialog.isShowing()) {
+                                            try {
+                                                dialog.dismiss();
+                                            } catch (IllegalArgumentException e) {
+                                                e.printStackTrace();
+                                            }
+                                            ;
+                                        }
+                                    }
+                                    if (rtvalue != null) {
+                                        Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            });
                         }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
+                    };
 
-                    ParseQuery<ParseSetting> queryPID = ParseSetting.getQuery();
-                    queryPID.fromLocalDatastore();
-                    queryPID.whereEqualTo("key", "PasswordId");
-                    try {
-                        if ((queryPID.count() > 0)) {
-                            ParseSetting getSet = queryPID.getFirst();
-                            getSet.setValue(etPasswordId.getText().toString());
-                        } else {
-                            ParseSetting setUID = new ParseSetting();
-                            setUID.setKey("PasswordId");
-                            setUID.setValue(etPasswordId.getText().toString());
-                            setUID.pinInBackground();
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-
-
-                    Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
-                    startActivity(intent);
-
+                    t.start();
                 } else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.NonLoginAndPassword), Toast.LENGTH_LONG).show();
-                    if (etUserId.getText().toString().length() == 0) {
-                        etUserId.requestFocus();
-                    }
-                    if (etPasswordId.getText().toString().length() == 0) {
-                        etPasswordId.requestFocus();
-                    }
+                    Toast.makeText(LoginActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
                 }
+
+
             }
         });
 
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

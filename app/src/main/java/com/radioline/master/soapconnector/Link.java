@@ -36,7 +36,7 @@ public class Link {
             url = "http://srv-1c-01.rl.int/GlobalBase1/ws/wsPrice.1cws";
             workUrl = true;
         }
-        //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+        url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
     }
 
 

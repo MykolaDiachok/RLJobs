@@ -33,7 +33,7 @@ public class BasketActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
 
         ParseObject.registerSubclass(Basket.class);
         //ParseObject.registerSubclass(ParseGroups.class);
@@ -71,34 +71,23 @@ public class BasketActivity extends Activity {
                 startActivity(intent);
                 return true;
             case R.id.action_clearbasket:
-//                ParseQuery<Basket> query = Basket.getQuery();
-//                query.fromLocalDatastore();
-//                try {
-//                    List<Basket> basketList = query.find();
-//                    for (Basket ibasket : basketList) {
-//                        ibasket.unpinInBackground("Basket", new DeleteCallback() {
-//                            public void done(ParseException e) {
-//                                if (e == null) {
-//                                    // myObjectWasDeletedSuccessfully();
-//                                    //basketViewAdapter.loadObjects();
-//
-//                                    basketViewAdapter.notifyDataSetChanged();
-//                                } else {
-//                                    // myObjectDeleteDidNotSucceed();
-//                                }
-//                            }
-//                        });
-//                    }
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-                ParseObject.unpinAllInBackground(new DeleteCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        basketViewAdapter.notifyDataSetChanged();
-                        basketViewAdapter.loadObjects();
+                ParseQuery<Basket> query = Basket.getQuery();
+                query.fromLocalDatastore();
+                try {
+                    List<Basket> basketList = query.find();
+                    for (Basket ibasket : basketList) {
+                        ibasket.unpinInBackground();
                     }
-                });
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+//                ParseObject.unpinAllInBackground(new DeleteCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        basketViewAdapter.notifyDataSetChanged();
+//                        basketViewAdapter.loadObjects();
+//                    }
+//                });
 //                ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
 //                    @Override
 //                    public void done(ParseException e) {

@@ -44,12 +44,11 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
 
 
         //Mint.enableDebug();
@@ -59,7 +58,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
         this.setTitle(getIntent().getStringExtra("Name"));
         //swipeDetector = new SwipeDetector();
-        lvItem = (ListView)findViewById(R.id.lvItem);
+        lvItem = (ListView) findViewById(R.id.lvItem);
         lvItem.setOnItemClickListener(this);
         //lvItem.setOnTouchListener(swipeDetector);
 //        Converts tg = new Converts();
@@ -88,17 +87,19 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
                 handler.post(new Runnable() {
                     public void run() {
-                        if (dialog!=null){
-                            if (dialog.isShowing()){
+                        if (dialog != null) {
+                            if (dialog.isShowing()) {
                                 try {
                                     dialog.dismiss();
-                                }  catch (IllegalArgumentException e){
+                                } catch (IllegalArgumentException e) {
                                     e.printStackTrace();
-                                };
+                                }
+                                ;
                             }
                         }
-                        if (itemViewAdapter!=null){
-                        lvItem.setAdapter(itemViewAdapter);}
+                        if (itemViewAdapter != null) {
+                            lvItem.setAdapter(itemViewAdapter);
+                        }
                     }
                 });
             }
@@ -131,7 +132,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                 startActivity(intent);
                 return true;
             case R.id.action_basket:
-                intent = new Intent(this,BasketActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -150,12 +151,11 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 //
 //            }
 //        } else {
-            Intent intent = new Intent(this,PicActivity.class);
-            intent.putExtra("itemid",item.getId());
-            intent.putExtra("Name",item.getName());
-            startActivity(intent);
+        Intent intent = new Intent(this, PicActivity.class);
+        intent.putExtra("itemid", item.getId());
+        intent.putExtra("Name", item.getName());
+        startActivity(intent);
 //        }
-
 
 
     }

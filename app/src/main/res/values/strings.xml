@@ -46,6 +46,7 @@
     <string name="btExit">Exit</string>
     <string name="btLogin">Login</string>
     <string name="NonLoginAndPassword">Please input login and password</string>
+    <string name="NoLogin">Input an incorrect login or password</string>
     <string name="mint">3b65ddeb</string>
 
 </resources>

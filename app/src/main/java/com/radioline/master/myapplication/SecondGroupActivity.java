@@ -44,7 +44,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, "3b65ddeb");
+        Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
 
         setContentView(R.layout.activity_secondgroup);
