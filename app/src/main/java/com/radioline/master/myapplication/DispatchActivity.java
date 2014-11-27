@@ -26,6 +26,7 @@ import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Link;
 import com.splunk.mint.Mint;
 
+import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
@@ -194,6 +195,22 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                 public void run() {
 
 
+                    Link link = new Link();
+                    PropertyInfo pi0 = new PropertyInfo();
+                    pi0.setName("PartnerId");
+                    pi0.setValue(BaseValues.GetValue("PartnerId"));
+                    pi0.setType(String.class);
+
+                    PropertyInfo pi1 = new PropertyInfo();
+                    pi1.setName("Currency");
+                    String cur = "USD";
+                    if (swCurrency.isChecked()) cur = "UAH";
+                    pi1.setValue(cur);
+                    pi1.setType(String.class);
+
+
+                    String rtvalue = link.getFromServerSoapPrimitive("GetContractId", new PropertyInfo[]{pi0, pi1}).toString();
+
                     SoapObject Order = new SoapObject("http://www.rl.ua", "Order");
                     Order.addProperty("PartnerId", BaseValues.GetValue("PartnerId"));
                     Order.addProperty("ContractId", "857aa2f9-bc3e-11e0-b883-00e081c3bb9e"); // Основной договор
@@ -230,7 +247,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                         e.printStackTrace();
                     }
 
-                    Link link = new Link();
+//                    Link link = new Link();
                     SoapPrimitive returnSoapPrimitive = link.setToServerSoapObjectgetSoapPrimitive("SetOrder", Order, rowOrders);
                     Boolean rt = false;
                     if (returnSoapPrimitive != null) {

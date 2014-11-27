@@ -104,8 +104,8 @@ public class LoginActivity extends Activity {
                             Link link = new Link();
                             PropertyInfo pi0 = new PropertyInfo();
                             pi0.setName("UserId");
-                            pi0.setValue(userId);
-                            pi0.setType(String.class);
+                            pi0.setValue(Integer.valueOf(userId));
+                            pi0.setType(Integer.class);
 
                             PropertyInfo pi1 = new PropertyInfo();
                             pi1.setName("Password");
