@@ -21,6 +21,8 @@ public class BaseValues {
             }
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (ClassCastException e) {
+            e.printStackTrace();
         }
         return rt;
     }

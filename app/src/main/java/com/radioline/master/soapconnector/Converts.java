@@ -223,7 +223,11 @@ public class Converts {
         pi2.setType(Boolean.class);
 
         SoapObject tSoap = linkAsync.execute(pi0, pi1, pi2).get();
+        if (tSoap == null)
+            return null;
         SoapObject items = (SoapObject) tSoap.getProperty("Prices");
+        if (items == null)
+            return null;
         //SoapObject items = (SoapObject)prices.getProperty("Item");
 
         int itemsCount = items.getPropertyCount();

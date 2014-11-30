@@ -139,6 +139,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
                         intent.putExtra("itemid", finalitem.getId());
                         intent.putExtra("Name", finalitem.getName());
                         context.startActivity(intent);
+                        break;
                     case R.id.btAdd:
                         addItem(finalitem);
                         break;

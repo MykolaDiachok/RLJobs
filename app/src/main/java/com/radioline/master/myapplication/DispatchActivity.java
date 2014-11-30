@@ -213,7 +213,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
 
                     SoapObject Order = new SoapObject("http://www.rl.ua", "Order");
                     Order.addProperty("PartnerId", BaseValues.GetValue("PartnerId"));
-                    Order.addProperty("ContractId", "857aa2f9-bc3e-11e0-b883-00e081c3bb9e"); // Основной договор
+                    Order.addProperty("ContractId", rtvalue); // Основной договор
                     Order.addProperty("NewOrder", true);
                     Order.addProperty("Description", "" + etComments.getText().toString());
                     SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -252,6 +252,22 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
                     Boolean rt = false;
                     if (returnSoapPrimitive != null) {
                         rt = Boolean.valueOf(returnSoapPrimitive.getValue().toString());
+                    }
+                    if (rt) {
+                        ParseQuery<Basket> querydel = Basket.getQuery();
+                        querydel.fromLocalDatastore();
+                        try {
+                            List<Basket> basketList = querydel.find();
+                            for (Basket ibasket : basketList) {
+                                ibasket.unpinInBackground();
+//                                ibasket.notify();
+                            }
+
+//                            basketViewAdapter.notifyDataSetChanged();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        finish();
                     }
                     final Boolean rtToToast = rt;
                     runOnUiThread(new Runnable() {
