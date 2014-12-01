@@ -24,4 +24,9 @@
         android:showAsAction="always"
         android:title="@string/action_scan"
         android:icon="@drawable/ic_barcode" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="600"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_refresh" />
 </menu>

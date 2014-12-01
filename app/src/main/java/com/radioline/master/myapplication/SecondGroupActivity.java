@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
+import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
@@ -25,6 +27,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
+    private Thread t;
 
     @Override
     protected void onResume() {
@@ -37,6 +40,9 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
         super.onStop();
         Mint.closeSession(this);
         Mint.flush();
+        if ((t != null) && (t.isAlive())) {
+            t.interrupt();
+        }
     }
 
 
@@ -61,43 +67,71 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
 //            e.printStackTrace();
 //        }
 
-        dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                getString(R.string.ProgressDialogMessage));
-        Thread t = new Thread() {
-            public void run() {
-                Converts tg = new Converts();
-                try {
-                    groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
+        loadData();
 
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                handler.post(new Runnable() {
-                    public void run() {
-                        if (dialog != null) {
-                            if (dialog.isShowing()) {
-                                try {
-                                    dialog.dismiss();
-                                } catch (IllegalArgumentException e) {
-                                    e.printStackTrace();
-                                }
-                                ;
+    }
+
+    private void loadData() {
+        SystemService ss = new SystemService(this);
+        if (ss.isNetworkAvailable()) {
+
+            dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
+                    getString(R.string.ProgressDialogMessage));
+            t = new Thread() {
+                @Override
+                public void interrupt() {
+
+                    if (dialog != null) {
+                        if (dialog.isShowing()) {
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
                             }
-                        }
-                        if (groupViewAdapter != null) {
-                            lvSecond.setAdapter(groupViewAdapter);
+                            ;
+
+
                         }
                     }
-                });
-            }
-        };
+                    super.interrupt();
+                }
 
-        t.start();
+                public void run() {
+                    Converts tg = new Converts();
+                    try {
+                        groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
 
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if (dialog != null) {
+                                if (dialog.isShowing()) {
+                                    try {
+                                        dialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ;
+                                }
+                            }
+                            if (groupViewAdapter != null) {
+                                lvSecond.setAdapter(groupViewAdapter);
+                            }
+                        }
+                    });
+                }
+            };
+
+            t.start();
+        } else {
+            Toast.makeText(SecondGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+        }
     }
 
 
@@ -111,23 +145,34 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        Boolean rtvalue = true;
         switch (item.getItemId()) {
             case R.id.action_search:
                 intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
+                rtvalue = true;
+                break;
             case R.id.action_scan:
                 intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_basket:
                 intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_settings:
-                return true;
+                rtvalue = true;
+                break;
+            case R.id.action_refresh:
+                loadData();
+                rtvalue = true;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return rtvalue;
     }
 
     @Override

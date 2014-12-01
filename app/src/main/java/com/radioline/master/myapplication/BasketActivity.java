@@ -24,9 +24,27 @@ import java.util.List;
 
 public class BasketActivity extends Activity {
 
-    private ParseQueryAdapter<ParseObject> mainAdapter;
+    //private ParseQueryAdapter<ParseObject> mainAdapter;
     private ListView lvBasket;
     private BasketViewAdapter basketViewAdapter;
+
+
+    @Override
+    protected void onResume() {
+        Mint.startSession(this);
+        basketViewAdapter.notifyDataSetChanged();
+        basketViewAdapter.loadObjects();
+        lvBasket.setAdapter(basketViewAdapter);
+        basketViewAdapter.loadObjects();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Mint.closeSession(this);
+        Mint.flush();
+    }
 
 
     @Override
@@ -46,8 +64,10 @@ public class BasketActivity extends Activity {
 
         basketViewAdapter = new BasketViewAdapter(this);
         lvBasket = (ListView) findViewById(R.id.lvBasket);
+        //if((basketViewAdapter!=null)&&(!basketViewAdapter.isEmpty())) {
         lvBasket.setAdapter(basketViewAdapter);
         basketViewAdapter.loadObjects();
+        //}
 
 
     }
@@ -63,13 +83,16 @@ public class BasketActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        Boolean rtvalue = true;
         switch (item.getItemId()) {
             case R.id.action_settings:
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_dispatch:
                 intent = new Intent(this, DispatchActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_clearbasket:
                 ParseQuery<Basket> query = Basket.getQuery();
                 query.fromLocalDatastore();
@@ -82,25 +105,19 @@ public class BasketActivity extends Activity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-//                ParseObject.unpinAllInBackground(new DeleteCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        basketViewAdapter.notifyDataSetChanged();
-//                        basketViewAdapter.loadObjects();
-//                    }
-//                });
-//                ParseObject.unpinAllInBackground("Basket", new DeleteCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        basketViewAdapter.notifyDataSetChanged();
-//                        basketViewAdapter.loadObjects();
-//                    }
-//                });
 
-                return true;
+                rtvalue = true;
+                break;
+            case R.id.action_refresh:
+                basketViewAdapter.notifyDataSetChanged();
+                basketViewAdapter.loadObjects();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+
+
+        return rtvalue;
     }
 
 

@@ -10,10 +10,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
+import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
@@ -29,6 +31,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
     //private SwipeDetector swipeDetector;
+    private Thread t;
 
     @Override
     protected void onResume() {
@@ -41,6 +44,9 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         super.onStop();
         Mint.closeSession(this);
         Mint.flush();
+        if ((t != null) && (t.isAlive())) {
+            t.interrupt();
+        }
     }
 
 
@@ -70,46 +76,73 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
-        dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                getString(R.string.ProgressDialogMessage));
-        Thread t = new Thread() {
-            public void run() {
-                Converts tg = new Converts();
-                try {
-                    itemViewAdapter = new ItemViewAdapter(ItemActivity.this, tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid")));
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                handler.post(new Runnable() {
-                    public void run() {
-                        if (dialog != null) {
-                            if (dialog.isShowing()) {
-                                try {
-                                    dialog.dismiss();
-                                } catch (IllegalArgumentException e) {
-                                    e.printStackTrace();
-                                }
-                                ;
-                            }
-                        }
-                        if (itemViewAdapter != null) {
-                            lvItem.setAdapter(itemViewAdapter);
-                        }
-                    }
-                });
-            }
-        };
-
-        t.start();
+        loadData();
 
 
     }
 
+    private void loadData() {
+        SystemService ss = new SystemService(this);
+        if (ss.isNetworkAvailable()) {
+
+            dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
+                    getString(R.string.ProgressDialogMessage));
+            t = new Thread() {
+
+                @Override
+                public void interrupt() {
+
+                    if (dialog != null) {
+                        if (dialog.isShowing()) {
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
+                            ;
+
+
+                        }
+                    }
+                    super.interrupt();
+                }
+
+                public void run() {
+                    Converts tg = new Converts();
+                    try {
+                        itemViewAdapter = new ItemViewAdapter(ItemActivity.this, tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid")));
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if (dialog != null) {
+                                if (dialog.isShowing()) {
+                                    try {
+                                        dialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ;
+                                }
+                            }
+                            if ((itemViewAdapter != null) && (!itemViewAdapter.isEmpty())) {
+                                lvItem.setAdapter(itemViewAdapter);
+                            }
+                        }
+                    });
+                }
+            };
+
+            t.start();
+        } else {
+            Toast.makeText(ItemActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -123,23 +156,34 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        Boolean rtvalue = true;
         switch (item.getItemId()) {
             case R.id.action_search:
                 intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
+                rtvalue = true;
+                break;
             case R.id.action_scan:
                 intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_basket:
                 intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_settings:
-                return true;
+                rtvalue = true;
+                break;
+            case R.id.action_refresh:
+                loadData();
+                rtvalue = true;
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return rtvalue;
     }
 
     @Override

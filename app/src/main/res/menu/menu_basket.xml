@@ -17,4 +17,10 @@
         android:orderInCategory="400"
         android:showAsAction="always"
         android:title="@string/action_dispatch" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="600"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_refresh" />
+
 </menu>

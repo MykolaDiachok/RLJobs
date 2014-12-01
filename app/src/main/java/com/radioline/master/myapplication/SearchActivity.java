@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
+import com.radioline.master.basic.SystemService;
 import com.radioline.master.myapplication.R;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
@@ -31,6 +32,8 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
     private ProgressDialog dialog;
     private String contents;
     private ItemViewAdapter itemViewAdapter;
+    private Thread t;
+
 
     final Runnable showToastMessage = new Runnable() {
         public void run() {
@@ -50,6 +53,9 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
         super.onStop();
         Mint.closeSession(this);
         Mint.flush();
+        if ((t != null) && (t.isAlive())) {
+            t.interrupt();
+        }
     }
 
     @Override
@@ -111,10 +117,31 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
 
 
     private void searchOnDataBase(final String searchByName) {
+        SystemService ss = new SystemService(this);
+        if (ss.isNetworkAvailable()) {
 
         dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
                 getString(R.string.ProgressDialogMessage));
         Thread t = new Thread() {
+
+            @Override
+            public void interrupt() {
+
+                if (dialog != null) {
+                    if (dialog.isShowing()) {
+                        try {
+                            dialog.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            e.printStackTrace();
+                        }
+                        ;
+
+
+                    }
+                }
+                super.interrupt();
+            }
+
             public void run() {
                 Converts tg = new Converts();
                 try {
@@ -153,6 +180,9 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
         };
 
         t.start();
+        } else {
+            Toast.makeText(SearchActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+        }
 
     }
 

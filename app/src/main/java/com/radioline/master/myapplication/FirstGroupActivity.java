@@ -35,12 +35,14 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
     private WeakHandler handler;
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
-    private ProgressDialog prgDialog;
+    //private ProgressDialog prgDialog;
+    private Thread t;
 
     @Override
     protected void onResume() {
         super.onResume();
         Mint.startSession(this);
+        //loadData();
     }
 
     @Override
@@ -48,6 +50,9 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         super.onStop();
         Mint.closeSession(this);
         Mint.flush();
+        if ((t != null) && (t.isAlive())) {
+            t.interrupt();
+        }
     }
 
     @Override
@@ -71,12 +76,36 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         listView = (ListView) findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
+        loadData();
+
+
+    }
+
+    private void loadData() {
 
         SystemService ss = new SystemService(this);
         if (ss.isNetworkAvailable()) {
             dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
                     getString(R.string.ProgressDialogMessage));
-            Thread t = new Thread() {
+            t = new Thread() {
+                @Override
+                public void interrupt() {
+
+                    if (dialog != null) {
+                        if (dialog.isShowing()) {
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
+                            ;
+
+
+                        }
+                    }
+                    super.interrupt();
+                }
+
                 public void run() {
                     Converts tg = new Converts();
                     try {
@@ -138,35 +167,41 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        Boolean rtvalue = true;
         switch (item.getItemId()) {
             case R.id.action_search:
                 intent = new Intent(this, SearchActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_scan:
                 intent = new Intent(this, ScanActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_basket:
                 intent = new Intent(this, BasketActivity.class);
                 startActivity(intent);
-                return true;
+                rtvalue = true;
+                break;
             case R.id.action_settings:
-                return true;
+                break;
             case R.id.action_updateallimages:
                 downloadAllImages();
-                return true;
+                rtvalue = true;
+                break;
+            case R.id.action_refresh:
+                loadData();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
+        return rtvalue;
     }
 
     private void downloadAllImages() {
         MultiLoadingImage mli = new MultiLoadingImage(FirstGroupActivity.this);
         mli.execute();
-
-
     }
 
 

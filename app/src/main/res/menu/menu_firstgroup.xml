@@ -27,6 +27,11 @@
     <item
         android:id="@+id/action_updateallimages"
         android:orderInCategory="500"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         android:title="@string/action_downloadallimages" />
+    <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="600"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_refresh" />
 </menu>

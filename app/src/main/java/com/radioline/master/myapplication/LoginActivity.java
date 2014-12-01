@@ -71,11 +71,12 @@ public class LoginActivity extends Activity {
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
-
-        etUserId.setText(BaseValues.GetValue("UserId"));
+        String userID = BaseValues.GetValue("UserId");
+        etUserId.setText(userID);
 
         etPasswordId = (EditText) findViewById(R.id.etPasswordId);
-        etPasswordId.setText(BaseValues.GetValue("PasswordId"));
+        String passwordId = BaseValues.GetValue("PasswordId");
+        etPasswordId.setText(passwordId);
 
 
         btExit = (Button) findViewById(R.id.btExit);
@@ -89,98 +90,102 @@ public class LoginActivity extends Activity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                SystemService ss = new SystemService(LoginActivity.this);
-                if (ss.isNetworkAvailable()) {
-                    dialog = ProgressDialog.show(LoginActivity.this, getString(R.string.ProgressDialogTitle),
-                            getString(R.string.ProgressDialogMessage));
-                    Thread t = new Thread() {
-                        public void run() {
-
-
-                            String userId = etUserId.getText().toString();
-                            String passwordId = etPasswordId.getText().toString();
-
-                            Link link = new Link();
-                            PropertyInfo pi0 = new PropertyInfo();
-                            pi0.setName("UserId");
-                            pi0.setValue(Integer.valueOf(userId));
-                            pi0.setType(Integer.class);
-
-                            PropertyInfo pi1 = new PropertyInfo();
-                            pi1.setName("Password");
-                            pi1.setValue(passwordId);
-                            pi1.setType(String.class);
-
-
-                            rtvalue = link.getFromServerSoapPrimitive("Login", new PropertyInfo[]{pi0, pi1}).toString();
-                            if (rtvalue.startsWith("false")) rtvalue = null;
-
-                            if ((etUserId.getText().toString().length() > 0)
-                                    && (etPasswordId.getText().toString().length() > 0)
-                                    && (rtvalue != null)) {
-                                BaseValues.SetValue("UserId", userId);
-                                BaseValues.SetValue("PasswordId", passwordId);
-                                BaseValues.SetValue("PartnerId", rtvalue);
-
-
-                            } else {
-
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        String userId = etUserId.getText().toString();
-                                        String passwordId = etPasswordId.getText().toString();
-                                        if ((userId.length() == 0) || (passwordId.length() == 0)) {
-                                            Toast.makeText(LoginActivity.this, getString(R.string.NonLoginAndPassword), Toast.LENGTH_LONG).show();
-                                            if (userId.length() == 0) {
-                                                etUserId.requestFocus();
-                                            }
-                                            if (passwordId.length() == 0) {
-                                                etPasswordId.requestFocus();
-                                            }
-                                        }
-                                        if (rtvalue == null) {
-                                            Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
-
-
-                            }
-
-
-                            handler.post(new Runnable() {
-                                public void run() {
-                                    if (dialog != null) {
-                                        if (dialog.isShowing()) {
-                                            try {
-                                                dialog.dismiss();
-                                            } catch (IllegalArgumentException e) {
-                                                e.printStackTrace();
-                                            }
-                                            ;
-                                        }
-                                    }
-                                    if (rtvalue != null) {
-                                        Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
-                                        startActivity(intent);
-                                    }
-                                }
-                            });
-                        }
-                    };
-
-                    t.start();
-                } else {
-                    Toast.makeText(LoginActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
-                }
-
-
+                loadData();
             }
         });
+
+        if ((!userID.isEmpty()) && (!passwordId.isEmpty())) {
+            loadData();
+        }
 
     }
 
 
+    private void loadData() {
+        SystemService ss = new SystemService(LoginActivity.this);
+        if (ss.isNetworkAvailable()) {
+            dialog = ProgressDialog.show(LoginActivity.this, getString(R.string.ProgressDialogTitle),
+                    getString(R.string.ProgressDialogMessage));
+            Thread t = new Thread() {
+                public void run() {
+
+
+                    String userId = etUserId.getText().toString();
+                    String passwordId = etPasswordId.getText().toString();
+
+                    Link link = new Link();
+                    PropertyInfo pi0 = new PropertyInfo();
+                    pi0.setName("UserId");
+                    pi0.setValue(Integer.valueOf(userId));
+                    pi0.setType(Integer.class);
+
+                    PropertyInfo pi1 = new PropertyInfo();
+                    pi1.setName("Password");
+                    pi1.setValue(passwordId);
+                    pi1.setType(String.class);
+
+
+                    rtvalue = link.getFromServerSoapPrimitive("Login", new PropertyInfo[]{pi0, pi1}).toString();
+                    if (rtvalue.startsWith("false")) rtvalue = null;
+
+                    if ((etUserId.getText().toString().length() > 0)
+                            && (etPasswordId.getText().toString().length() > 0)
+                            && (rtvalue != null)) {
+                        BaseValues.SetValue("UserId", userId);
+                        BaseValues.SetValue("PasswordId", passwordId);
+                        BaseValues.SetValue("PartnerId", rtvalue);
+
+
+                    } else {
+
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                String userId = etUserId.getText().toString();
+                                String passwordId = etPasswordId.getText().toString();
+                                if ((userId.length() == 0) || (passwordId.length() == 0)) {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.NonLoginAndPassword), Toast.LENGTH_LONG).show();
+                                    if (userId.length() == 0) {
+                                        etUserId.requestFocus();
+                                    }
+                                    if (passwordId.length() == 0) {
+                                        etPasswordId.requestFocus();
+                                    }
+                                }
+                                if (rtvalue == null) {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
+
+                    }
+
+
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if (dialog != null) {
+                                if (dialog.isShowing()) {
+                                    try {
+                                        dialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ;
+                                }
+                            }
+                            if (rtvalue != null) {
+                                Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    });
+                }
+            };
+
+            t.start();
+        } else {
+            Toast.makeText(LoginActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+        }
+    }
 
 }
