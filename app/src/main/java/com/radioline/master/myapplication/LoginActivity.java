@@ -66,9 +66,6 @@ public class LoginActivity extends Activity {
         }
 
 
-        setContentView(R.layout.activity_login);
-
-
         etUserId = (EditText) findViewById(R.id.etUserId);
 
         String userID = BaseValues.GetValue("UserId");

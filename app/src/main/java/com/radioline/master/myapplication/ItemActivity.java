@@ -19,6 +19,7 @@ import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -110,7 +111,11 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                 public void run() {
                     Converts tg = new Converts();
                     try {
-                        itemViewAdapter = new ItemViewAdapter(ItemActivity.this, tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid")));
+                        ArrayList<Item> tempList = tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid"));
+                        if (tempList == null) {
+                            return;
+                        }
+                        itemViewAdapter = new ItemViewAdapter(ItemActivity.this, tempList);
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();

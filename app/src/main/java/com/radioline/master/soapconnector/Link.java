@@ -1,6 +1,8 @@
 package com.radioline.master.soapconnector;
 
 
+import com.radioline.master.basic.BaseValues;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -29,6 +31,7 @@ public class Link {
         nameSpace = "http://www.rl.ua";
         //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
         workUrl = false;
+        url = BaseValues.GetValue("URL");
         if (isConnectedToServer("https://of.rl.com.ua:6443", 5000)) {
             url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
             workUrl = true;
