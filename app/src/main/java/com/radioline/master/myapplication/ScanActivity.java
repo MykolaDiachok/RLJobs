@@ -2,14 +2,12 @@ package com.radioline.master.myapplication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -20,6 +18,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
+import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
@@ -28,6 +27,11 @@ import java.util.concurrent.ExecutionException;
 
 
 public class ScanActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
+    final Runnable showToastMessage = new Runnable() {
+        public void run() {
+            Toast.makeText(ScanActivity.this, "It's barcode=" + contents + " not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
+        }
+    };
     private Button btScan;
     private Button btSearchBarcode;
     private ListView lvScan;
@@ -36,13 +40,6 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
     private ItemViewAdapter itemViewAdapter;
     private String contents;
     private EditText edBarcode;
-
-    final Runnable showToastMessage = new Runnable() {
-        public void run() {
-            Toast.makeText(ScanActivity.this, "It's barcode=" + contents + " not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
-        }
-    };
-
 
     @Override
     protected void onResume() {
@@ -62,6 +59,8 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
         Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
+
+
         setContentView(R.layout.activity_scan);
 
         lvScan = (ListView) findViewById(R.id.lvScan);
@@ -154,49 +153,74 @@ public class ScanActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     private void searchOnDataBase(final String searchBarCode) {
+        SystemService ss = new SystemService(this);
+        if (ss.isNetworkAvailable()) {
 
-        dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                getString(R.string.ProgressDialogMessage));
-        Thread t = new Thread() {
-            public void run() {
-                Converts tg = new Converts();
-                try {
-                    ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(searchBarCode, false);
-                    if (item == null) {
+            dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
+                    getString(R.string.ProgressDialogMessage));
+            Thread t = new Thread() {
 
-                        handler.post(showToastMessage);
-                    } else {
-                        itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);
+                @Override
+                public void interrupt() {
+
+                    if (dialog != null) {
+                        if (dialog.isShowing()) {
+                            try {
+                                dialog.dismiss();
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
+                            ;
+
+
+                        }
                     }
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    super.interrupt();
                 }
 
-                handler.post(new Runnable() {
-                    public void run() {
-                        if (dialog != null) {
-                            if (dialog.isShowing()) {
-                                try {
-                                    dialog.dismiss();
-                                } catch (IllegalArgumentException e) {
-                                    e.printStackTrace();
+                public void run() {
+                    Converts tg = new Converts();
+                    try {
+                        ArrayList<Item> item = tg.getItemsArrayListFromServerWithBarcode(searchBarCode, false);
+                        if (item == null) {
+
+                            handler.post(showToastMessage);
+                        } else {
+                            itemViewAdapter = new ItemViewAdapter(ScanActivity.this, item);
+                        }
+
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    handler.post(new Runnable() {
+                        public void run() {
+                            if (dialog != null) {
+                                if (dialog.isShowing()) {
+                                    try {
+                                        dialog.dismiss();
+                                    } catch (IllegalArgumentException e) {
+                                        e.printStackTrace();
+                                    }
+                                    ;
                                 }
-                                ;
+                            }
+                            if (itemViewAdapter != null) {
+                                lvScan.setAdapter(itemViewAdapter);
+                            } else {
+                                Toast.makeText(ScanActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
                             }
                         }
-                        if (itemViewAdapter != null) {
-                            lvScan.setAdapter(itemViewAdapter);
-                        }
-                    }
-                });
-            }
-        };
+                    });
+                }
+            };
 
-        t.start();
-
+            t.start();
+        } else {
+            Toast.makeText(ScanActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
+        }
     }
 
 }

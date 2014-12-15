@@ -7,19 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
-import com.radioline.master.basic.ParseGroups;
 import com.splunk.mint.Mint;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class BasketActivity extends Activity {
@@ -57,7 +51,7 @@ public class BasketActivity extends Activity {
         //ParseObject.registerSubclass(ParseGroups.class);
         //Parse.enableLocalDatastore(getApplicationContext());
 
-        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+        //Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
 
         setContentView(R.layout.activity_basket);
 

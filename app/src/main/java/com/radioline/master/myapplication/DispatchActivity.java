@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -69,7 +68,7 @@ public class DispatchActivity extends Activity implements CompoundButton.OnCheck
         //ParseObject.registerSubclass(ParseGroups.class);
         //Parse.enableLocalDatastore(getApplicationContext());
 
-        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+        //Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
 
         handler = new WeakHandler();
 

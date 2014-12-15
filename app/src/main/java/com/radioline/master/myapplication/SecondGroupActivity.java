@@ -18,6 +18,7 @@ import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 
@@ -100,7 +101,11 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
                 public void run() {
                     Converts tg = new Converts();
                     try {
-                        groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
+                        ArrayList<Group> groupArrayList = tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid"));
+                        if (groupArrayList != null)
+                            groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, groupArrayList);
+                        else
+                            groupViewAdapter = null;
 
                     } catch (ExecutionException e) {
                         e.printStackTrace();

@@ -12,9 +12,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
-import com.parse.Parse;
-import com.parse.ParseObject;
-import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
 import com.radioline.master.basic.SystemService;
@@ -63,13 +60,13 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         //Mint.enableDebug();
 
         //ParseObject.registerSubclass(ParseGroups.class);
-        try {
-            ParseObject.registerSubclass(Basket.class);
-            Parse.enableLocalDatastore(getApplicationContext());
-            Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        //try {
+
+        //Parse.enableLocalDatastore(getApplicationContext());
+        //Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+        //} catch (RuntimeException e) {
+//            e.printStackTrace();
+        //      }
 
 
         setContentView(R.layout.activity_firstgroup);

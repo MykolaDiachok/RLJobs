@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,20 +11,17 @@ import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.parse.Parse;
-import com.parse.ParseException;
+import com.parse.ParseCrashReporting;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.radioline.master.basic.BaseValues;
-import com.radioline.master.basic.ItemViewAdapter;
+import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseSetting;
 import com.radioline.master.basic.SystemService;
-import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.Link;
 import com.splunk.mint.Mint;
 
 import org.ksoap2.serialization.PropertyInfo;
-
-import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends Activity {
 
@@ -57,13 +52,15 @@ public class LoginActivity extends Activity {
         //Mint.enableDebug();
 
 
-        try {
+        ParseCrashReporting.enable(this);
             ParseObject.registerSubclass(ParseSetting.class);
+        ParseObject.registerSubclass(Basket.class);
+        //ParseObject.registerSubclass(ParseGroups.class);
             Parse.enableLocalDatastore(getApplicationContext());
             Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
+        ParseInstallation.getCurrentInstallation().saveInBackground();
+        //ParseConfig.getInBackground();
+
 
 
         setContentView(R.layout.activity_login);

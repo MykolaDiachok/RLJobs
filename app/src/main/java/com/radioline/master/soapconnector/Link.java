@@ -1,6 +1,8 @@
 package com.radioline.master.soapconnector;
 
 
+import com.parse.ParseConfig;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.PropertyInfo;
@@ -29,14 +31,21 @@ public class Link {
         nameSpace = "http://www.rl.ua";
         //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
         workUrl = false;
-        if (isConnectedToServer("https://of.rl.com.ua:6443", 5000)) {
-            url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
+        ParseConfig conf = ParseConfig.getCurrentConfig();
+        //String globalServer = conf.getString("globalServer");
+
+        if (isConnectedToServer(conf.getString("globalServer"), 5000)) {
+            url = conf.getString("globalConnection");
             workUrl = true;
-        } else if (isConnectedToServer("http://srv-1c-01.rl.int/", 5000)) {
-            url = "http://srv-1c-01.rl.int/GlobalBase1/ws/wsPrice.1cws";
+        } else if (isConnectedToServer(conf.getString("localServer"), 5000)) {
+            url = conf.getString("localConnection");
             workUrl = true;
         }
-        //url = "http://mws-01.rl.int/GlobalBase/ws/wsPrice.1cws";
+
+
+
+
+
     }
 
 
