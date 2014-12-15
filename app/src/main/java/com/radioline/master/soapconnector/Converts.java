@@ -208,7 +208,11 @@ public class Converts {
         //linkAsync.execute();
         PropertyInfo pi0 = new PropertyInfo();
         pi0.setName("PartnerId");
-        pi0.setValue(BaseValues.GetValue("PartnerId"));
+        String partnerId = BaseValues.GetValue("PartnerId");
+        if (partnerId == null) {
+            return null;
+        }
+        pi0.setValue(partnerId);
         pi0.setType(String.class);
 
         PropertyInfo pi1 = new PropertyInfo();

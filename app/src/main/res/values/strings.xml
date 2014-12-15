@@ -49,5 +49,6 @@
     <string name="NoLogin">Input an incorrect login or password</string>
     <string name="mint">3b65ddeb</string>
     <string name="action_refresh">Refresh</string>
+    <string name="tvURL">URL:</string>
 
 </resources>
