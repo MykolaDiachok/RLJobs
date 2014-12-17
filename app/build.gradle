@@ -12,9 +12,9 @@ android {
         applicationId "com.radioline.master.rlprice"
         minSdkVersion 16
         targetSdkVersion 20
-        versionName '1.5'
+        versionName '1.6'
         signingConfig signingConfigs.config
-        versionCode 5
+        versionCode 6
     }
     buildTypes {
         release {
