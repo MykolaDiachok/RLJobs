@@ -2,6 +2,7 @@ package com.radioline.master.soapconnector;
 
 
 import com.parse.ParseConfig;
+import com.parse.ParseException;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
@@ -29,11 +30,19 @@ public class Link {
 
     public Link() {
         nameSpace = "http://www.rl.ua";
-        //url = "https://of.rl.com.ua:6443/GlobalBase/ws/wsPrice.1cws";
-        workUrl = false;
-        ParseConfig conf = ParseConfig.getCurrentConfig();
-        //String globalServer = conf.getString("globalServer");
 
+        workUrl = false;
+
+        ParseConfig conf = ParseConfig.getCurrentConfig();
+//      if parseconfig empty value
+//        if (conf.params.size()==0) {
+//            try {
+//                ParseConfig.get();
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            conf = ParseConfig.getCurrentConfig();
+//        }
         if (isConnectedToServer(conf.getString("globalServer"), 5000)) {
             url = conf.getString("globalConnection");
             workUrl = true;

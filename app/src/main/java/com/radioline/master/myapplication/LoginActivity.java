@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.parse.Parse;
+import com.parse.ParseConfig;
 import com.parse.ParseCrashReporting;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -50,7 +51,7 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         Mint.initAndStartSession(this, getString(R.string.mint));
         //Mint.enableDebug();
-
+        setContentView(R.layout.activity_login);
 
         ParseCrashReporting.enable(this);
             ParseObject.registerSubclass(ParseSetting.class);
@@ -60,17 +61,20 @@ public class LoginActivity extends Activity {
             Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
         ParseInstallation.getCurrentInstallation().saveInBackground();
         //ParseConfig.getInBackground();
+        //ParseConfig.getInBackground();
 
 
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
         String userID = BaseValues.GetValue("UserId");
-        etUserId.setText(userID);
+        if (userID!=null)
+            etUserId.setText(userID);
 
         etPasswordId = (EditText) findViewById(R.id.etPasswordId);
         String passwordId = BaseValues.GetValue("PasswordId");
-        etPasswordId.setText(passwordId);
+        if (passwordId!=null)
+            etPasswordId.setText(passwordId);
 
 
         btExit = (Button) findViewById(R.id.btExit);
