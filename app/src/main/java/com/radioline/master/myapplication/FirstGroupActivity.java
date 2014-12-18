@@ -3,43 +3,43 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.badoo.mobile.util.WeakHandler;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
-import com.radioline.master.basic.SystemService;
-import com.radioline.master.soapconnector.Converts;
 import com.radioline.master.soapconnector.MultiLoadingImage;
 import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 
 public class FirstGroupActivity extends Activity implements AdapterView.OnItemClickListener {
 
-    public static final int progress_bar_type = 0;
+
     //https://play.google.com/apps/
     //https://code.google.com/p/android-query/wiki/API
     private ListView listView;
-    private WeakHandler handler;
-    private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
-    //private ProgressDialog prgDialog;
-    private Thread t;
+    private ProgressDialog mProgressDialog;
+    private List<ParseObject> ob;
+    private List<Group> groups = null;
+
 
     @Override
     protected void onResume() {
         super.onResume();
         Mint.startSession(this);
-        //loadData();
     }
 
     @Override
@@ -47,113 +47,23 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         super.onStop();
         Mint.closeSession(this);
         Mint.flush();
-        if ((t != null) && (t.isAlive())) {
-            t.interrupt();
-        }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        handler = new WeakHandler();
+
         Mint.initAndStartSession(this, getString(R.string.mint));
-        //Mint.enableDebug();
-
-        //ParseObject.registerSubclass(ParseGroups.class);
-        //try {
-
-        //Parse.enableLocalDatastore(getApplicationContext());
-        //Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
-        //} catch (RuntimeException e) {
-//            e.printStackTrace();
-        //      }
 
 
         setContentView(R.layout.activity_firstgroup);
         listView = (ListView) findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
-        loadData();
 
-
-    }
-
-    private void loadData() {
-
-        SystemService ss = new SystemService(this);
-        if (ss.isNetworkAvailable()) {
-            dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                    getString(R.string.ProgressDialogMessage));
-            t = new Thread() {
-                @Override
-                public void interrupt() {
-
-                    if (dialog != null) {
-                        if (dialog.isShowing()) {
-                            try {
-                                dialog.dismiss();
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
-                            }
-                            ;
-
-
-                        }
-                    }
-                    super.interrupt();
-                }
-
-                public void run() {
-                    Converts tg = new Converts();
-                    try {
-                        ArrayList<Group> gr = tg.getGroupsArrayListFromServer();
-                        if ((gr == null)) {
-                            gr = null;
-                            //Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
-                        } else {
-                            groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this, gr);
-                        }
-
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    handler.post(new Runnable() {
-                        public void run() {
-                            if (dialog != null) {
-                                if (dialog.isShowing()) {
-                                    try {
-                                        dialog.dismiss();
-                                    } catch (IllegalArgumentException e) {
-                                        e.printStackTrace();
-                                    }
-                                    ;
-
-
-                                }
-                            }
-                            if (groupViewAdapter != null) {
-                                listView.setAdapter(groupViewAdapter);
-                            } else {
-                                Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                        ;
-                    });
-                }
-            };
-
-            t.start();
-        } else {
-            Toast.makeText(FirstGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
-        }
-
+        new RemoteDataTask().execute();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -188,7 +98,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
                 rtvalue = true;
                 break;
             case R.id.action_refresh:
-                loadData();
+                new RemoteDataTask().execute();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -201,14 +111,59 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         mli.execute();
     }
 
-
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
         Intent intent = new Intent(this, SecondGroupActivity.class);
-        intent.putExtra("parentid", itemgroup.getId());
+        intent.putExtra("parentid", itemgroup.getGroupid());
         intent.putExtra("Name", itemgroup.getName());
         startActivity(intent);
+    }
+
+    // RemoteDataTask AsyncTask
+    private class RemoteDataTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            mProgressDialog = new ProgressDialog(FirstGroupActivity.this);
+            mProgressDialog.setTitle(getString(R.string.ProgressDialogMessage));
+            mProgressDialog.setMessage(getString(R.string.ProgressDialogTitle));
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            groups = new ArrayList<Group>();
+            try {
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("ParseGroups");
+                query.whereEqualTo("parentid", "00000000-0000-0000-0000-000000000000");
+                query.orderByAscending("sortcode");
+                ob = query.find();
+                for (ParseObject pgroup : ob) {
+                    Group map = new Group(pgroup);
+                    groups.add(map);
+                }
+            } catch (ParseException e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            // Pass the results into ListViewAdapter.java
+            groupViewAdapter = new GroupViewAdapter(FirstGroupActivity.this,
+                    groups);
+            // Binds the Adapter to the ListView
+            listView.setAdapter(groupViewAdapter);
+            // Close the progressdialog
+            mProgressDialog.dismiss();
+        }
     }
 
 

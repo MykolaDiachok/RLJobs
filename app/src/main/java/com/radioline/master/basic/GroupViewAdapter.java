@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.radioline.master.myapplication.R;
@@ -18,7 +17,9 @@ import java.util.List;
  */
 public class GroupViewAdapter extends ArrayAdapter<Group> {
     private Context context;
-    private final ArrayList<Group> groupArrayList;
+    private ArrayList<Group> groupArrayList;
+    private List<Group> groups = null;
+    private LayoutInflater inflater;
 
     public GroupViewAdapter(Context context, ArrayList<Group> groupssArrayList) {
         super(context, R.layout.groupview, groupssArrayList);
@@ -27,46 +28,51 @@ public class GroupViewAdapter extends ArrayAdapter<Group> {
         this.groupArrayList = groupssArrayList;
     }
 
-    static class ViewHolder {
-        public TextView tvName;
-       // public TextView tvId;
-        //public TextView tvCode;
+
+    public GroupViewAdapter(Context context, List<Group> groups) {
+        super(context, R.layout.groupview, groups);
+        this.context = context;
+        this.groups = groups;
+        this.inflater = LayoutInflater.from(context);
+        this.groupArrayList = new ArrayList<Group>();
+        this.groupArrayList.addAll(groups);
+
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-
-        ViewHolder holder;
-        // Очищает сущетсвующий шаблон, если параметр задан
-        // Работает только если базовый шаблон для всех классов один и тот же
-        View rowView = convertView;
-        if (rowView == null) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.groupview, null, true);
-            holder = new ViewHolder();
-            holder.tvName = (TextView) rowView.findViewById(R.id.tvName);
-            //holder.tvId = (TextView) rowView.findViewById(R.id.tvId);
-            //holder.tvCode = (TextView) rowView.findViewById(R.id.tvCode);
-
-            rowView.setTag(holder);
-        } else {
-            holder = (ViewHolder) rowView.getTag();
-        }
-
-        holder.tvName.setText(groupArrayList.get(position).getName());
-//        holder.tvId.setText(groupArrayList.get(position).getId());
-  //      holder.tvCode.setText(groupArrayList.get(position).getCode());
-
-
-
-        return rowView;
-
-
-
-
-
-        //return super.getView(position, convertView, parent);
+    public int getCount() {
+        return groups.size();
     }
+
+    @Override
+    public Group getItem(int position) {
+        return groups.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public View getView(final int position, View view, ViewGroup parent) {
+        final ViewHolder holder;
+        if (view == null) {
+            holder = new ViewHolder();
+            view = inflater.inflate(R.layout.groupview, null);
+            holder.tvName = (TextView) view.findViewById(R.id.tvName);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
+        holder.tvName.setText(groupArrayList.get(position).getName());
+        return view;
+    }
+
+    static class ViewHolder {
+        public TextView tvName;
+        // public TextView tvId;
+        //public TextView tvCode;
+    }
+
+
 }

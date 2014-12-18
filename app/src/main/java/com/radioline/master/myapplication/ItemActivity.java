@@ -33,6 +33,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     private ItemViewAdapter itemViewAdapter;
     //private SwipeDetector swipeDetector;
     private Thread t;
+    private ArrayList<Item> itemArray;
 
     @Override
     protected void onResume() {
@@ -111,7 +112,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                 public void run() {
                     Converts tg = new Converts();
                     try {
-                        ArrayList<Item> itemArray = tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid"));
+                        itemArray = tg.getItemsArrayListFromServer(getIntent().getStringExtra("parentid"));
                         if (itemArray != null)
                             itemViewAdapter = new ItemViewAdapter(ItemActivity.this, itemArray);
 
@@ -135,6 +136,8 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                             }
                             if ((itemViewAdapter != null) && (!itemViewAdapter.isEmpty())) {
                                 lvItem.setAdapter(itemViewAdapter);
+                            } else if ((itemArray != null)) {
+                                Toast.makeText(ItemActivity.this, getString(R.string.NoData), Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(ItemActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
                             }

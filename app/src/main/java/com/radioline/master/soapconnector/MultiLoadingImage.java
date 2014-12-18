@@ -151,7 +151,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                 publishProgress(taskProgress);
                 if (group == null)
                     continue;
-                groups2 = tg.getGroupsArrayListFromServerWithoutAsync(group.getId());
+                groups2 = tg.getGroupsArrayListFromServerWithoutAsync(group.getParentid());
                 if (groups2 == null)
                     continue;
                 int lenght2 = groups2.size();
@@ -164,7 +164,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
                     publishProgress(taskProgress);
                     if (group2 == null)
                         continue;
-                    items = tg.getItemsArrayListFromServerWithoutAsync(group2.getId(), false);
+                    items = tg.getItemsArrayListFromServerWithoutAsync(group2.getParentid(), false);
                     if (items == null)
                         continue;
                     int lenghtItem = items.size();

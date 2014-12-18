@@ -3,23 +3,25 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
-import com.radioline.master.basic.SystemService;
-import com.radioline.master.soapconnector.Converts;
 import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.List;
 
 
 public class SecondGroupActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -29,6 +31,10 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     private ProgressDialog dialog;
     private GroupViewAdapter groupViewAdapter;
     private Thread t;
+
+    private ProgressDialog mProgressDialog;
+    private List<ParseObject> ob;
+    private List<Group> groups = null;
 
     @Override
     protected void onResume() {
@@ -58,87 +64,12 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
         lvSecond = (ListView) findViewById(R.id.lvSecond);
         lvSecond.setOnItemClickListener(this);
         this.setTitle(getIntent().getStringExtra("Name"));
-//        Converts tg = new Converts();
-//        try {
-//            GroupViewAdapter groupViewAdapter = new GroupViewAdapter(this, tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid")));
-//            listView.setAdapter(groupViewAdapter);
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
-        loadData();
+        new RemoteDataTask().execute();
+        //loadData();
 
 
     }
-
-    private void loadData() {
-        SystemService ss = new SystemService(this);
-        if (ss.isNetworkAvailable()) {
-
-            dialog = ProgressDialog.show(this, getString(R.string.ProgressDialogTitle),
-                    getString(R.string.ProgressDialogMessage));
-            t = new Thread() {
-                @Override
-                public void interrupt() {
-
-                    if (dialog != null) {
-                        if (dialog.isShowing()) {
-                            try {
-                                dialog.dismiss();
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
-                            }
-                            ;
-
-
-                        }
-                    }
-                    super.interrupt();
-                }
-
-                public void run() {
-                    Converts tg = new Converts();
-                    try {
-                        ArrayList<Group> groupArrayList = tg.getGroupsArrayListFromServer(getIntent().getStringExtra("parentid"));
-                        if (groupArrayList != null)
-                            groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this, groupArrayList);
-                        else
-                            groupViewAdapter = null;
-
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    handler.post(new Runnable() {
-                        public void run() {
-                            if (dialog != null) {
-                                if (dialog.isShowing()) {
-                                    try {
-                                        dialog.dismiss();
-                                    } catch (IllegalArgumentException e) {
-                                        e.printStackTrace();
-                                    }
-                                    ;
-                                }
-                            }
-                            if (groupViewAdapter != null) {
-                                lvSecond.setAdapter(groupViewAdapter);
-                            }
-                        }
-                    });
-                }
-            };
-
-            t.start();
-        } else {
-            Toast.makeText(SecondGroupActivity.this, getString(R.string.NoConnect), Toast.LENGTH_LONG).show();
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -171,7 +102,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
                 rtvalue = true;
                 break;
             case R.id.action_refresh:
-                loadData();
+                new RemoteDataTask().execute();
                 rtvalue = true;
                 break;
             default:
@@ -184,7 +115,7 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
         Intent intent = new Intent(this, ItemActivity.class);
-        intent.putExtra("parentid", itemgroup.getId());
+        intent.putExtra("parentid", itemgroup.getGroupid());
         intent.putExtra("Name", itemgroup.getName());
         startActivity(intent);
     }
@@ -192,5 +123,51 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     public void onClick(View view) {
 
+    }
+
+    // RemoteDataTask AsyncTask
+    private class RemoteDataTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            mProgressDialog = new ProgressDialog(SecondGroupActivity.this);
+            mProgressDialog.setTitle(getString(R.string.ProgressDialogMessage));
+            mProgressDialog.setMessage(getString(R.string.ProgressDialogTitle));
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            groups = new ArrayList<Group>();
+            try {
+                ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("ParseGroups");
+                query.whereEqualTo("parentid", getIntent().getStringExtra("parentid"));
+                query.orderByAscending("sortcode");
+                ob = query.find();
+                for (ParseObject pgroup : ob) {
+                    Group map = new Group(pgroup);
+                    groups.add(map);
+                }
+            } catch (ParseException e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            // Pass the results into ListViewAdapter.java
+            groupViewAdapter = new GroupViewAdapter(SecondGroupActivity.this,
+                    groups);
+            // Binds the Adapter to the ListView
+            lvSecond.setAdapter(groupViewAdapter);
+            // Close the progressdialog
+            mProgressDialog.dismiss();
+        }
     }
 }
