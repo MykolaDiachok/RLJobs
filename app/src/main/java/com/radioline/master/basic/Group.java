@@ -29,7 +29,7 @@ public class Group {
 
     public Group(SoapObject itemGroup) {
         super();
-        this.groupid = itemGroup.getProperty("groupid").toString();
+        this.groupid = itemGroup.getProperty("Id").toString();
         this.name = itemGroup.getProperty("Name").toString();
         this.fullnamegroup = itemGroup.getProperty("FullNameGroup").toString();
         this.parentid = itemGroup.getProperty("ParentId").toString();
