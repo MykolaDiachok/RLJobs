@@ -3,6 +3,7 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +17,9 @@ import com.parse.ParseCrashReporting;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.parse.ParsePush;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.radioline.master.basic.BaseValues;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseSetting;
@@ -56,8 +59,6 @@ public class LoginActivity extends Activity {
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
         ParseAnalytics.trackAppOpened(getIntent());
 
-
-
         etUserId = (EditText) findViewById(R.id.etUserId);
 
         String userID = BaseValues.GetValue("UserId");
@@ -93,11 +94,37 @@ public class LoginActivity extends Activity {
     }
 
     private void login() {
-        ParseUser.logInInBackground(etUserId.getText().toString(), etPasswordId.getText().toString(), new LogInCallback() {
+        Integer tlog = null;
+        try {
+            tlog = Integer.parseInt(etUserId.getText().toString());
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (tlog == null) {
+            Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
+            return;
+        }
+        ParseUser.logInInBackground(tlog.toString(), etPasswordId.getText().toString(), new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
+                    ParseUser.getCurrentUser().increment("RunCount");
+                    ParseUser.getCurrentUser().saveInBackground();
                     ParseInstallation.getCurrentInstallation().saveInBackground();
                     ParseConfig.getInBackground();
+
+                    ParsePush.subscribeInBackground("", new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                            } else {
+                                Log.e("com.parse.push", "failed to subscribe for push", e);
+                            }
+                        }
+                    });
+
                     Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
                     startActivity(intent);
                 } else {

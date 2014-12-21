@@ -6,15 +6,15 @@ android {
         config {
         }
     }
-    compileSdkVersion 20
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
     defaultConfig {
         applicationId "com.radioline.master.rlprice"
         minSdkVersion 16
-        targetSdkVersion 20
-        versionName '1.8'
+        targetSdkVersion 21
+        versionName '1.8.11'
         signingConfig signingConfigs.config
-        versionCode 9
+        versionCode 11
     }
     buildTypes {
         release {
