@@ -21,7 +21,6 @@ import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.radioline.master.basic.BaseValues;
-import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseSetting;
 import com.splunk.mint.Mint;
 
@@ -53,11 +52,14 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         ParseCrashReporting.enable(this);
-        ParseObject.registerSubclass(ParseSetting.class);
-        ParseObject.registerSubclass(Basket.class);
         Parse.enableLocalDatastore(getApplicationContext());
+        ParseObject.registerSubclass(ParseSetting.class);
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
-        ParseAnalytics.trackAppOpened(getIntent());
+
+
+        //ParseObject.registerSubclass(Basket.class);
+
+
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
@@ -109,10 +111,14 @@ public class LoginActivity extends Activity {
         ParseUser.logInInBackground(tlog.toString(), etPasswordId.getText().toString(), new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
+                    BaseValues.SetValue("UserId", ParseUser.getCurrentUser().getUsername());
+                    BaseValues.SetValue("PasswordId", etPasswordId.getText().toString());
+                    BaseValues.SetValue("PartnerId", ParseUser.getCurrentUser().get("PartnerId").toString());
                     ParseUser.getCurrentUser().increment("RunCount");
                     ParseUser.getCurrentUser().saveInBackground();
                     ParseInstallation.getCurrentInstallation().saveInBackground();
                     ParseConfig.getInBackground();
+                    ParseAnalytics.trackAppOpened(getIntent());
 
                     ParsePush.subscribeInBackground("", new SaveCallback() {
                         @Override
