@@ -10,19 +10,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
-import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseConfig;
-import com.parse.ParseCrashReporting;
 import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.radioline.master.basic.BaseValues;
-import com.radioline.master.basic.Basket;
-import com.radioline.master.basic.ParseSetting;
 import com.splunk.mint.Mint;
 
 public class LoginActivity extends Activity {
@@ -52,25 +46,14 @@ public class LoginActivity extends Activity {
         //Mint.enableDebug();
         setContentView(R.layout.activity_login);
 
-        ParseCrashReporting.enable(this);
-        Parse.enableLocalDatastore(getApplicationContext());
-        ParseObject.registerSubclass(Basket.class);
-        ParseObject.registerSubclass(ParseSetting.class);
-        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
+//        ParseCrashReporting.enable(this);
+//        Parse.enableLocalDatastore(getApplicationContext());
+//        ParseObject.registerSubclass(Basket.class);
+//        ParseObject.registerSubclass(ParseSetting.class);
+//        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
 
 
-        ParsePush.subscribeInBackground("", new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
-                } else {
-                    Log.e("com.parse.push", "failed to subscribe for push", e);
-                }
-            }
-        });
-
-        ParseInstallation.getCurrentInstallation().saveInBackground();
+//        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
@@ -122,18 +105,33 @@ public class LoginActivity extends Activity {
         ParseUser.logInInBackground(tlog.toString(), etPasswordId.getText().toString(), new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
+                    if ((Boolean) ParseUser.getCurrentUser().get("Enable")) {
                     BaseValues.SetValue("UserId", ParseUser.getCurrentUser().getUsername());
                     BaseValues.SetValue("PasswordId", etPasswordId.getText().toString());
                     BaseValues.SetValue("PartnerId", ParseUser.getCurrentUser().get("PartnerId").toString());
                     ParseUser.getCurrentUser().increment("RunCount");
                     ParseUser.getCurrentUser().saveInBackground();
 
+                        ParsePush.subscribeInBackground("", new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                                } else {
+                                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                                }
+                            }
+                        });
+
                     ParseConfig.getInBackground();
                     ParseAnalytics.trackAppOpened(getIntent());
 
 
                     Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
-                    startActivity(intent);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
                 }
