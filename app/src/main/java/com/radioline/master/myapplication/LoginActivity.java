@@ -21,6 +21,7 @@ import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.radioline.master.basic.BaseValues;
+import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseSetting;
 import com.splunk.mint.Mint;
 
@@ -53,13 +54,23 @@ public class LoginActivity extends Activity {
 
         ParseCrashReporting.enable(this);
         Parse.enableLocalDatastore(getApplicationContext());
+        ParseObject.registerSubclass(Basket.class);
         ParseObject.registerSubclass(ParseSetting.class);
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
 
 
-        //ParseObject.registerSubclass(Basket.class);
+        ParsePush.subscribeInBackground("", new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+                } else {
+                    Log.e("com.parse.push", "failed to subscribe for push", e);
+                }
+            }
+        });
 
-
+        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
@@ -116,20 +127,10 @@ public class LoginActivity extends Activity {
                     BaseValues.SetValue("PartnerId", ParseUser.getCurrentUser().get("PartnerId").toString());
                     ParseUser.getCurrentUser().increment("RunCount");
                     ParseUser.getCurrentUser().saveInBackground();
-                    ParseInstallation.getCurrentInstallation().saveInBackground();
+
                     ParseConfig.getInBackground();
                     ParseAnalytics.trackAppOpened(getIntent());
 
-                    ParsePush.subscribeInBackground("", new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                Log.d("com.parse.push", "successfully subscribed to the broadcast channel.");
-                            } else {
-                                Log.e("com.parse.push", "failed to subscribe for push", e);
-                            }
-                        }
-                    });
 
                     Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
                     startActivity(intent);
