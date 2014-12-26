@@ -32,7 +32,7 @@ public class Item {
     private int Availability;
     private String Store;
     private Boolean full;
-
+    private Integer quantity;
 
     public Item(String id, String groupId, String barCode, String code, String article, String partNumber, String name, String description, String type, String brand, String model, String modelCharacteristic, String coloration, String site, String ourWebSite, String warranty, String group, String fullNameGroup, float price, float priceUAH, float priceRRP, float priceRRPUAH, int availability, String store, Boolean full) {
         Id = id;
@@ -75,12 +75,12 @@ public class Item {
             this.Article = item.getProperty("Article").toString();
         }
         if (item.hasProperty("PartNumber")) {
-            if (item.getProperty("PartNumber").toString()!="anyType{}"){
+            if (item.getProperty("PartNumber").toString() != "anyType{}") {
                 this.PartNumber = item.getProperty("PartNumber").toString();
-            }
-            else {
+            } else {
                 this.PartNumber = "";
-            };
+            }
+            ;
         }
         this.Name = item.getProperty("Name").toString();
         if (item.hasProperty("Description")) {
@@ -137,8 +137,7 @@ public class Item {
         this.full = false;
     }
 
-
-    public Item(SoapObject item,Boolean full) {
+    public Item(SoapObject item, Boolean full) {
         this.Id = item.getProperty("Id").toString();
         this.GroupId = item.getProperty("GroupId").toString();
         if (item.hasProperty("BarCode")) {
@@ -151,12 +150,12 @@ public class Item {
             this.Article = item.getProperty("Article").toString();
         }
         if (item.hasProperty("PartNumber")) {
-            if (item.getProperty("PartNumber").toString()!="anyType{}"){
+            if (item.getProperty("PartNumber").toString() != "anyType{}") {
                 this.PartNumber = item.getProperty("PartNumber").toString();
-            }
-            else {
+            } else {
                 this.PartNumber = "";
-            };
+            }
+            ;
         }
         this.Name = item.getProperty("Name").toString();
         if (item.hasProperty("Description")) {
@@ -213,7 +212,13 @@ public class Item {
         this.full = full;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
 
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 
     @Override
     public String toString() {

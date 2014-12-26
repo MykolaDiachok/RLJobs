@@ -53,6 +53,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             holder.ivItem = (ImageView) rowView.findViewById(R.id.ivItem);
             holder.btAdd = (Button) rowView.findViewById(R.id.btAdd);
             holder.btDel = (Button) rowView.findViewById(R.id.btDel);
+            holder.tvQuantity = (TextView) rowView.findViewById(R.id.tvQuantity);
 
             rowView.setTag(holder);
         } else {
@@ -69,6 +70,21 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         holder.tvItemUSD.setText("$ " + dec.format(itemArrayList.get(position).getPrice()));
         holder.tvItemUAH.setText("₴ " + dec.format(itemArrayList.get(position).getPriceUAH()));
 
+        ParseQuery<Basket> query = Basket.getQuery();
+        query.fromLocalDatastore();
+        query.whereEqualTo("productId", itemArrayList.get(position).getId());
+        Integer currentcount = 0;
+        try {
+            Basket localbasket = query.getFirst();
+            currentcount = localbasket.getQuantity();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (currentcount != 0) {
+            dec = new DecimalFormat("0");
+            holder.tvQuantity.setText("Q:" + dec.format(currentcount));
+        }
         ImageDownloaderSOAP getimage = new ImageDownloaderSOAP();
         getimage.download(itemArrayList.get(position).getId(), holder.ivItem, null, false);
 
@@ -91,6 +107,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
                 localbasket.setQuantity(currentcount);
                 localbasket.pin();
             }
+            finalitem.setQuantity(currentcount);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -110,6 +127,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             currentcount = localbasket.getQuantity() + 1;
             localbasket.setQuantity(currentcount);
             localbasket.pin();
+            finalitem.setQuantity(currentcount);
         } catch (ParseException e) {
             e.printStackTrace();
             Basket basket = new Basket();
@@ -123,6 +141,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
             } catch (ParseException e1) {
                 e1.printStackTrace();
             }
+            finalitem.setQuantity(1);
         }
 
         Toast.makeText(context, "add: " + finalitem.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
@@ -159,6 +178,7 @@ public class ItemViewAdapter extends ArrayAdapter<Item> {
         public ImageView ivItem;
         public Button btAdd;
         public Button btDel;
+        public TextView tvQuantity;
 
     }
 }

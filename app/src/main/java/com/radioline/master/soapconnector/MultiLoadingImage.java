@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.Item;
@@ -71,6 +72,7 @@ public class MultiLoadingImage extends AsyncTask<Void, TaskProgress, Void> {
             PropertyInfo piidItem = new PropertyInfo();
             piidItem.setName("ItemId");
             piidItem.setValue(itemID);
+            Log.d("Loading images itemId:", itemID);
             //piidItem.setValue("e3dd8ed4-8fa6-11e2-b51b-00155d060502");
             piidItem.setType(String.class);
 
