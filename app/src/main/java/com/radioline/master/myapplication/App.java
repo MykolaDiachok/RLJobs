@@ -3,6 +3,8 @@ package com.radioline.master.myapplication;
 import android.app.Application;
 import android.util.Log;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.ConfigCallback;
 import com.parse.Parse;
 import com.parse.ParseConfig;
@@ -18,6 +20,10 @@ import com.radioline.master.basic.ParseSetting;
 public class App extends Application {
     @Override
     public void onCreate() {
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .build();
+        ImageLoader.getInstance().init(config);
+
         super.onCreate();
         ParseCrashReporting.enable(this);
         Parse.enableLocalDatastore(getApplicationContext());
@@ -30,7 +36,7 @@ public class App extends Application {
             @Override
             public void done(ParseConfig config, ParseException e) {
                 ParseFile restAverage = config.getParseFile("RestAverage");
-                restAverage.saveInBackground();
+
                 ParseFile restMax = config.getParseFile("RestMax");
                 ParseFile restMin = config.getParseFile("RestMin");
                 Log.d("TAG", "Loading images files");
