@@ -9,6 +9,20 @@ import java.util.Date;
 
 /**
  * Created by master on 03.01.2015.
+ * Кол.	Сумма количества едениц остатков
+ 5	1 267
+ 20	619
+ 10	588
+ 100	373
+ 30	333
+ 40	202
+ 50	153
+ 70	95
+ 60	94
+ 80	45
+ 90	42
+ *
+ *
  */
 @ParseClassName("ParseGroups")
 public class ParseItems extends ParseObject {
@@ -52,6 +66,14 @@ public class ParseItems extends ParseObject {
 
     public void setObjectId(String objectId) {
         put("objectId", objectId);
+    }
+
+    public ParseGroups getParseGroupId() {
+        return (ParseGroups) get("parseGroupId");
+    }
+
+    public void setParseGroupId(ParseGroups parseGroupId) {
+        put("parseGroupId", parseGroupId);
     }
 
     public Date getUpdatedAt() {
