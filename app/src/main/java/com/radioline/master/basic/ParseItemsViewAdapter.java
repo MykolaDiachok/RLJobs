@@ -167,15 +167,15 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             //Load the image from the url into the ImageView.
             imageLoader.displayImage(photoFile.getUrl(), holder.ivItem);
         }
-
-        if ((object.getStock() > 0) && (object.getStock() <= 5)) {
-            imageLoader.displayImage(restMin.getUrl(), holder.ivRest);
-        } else if ((object.getStock() > 5) && (object.getStock() <= 30)) {
-            imageLoader.displayImage(restAverage.getUrl(), holder.ivRest);
-        } else if (object.getStock() > 30) {
-            imageLoader.displayImage(restMax.getUrl(), holder.ivRest);
+        if (object != null) {
+            if ((object.getStock() > 0) && (object.getStock() <= 5)) {
+                imageLoader.displayImage(restMin.getUrl(), holder.ivRest);
+            } else if ((object.getStock() > 5) && (object.getStock() <= 30)) {
+                imageLoader.displayImage(restAverage.getUrl(), holder.ivRest);
+            } else if (object.getStock() > 30) {
+                imageLoader.displayImage(restMax.getUrl(), holder.ivRest);
+            }
         }
-
 
 
         // Listen for ListView Item Click
