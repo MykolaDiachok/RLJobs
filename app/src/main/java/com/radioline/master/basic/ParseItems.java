@@ -259,4 +259,8 @@ public class ParseItems extends ParseObject {
     public void setImage(ParseFile file) {
         put("image", file);
     }
+
+    public String getImageURL() {
+        return getParseFile("image").getUrl();
+    }
 }
