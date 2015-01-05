@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.badoo.mobile.util.WeakHandler;
@@ -27,6 +30,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
     //http://stackoverflow.com/questions/4373485/android-swipe-on-list
     private ListView lvItem;
+    private EditText tvSearch;
     private WeakHandler handler = new WeakHandler();
     private ProgressDialog dialog;
     private ItemViewAdapter itemViewAdapter;
@@ -35,7 +39,27 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
     private ParseQueryAdapter<ParseItems> mainAdapter;
     private ParseItemsViewAdapter itemsViewAdapterAdapter;
+    private final TextWatcher mTextEditorWatcher = new TextWatcher() {
 
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), s.toString());
+            itemsViewAdapterAdapter.loadObjects();
+            lvItem.setAdapter(itemsViewAdapterAdapter);
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -53,7 +77,6 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         }
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,15 +85,21 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         setContentView(R.layout.activity_item);
 
         this.setTitle(getIntent().getStringExtra("Name"));
+        tvSearch = (EditText) findViewById(R.id.etSearch);
+        tvSearch.addTextChangedListener(mTextEditorWatcher);
+
+
+
         lvItem = (ListView) findViewById(R.id.lvItem);
         lvItem.setOnItemClickListener(this);
 
 
         itemsViewAdapterAdapter = new ParseItemsViewAdapter(this, getIntent().getStringExtra("parentid"));
+        itemsViewAdapterAdapter.setAutoload(true);
+        itemsViewAdapterAdapter.setPaginationEnabled(false);
         lvItem.setAdapter(itemsViewAdapterAdapter);
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,6 +134,8 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                 rtvalue = true;
                 break;
             case R.id.action_refresh:
+                itemsViewAdapterAdapter.loadObjects();
+                lvItem.setAdapter(itemsViewAdapterAdapter);
 //                loadData();
                 rtvalue = true;
                 break;

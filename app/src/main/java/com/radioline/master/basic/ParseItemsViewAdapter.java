@@ -22,6 +22,8 @@ import com.radioline.master.myapplication.PicActivity;
 import com.radioline.master.myapplication.R;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by master on 04.01.2015.
@@ -42,6 +44,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery("ParseItems");
                 query.whereEqualTo("parseGroupId", parseGroupId);
+                query.whereEqualTo("Availability", true);
                 query.orderByDescending("Name");
                 return query;
             }
@@ -87,6 +90,44 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             }
         });
     }
+
+    public ParseItemsViewAdapter(Context context, final String parentId, final String searchData) {
+
+
+        super(context, new ParseQueryAdapter.QueryFactory<ParseItems>() {
+            public ParseQuery<ParseItems> create() {
+                // Here we can configure a ParseQuery to display
+                // only top-rated meals.
+                List a = Arrays.asList(searchData.replace("|", "\\|").replace(".", "\\.").split("\\s+"));
+                String forReg = "";
+                for (int i = 0; i < a.size(); i++) {
+                    forReg = forReg + "(?=.*" + a.get(i).toString() + ")";
+                }
+
+                ParseQuery query = new ParseQuery("ParseItems");
+                query.whereEqualTo("GroupId", parentId);
+                query.whereEqualTo("Availability", true);
+                query.whereMatches("Name", forReg, "i");
+//                query.whereContainedIn("Name", );
+                query.orderByDescending("Name");
+                return query;
+            }
+        });
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+        this.imageLoader = ImageLoader.getInstance();
+        ParseConfig.getInBackground(new ConfigCallback() {
+            @Override
+            public void done(ParseConfig config, ParseException e) {
+                restAverage = config.getParseFile("RestAverage");
+                restMax = config.getParseFile("RestMax");
+                restMin = config.getParseFile("RestMin");
+                Log.d("TAG", "Loading images files");
+            }
+        });
+    }
+
+
 
     @Override
     public View getItemView(final ParseItems object, View view, ViewGroup parent) {
@@ -179,23 +220,8 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         SuperToast superToast = new SuperToast(context);
         superToast.setDuration(SuperToast.Duration.SHORT);
         superToast.setText("del: " + finalitem.getName() + "-1=" + currentcount);
-        //superToast.setIconResource(R.drawable.image, SuperToast.IconPosition.LEFT);
         superToast.setIcon(R.drawable.del, SuperToast.IconPosition.LEFT);
         superToast.show();
-
-        //Create a view here
-//        LinearLayout v = new LinearLayout(context);
-        //populate layout with your image and text or whatever you want to put in here
-
-//        Toast toast = new Toast(context);
-//        toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-//        toast.setDuration(Toast.LENGTH_LONG);
-//        toast.setView(v);
-//        toast.setText("del: " + finalitem.getName() + "-1=" + currentcount);
-//        toast.show();
-
-
-        //Toast.makeText(context, , Toast.LENGTH_SHORT).show();
     }
 
     private void addItem(ParseItems finalitem) {
@@ -227,11 +253,9 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         SuperToast superToast = new SuperToast(context);
         superToast.setDuration(SuperToast.Duration.SHORT);
         superToast.setText("add: " + finalitem.getName() + "+1=" + currentcount);
-        //superToast.setIconResource(R.drawable.image, SuperToast.IconPosition.LEFT);
         superToast.setIcon(R.drawable.add, SuperToast.IconPosition.LEFT);
         superToast.show();
 
-//        Toast.makeText(context, "add: " + finalitem.getName() + "+1=" + currentcount, Toast.LENGTH_SHORT).show();
     }
 
     private void setOnClickListener(View view, final ParseItems finalitem) {
