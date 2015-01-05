@@ -12,6 +12,10 @@ import java.util.Date;
  */
 @ParseClassName("ParseGroups")
 public class ParseGroups extends ParseObject {
+
+    public ParseGroups() {
+    }
+
     public ParseGroups(Date createat, String groupid, String name, String parentid, String fullnamegroup, String sortcode) {
         put("createat", createat);
         put("groupid", groupid);
@@ -36,6 +40,10 @@ public class ParseGroups extends ParseObject {
     public static ParseQuery<ParseGroups> getQuery() {
         return ParseQuery.getQuery(ParseGroups.class);
     }
+
+//    public String getObjectId(){
+//        return getString("id");
+//    }
 
     public String getCreateAt() {
         return getString("createat");

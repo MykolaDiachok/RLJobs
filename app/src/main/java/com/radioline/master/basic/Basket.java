@@ -4,8 +4,6 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.util.UUID;
-
 /**
  * Created by master on 13.11.2014.
  */
@@ -21,6 +19,10 @@ public class Basket extends ParseObject {
 //
 //    }
 
+
+    public static ParseQuery<Basket> getQuery() {
+        return ParseQuery.getQuery(Basket.class);
+    }
 
     public String getProductId() {
         return getString("productId");
@@ -58,12 +60,8 @@ public class Basket extends ParseObject {
         return getDouble("requiredpriceUAH");
     }
 
-    public void setRequiredpriceUAH(float requiredpriceUAH) {
+    public void setRequiredpriceUAH(double requiredpriceUAH) {
         put("requiredpriceUAH", requiredpriceUAH);
-    }
-
-    public static ParseQuery<Basket> getQuery() {
-        return ParseQuery.getQuery(Basket.class);
     }
 
 }

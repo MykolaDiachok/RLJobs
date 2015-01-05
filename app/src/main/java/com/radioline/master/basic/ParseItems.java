@@ -10,21 +10,19 @@ import java.util.Date;
 /**
  * Created by master on 03.01.2015.
  * Кол.	Сумма количества едениц остатков
- 5	1 267
- 20	619
- 10	588
- 100	373
- 30	333
- 40	202
- 50	153
- 70	95
- 60	94
- 80	45
- 90	42
- *
- *
+ * 5	1 267
+ * 20	619
+ * 10	588
+ * 100	373
+ * 30	333
+ * 40	202
+ * 50	153
+ * 70	95
+ * 60	94
+ * 80	45
+ * 90	42
  */
-@ParseClassName("ParseGroups")
+@ParseClassName("ParseItems")
 public class ParseItems extends ParseObject {
     public ParseItems() {
     }
@@ -56,104 +54,52 @@ public class ParseItems extends ParseObject {
      * -updatedAt
      */
 
-    public static ParseQuery<ParseGroups> getQuery() {
-        return ParseQuery.getQuery(ParseGroups.class);
+    public static ParseQuery<ParseItems> getQuery() {
+        return ParseQuery.getQuery(ParseItems.class);
     }
 
-    public String getObjectId() {
-        return getString("objectId");
-    }
-
-    public void setObjectId(String objectId) {
-        put("objectId", objectId);
-    }
-
-    public ParseGroups getParseGroupId() {
-        return (ParseGroups) get("parseGroupId");
-    }
-
-    public void setParseGroupId(ParseGroups parseGroupId) {
-        put("parseGroupId", parseGroupId);
-    }
+//    public String getObjectId(){
+//        return getString("id");
+//    }
 
     public Date getUpdatedAt() {
         return getDate("updatedAt");
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        put("updatedAt", updatedAt);
     }
 
     public Date getCreatedAt() {
         return getDate("createdAt");
     }
 
-    public void setCreatedAt(Date createdAt) {
-        put("createdAt", createdAt);
-    }
-
     public String getWarranty() {
         return getString("Warranty");
-    }
-
-    public void setWarranty(String Warranty) {
-        put("Warranty", Warranty);
     }
 
     public Integer getStock() {
         return getInt("Stock");
     }
 
-    public void setStock(Integer Stock) {
-        put("Stock", Stock);
+    public double getPriceUAH() {
+        return getDouble("PriceUAH");
     }
 
-    public float getPriceUAH() {
-        return (float) get("PriceUAH");
+    public double getPriceRRPUAH() {
+        return getDouble("PriceRRPUAH");
     }
 
-    public void setPriceUAH(float PriceUAH) {
-        put("PriceUAH", PriceUAH);
+    public double getPriceRRP() {
+        return getDouble("PriceRRP");
     }
 
-    public float getPriceRRPUAH() {
-        return (float) get("PriceRRPUAH");
+    public double getPriceROPUAH() {
+        return getDouble("PriceROPUAH");
     }
 
-    public void setPriceRRPUAH(float PriceRRPUAH) {
-        put("PriceRRPUAH", PriceRRPUAH);
+    public double getPriceROP() {
+        return getDouble("PriceROP");
     }
 
-    public float getPriceRRP() {
-        return (float) get("PriceRRP");
-    }
-
-    public void setPriceRRP(float PriceRRP) {
-        put("PriceRRP", PriceRRP);
-    }
-
-    public float getPriceROPUAH() {
-        return (float) get("PriceROPUAH");
-    }
-
-    public void setPriceROPUAH(float PriceROPUAH) {
-        put("PriceROPUAH", PriceROPUAH);
-    }
-
-    public float getPriceROP() {
-        return (float) get("PriceROP");
-    }
-
-    public void setPriceROP(float PriceROP) {
-        put("PriceROP", PriceROP);
-    }
-
-    public float getPrice() {
-        return (float) get("Price");
-    }
-
-    public void setPrice(float Price) {
-        put("Price", Price);
+    public double getPrice() {
+        return getDouble("Price");
     }
 
     public String getPartNumber() {

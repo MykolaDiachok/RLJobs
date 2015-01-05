@@ -51,5 +51,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="tvURL">URL:</string>
     <string name="NoData">Items not in stock</string>
+    <string name="ItemAdd">add</string>
+    <string name="ItemDel">del</string>
 
 </resources>
