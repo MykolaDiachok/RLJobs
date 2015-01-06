@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.parse.ParseQueryAdapter;
@@ -86,7 +89,26 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
         this.setTitle(getIntent().getStringExtra("Name"));
         tvSearch = (EditText) findViewById(R.id.etSearch);
-        tvSearch.addTextChangedListener(mTextEditorWatcher);
+        //tvSearch.addTextChangedListener(mTextEditorWatcher); very slow
+        tvSearch.setOnEditorActionListener(
+                new EditText.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                                actionId == EditorInfo.IME_ACTION_DONE ||
+                                event.getAction() == KeyEvent.ACTION_DOWN &&
+                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            if (!event.isShiftPressed()) {
+                                itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), tvSearch.getText().toString());
+                                itemsViewAdapterAdapter.loadObjects();
+                                lvItem.setAdapter(itemsViewAdapterAdapter);
+
+                                return true; // consume.
+                            }
+                        }
+                        return false; // pass on to other listeners.
+                    }
+                });
 
 
 
