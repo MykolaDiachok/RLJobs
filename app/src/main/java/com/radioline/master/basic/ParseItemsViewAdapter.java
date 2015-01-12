@@ -2,6 +2,7 @@ package com.radioline.master.basic;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,12 +30,14 @@ import java.util.List;
  * Created by master on 04.01.2015.
  */
 public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
+    private final int[] bgColors = new int[]{Color.YELLOW, Color.BLUE};
     private Context context;
     private LayoutInflater inflater;
     private ImageLoader imageLoader;
     private ParseFile restAverage = null;
     private ParseFile restMax = null;
     private ParseFile restMin = null;
+    private Integer position = 0;
 
     public ParseItemsViewAdapter(Context context, final ParseGroups parseGroupId) {
 
@@ -45,7 +48,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 ParseQuery query = new ParseQuery("ParseItems");
                 query.whereEqualTo("parseGroupId", parseGroupId);
                 query.whereEqualTo("Availability", true);
-                query.orderByDescending("Name");
+                query.orderByAscending("Name");
                 return query;
             }
         });
@@ -127,11 +130,21 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         });
     }
 
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 
+    @Override
+    public int getCount() {
+        return super.getCount();
+    }
 
     @Override
     public View getItemView(final ParseItems object, View view, ViewGroup parent) {
         final ViewHolder holder;
+        Integer t = this.getCount();
+        position = +1;
         if (view == null) {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.itemview, null);

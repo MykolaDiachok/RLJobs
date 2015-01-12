@@ -102,14 +102,12 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
                                 itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), tvSearch.getText().toString());
                                 itemsViewAdapterAdapter.loadObjects();
                                 lvItem.setAdapter(itemsViewAdapterAdapter);
-
                                 return true; // consume.
                             }
                         }
                         return false; // pass on to other listeners.
                     }
                 });
-
 
 
         lvItem = (ListView) findViewById(R.id.lvItem);
