@@ -92,21 +92,34 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
         //tvSearch.addTextChangedListener(mTextEditorWatcher); very slow
         tvSearch.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
+                    /**
+                     * Called when an action is being performed.
+                     *
+                     * @param v        The view that was clicked.
+                     * @param actionId Identifier of the action.  This will be either the
+                     *                 identifier you supplied, or {@link android.view.inputmethod.EditorInfo#IME_NULL
+                     *                 EditorInfo.IME_NULL} if being called due to the enter key
+                     *                 being pressed.
+                     * @param event    If triggered by an enter key, this is the event;
+                     *                 otherwise, this is null.
+                     * @return Return true if you have consumed the action, else false.
+                     */
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                                actionId == EditorInfo.IME_ACTION_DONE ||
-                                event.getAction() == KeyEvent.ACTION_DOWN &&
-                                        event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                            if (!event.isShiftPressed()) {
-                                itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), tvSearch.getText().toString());
-                                itemsViewAdapterAdapter.loadObjects();
-                                lvItem.setAdapter(itemsViewAdapterAdapter);
-                                return true; // consume.
-                            }
+                        if (event != null && event.getAction() != KeyEvent.ACTION_DOWN) {
+                            return false;
+                        } else if (actionId == EditorInfo.IME_ACTION_SEARCH
+                                || event == null
+                                || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                            itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), tvSearch.getText().toString());
+                            itemsViewAdapterAdapter.loadObjects();
+                            lvItem.setAdapter(itemsViewAdapterAdapter);
+                            return true; // consume.
+
                         }
-                        return false; // pass on to other listeners.
+                        return false;
                     }
+
                 });
 
 

@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.parse.ConfigCallback;
-import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
@@ -46,6 +44,8 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery("ParseItems");
+                query.include("Basket");
+                query.include("Basket.parseItem");
                 query.whereEqualTo("parseGroupId", parseGroupId);
                 query.whereEqualTo("Availability", true);
                 query.orderByAscending("Name");
@@ -55,15 +55,15 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
-        ParseConfig.getInBackground(new ConfigCallback() {
-            @Override
-            public void done(ParseConfig config, ParseException e) {
-                restAverage = config.getParseFile("RestAverage");
-                restMax = config.getParseFile("RestMax");
-                restMin = config.getParseFile("RestMin");
-                Log.d("TAG", "Loading images files");
-            }
-        });
+//        ParseConfig.getInBackground(new ConfigCallback() {
+//            @Override
+//            public void done(ParseConfig config, ParseException e) {
+//                restAverage = config.getParseFile("RestAverage");
+//                restMax = config.getParseFile("RestMax");
+//                restMin = config.getParseFile("RestMin");
+//                Log.d("TAG", "Loading images files");
+//            }
+//        });
     }
 
 
@@ -74,6 +74,8 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery("ParseItems");
+                query.include("Basket");
+                query.include("Basket.parseItem");
                 query.whereEqualTo("GroupId", parentId);
                 query.whereEqualTo("Availability", true);
                 query.orderByDescending("Name");
@@ -83,15 +85,15 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
-        ParseConfig.getInBackground(new ConfigCallback() {
-            @Override
-            public void done(ParseConfig config, ParseException e) {
-                restAverage = config.getParseFile("RestAverage");
-                restMax = config.getParseFile("RestMax");
-                restMin = config.getParseFile("RestMin");
-                Log.d("TAG", "Loading images files");
-            }
-        });
+//        ParseConfig.getInBackground(new ConfigCallback() {
+//            @Override
+//            public void done(ParseConfig config, ParseException e) {
+//                restAverage = config.getParseFile("RestAverage");
+//                restMax = config.getParseFile("RestMax");
+//                restMin = config.getParseFile("RestMin");
+//                Log.d("TAG", "Loading images files");
+//            }
+//        });
     }
 
     public ParseItemsViewAdapter(Context context, final String parentId, final String searchData) {
@@ -108,26 +110,28 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 }
 
                 ParseQuery query = new ParseQuery("ParseItems");
+                query.include("Basket");
+                query.include("Basket.parseItem");
                 query.whereEqualTo("GroupId", parentId);
                 query.whereEqualTo("Availability", true);
                 query.whereMatches("Name", forReg, "i");
 //                query.whereContainedIn("Name", );
-                query.orderByDescending("Name");
+                query.orderByAscending("Name");
                 return query;
             }
         });
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
-        ParseConfig.getInBackground(new ConfigCallback() {
-            @Override
-            public void done(ParseConfig config, ParseException e) {
-                restAverage = config.getParseFile("RestAverage");
-                restMax = config.getParseFile("RestMax");
-                restMin = config.getParseFile("RestMin");
-                Log.d("TAG", "Loading images files");
-            }
-        });
+//        ParseConfig.getInBackground(new ConfigCallback() {
+//            @Override
+//            public void done(ParseConfig config, ParseException e) {
+//                restAverage = config.getParseFile("RestAverage");
+//                restMax = config.getParseFile("RestMax");
+//                restMin = config.getParseFile("RestMin");
+//                Log.d("TAG", "Loading images files");
+//            }
+//        });
     }
 
     @Override
@@ -153,7 +157,8 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             holder.tvItemUSD = (TextView) view.findViewById(R.id.tvItemUSD);
             holder.tvItemUAH = (TextView) view.findViewById(R.id.tvItemUAH);
             holder.ivItem = (ParseImageView) view.findViewById(R.id.ivItem);
-            holder.ivRest = (ParseImageView) view.findViewById(R.id.ivRest);
+            //holder.ivRest = (ParseImageView) view.findViewById(R.id.ivRest);
+            holder.tvRest = (TextView) view.findViewById(R.id.tvRest);
             holder.btAdd = (Button) view.findViewById(R.id.btAdd);
             holder.btDel = (Button) view.findViewById(R.id.btDel);
             holder.tvQuantity = (TextView) view.findViewById(R.id.tvQuantity);
@@ -182,11 +187,14 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         }
         if (object != null) {
             if ((object.getStock() > 0) && (object.getStock() <= 5)) {
-                imageLoader.displayImage(restMin.getUrl(), holder.ivRest);
+                holder.tvRest.setBackgroundColor(Color.RED);
+                //imageLoader.displayImage(restMin.getUrl(), holder.ivRest);
             } else if ((object.getStock() > 5) && (object.getStock() <= 30)) {
-                imageLoader.displayImage(restAverage.getUrl(), holder.ivRest);
+                holder.tvRest.setBackgroundColor(Color.YELLOW);
+                //imageLoader.displayImage(restAverage.getUrl(), holder.ivRest);
             } else if (object.getStock() > 30) {
-                imageLoader.displayImage(restMax.getUrl(), holder.ivRest);
+                holder.tvRest.setBackgroundColor(Color.GREEN);
+                //imageLoader.displayImage(restMax.getUrl(), holder.ivRest);
             }
         }
 
@@ -220,10 +228,10 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             currentcount = localbasket.getQuantity() - 1;
             if (currentcount < 0) {
                 currentcount = 0;
-                localbasket.unpin();
+                localbasket.unpinInBackground();
             } else {
                 localbasket.setQuantity(currentcount);
-                localbasket.pin();
+                localbasket.pinInBackground();
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -231,44 +239,47 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
 
 
         SuperToast superToast = new SuperToast(context);
-        superToast.setDuration(SuperToast.Duration.SHORT);
+        superToast.setDuration(SuperToast.Duration.VERY_SHORT);
         superToast.setText("del: " + finalitem.getName() + "-1=" + currentcount);
         superToast.setIcon(R.drawable.del, SuperToast.IconPosition.LEFT);
         superToast.show();
     }
 
     private void addItem(ParseItems finalitem) {
-
+        Log.d("ADD", "Start");
         ParseQuery<Basket> query = Basket.getQuery();
         query.fromLocalDatastore();
         query.whereEqualTo("productId", finalitem.getItemId());
+        Log.d("ADD", "local query start");
         int currentcount = 1;
         try {
             Basket localbasket = query.getFirst();
             currentcount = localbasket.getQuantity() + 1;
             localbasket.setQuantity(currentcount);
-            localbasket.pin();
+            localbasket.pinInBackground();
         } catch (ParseException e) {
             e.printStackTrace();
             Basket basket = new Basket();
+            basket.setParseItem(finalitem);
             basket.setProductId(finalitem.getItemId());
             basket.setName(finalitem.getName());
             basket.setRequiredpriceUSD(finalitem.getPrice());
             basket.setRequiredpriceUAH(finalitem.getPriceUAH());
             basket.setQuantity(1);
-            try {
-                basket.pin();
-            } catch (ParseException e1) {
-                e1.printStackTrace();
-            }
+            //try {
+            basket.pinInBackground();
+//            } catch (ParseException e1) {
+//                e1.printStackTrace();
+//            }
         }
-
+        Log.d("ADD", "local query end");
+        Log.d("ADD", "Toast start");
         SuperToast superToast = new SuperToast(context);
-        superToast.setDuration(SuperToast.Duration.SHORT);
+        superToast.setDuration(SuperToast.Duration.VERY_SHORT);
         superToast.setText("add: " + finalitem.getName() + "+1=" + currentcount);
         superToast.setIcon(R.drawable.add, SuperToast.IconPosition.LEFT);
         superToast.show();
-
+        Log.d("ADD", "Toast end");
     }
 
     private void setOnClickListener(View view, final ParseItems finalitem) {
@@ -316,6 +327,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         TextView tvItemName;
         TextView tvItemUSD;
         TextView tvItemUAH;
+        TextView tvRest;
         ParseImageView ivItem;
         ParseImageView ivRest;
         Button btAdd;

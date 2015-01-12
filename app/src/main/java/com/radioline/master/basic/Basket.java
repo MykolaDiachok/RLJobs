@@ -9,7 +9,9 @@ import com.parse.ParseQuery;
  */
 @ParseClassName("Basket")
 public class Basket extends ParseObject {
+    public Basket() {
 
+    }
 //    public Basket(){
 //        put("objectId", UUID.randomUUID().toString());
 //    }
@@ -22,6 +24,14 @@ public class Basket extends ParseObject {
 
     public static ParseQuery<Basket> getQuery() {
         return ParseQuery.getQuery(Basket.class);
+    }
+
+    public ParseItems getParseItem() {
+        return (ParseItems) getParseObject("parseItem");
+    }
+
+    public void setParseItem(ParseItems parseItem) {
+        put("parseItem", parseItem);
     }
 
     public String getProductId() {
