@@ -8,11 +8,9 @@ import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.BasketViewAdapter;
-import com.splunk.mint.Mint;
 
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class BasketActivity extends Activity {
 
     @Override
     protected void onResume() {
-        Mint.startSession(this);
+
         basketViewAdapter.notifyDataSetChanged();
         basketViewAdapter.loadObjects();
         lvBasket.setAdapter(basketViewAdapter);
@@ -36,8 +34,7 @@ public class BasketActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
+
     }
 
 
@@ -45,9 +42,8 @@ public class BasketActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, getString(R.string.mint));
 
-        ParseObject.registerSubclass(Basket.class);
+        //ParseObject.registerSubclass(Basket.class);
         //ParseObject.registerSubclass(ParseGroups.class);
         //Parse.enableLocalDatastore(getApplicationContext());
 

@@ -13,11 +13,12 @@ import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.basic.ParseItems;
 import com.radioline.master.basic.ParseSetting;
+import com.splunk.mint.Mint;
 
 public class App extends Application {
     @Override
     public void onCreate() {
-
+        Mint.initAndStartSession(this, getString(R.string.mint));
         DisplayImageOptions options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.rllogo)
                 .cacheInMemory(true)
@@ -32,13 +33,14 @@ public class App extends Application {
 
         super.onCreate();
         ParseCrashReporting.enable(this);
-        Parse.enableLocalDatastore(getApplicationContext());
+        //Parse.enableLocalDatastore(getApplicationContext());
         ParseObject.registerSubclass(Basket.class);
         ParseObject.registerSubclass(ParseSetting.class);
         ParseObject.registerSubclass(ParseItems.class);
         ParseObject.registerSubclass(ParseGroups.class);
         Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
         ParseInstallation.getCurrentInstallation().saveInBackground();
+//        ParseQuery.clearAllCachedResults();
 //        ParseConfig.getInBackground(new ConfigCallback() {
 //            @Override
 //            public void done(ParseConfig config, ParseException e) {

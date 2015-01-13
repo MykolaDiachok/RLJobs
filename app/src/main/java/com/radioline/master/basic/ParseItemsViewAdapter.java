@@ -8,39 +8,42 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.johnpersano.supertoasts.SuperToast;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.radioline.master.myapplication.PicActivity;
 import com.radioline.master.myapplication.R;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by master on 04.01.2015.
  */
-public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
-    private final int[] bgColors = new int[]{Color.YELLOW, Color.BLUE};
+public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseObject> {
+    private final int[] bgColors = new int[]{Color.rgb(245, 245, 245), Color.rgb(224, 255, 255)};
     private Context context;
     private LayoutInflater inflater;
     private ImageLoader imageLoader;
-    private ParseFile restAverage = null;
-    private ParseFile restMax = null;
-    private ParseFile restMin = null;
-    private Integer position = 0;
+    //private Map<String,ParseItems> myMaps;
+    private LinkedHashSet mySet;
+
 
     public ParseItemsViewAdapter(Context context, final ParseGroups parseGroupId) {
 
-        super(context, new ParseQueryAdapter.QueryFactory<ParseItems>() {
-            public ParseQuery<ParseItems> create() {
+        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            public ParseQuery<ParseObject> create() {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery("ParseItems");
@@ -55,6 +58,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
+        this.mySet = new LinkedHashSet();
 //        ParseConfig.getInBackground(new ConfigCallback() {
 //            @Override
 //            public void done(ParseConfig config, ParseException e) {
@@ -66,25 +70,29 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
 //        });
     }
 
-
     public ParseItemsViewAdapter(Context context, final String parentId) {
 
-        super(context, new ParseQueryAdapter.QueryFactory<ParseItems>() {
-            public ParseQuery<ParseItems> create() {
-                // Here we can configure a ParseQuery to display
-                // only top-rated meals.
+        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            public ParseQuery<ParseObject> create() {
+
                 ParseQuery query = new ParseQuery("ParseItems");
+                query.setMaxCacheAge(TimeUnit.DAYS.toMillis(1));
+                query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+                //query.fromLocalDatastore();
                 query.include("Basket");
                 query.include("Basket.parseItem");
                 query.whereEqualTo("GroupId", parentId);
                 query.whereEqualTo("Availability", true);
-                query.orderByDescending("Name");
+                query.orderByAscending("Name");
+
                 return query;
             }
         });
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
+        //this.myMaps = new HashMap<String,ParseItems>();
+        this.mySet = new LinkedHashSet();
 //        ParseConfig.getInBackground(new ConfigCallback() {
 //            @Override
 //            public void done(ParseConfig config, ParseException e) {
@@ -99,8 +107,8 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
     public ParseItemsViewAdapter(Context context, final String parentId, final String searchData) {
 
 
-        super(context, new ParseQueryAdapter.QueryFactory<ParseItems>() {
-            public ParseQuery<ParseItems> create() {
+        super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            public ParseQuery<ParseObject> create() {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 List a = Arrays.asList(searchData.replace("|", "\\|").replace(".", "\\.").split("\\s+"));
@@ -110,6 +118,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
                 }
 
                 ParseQuery query = new ParseQuery("ParseItems");
+                //query.fromLocalDatastore();
                 query.include("Basket");
                 query.include("Basket.parseItem");
                 query.whereEqualTo("GroupId", parentId);
@@ -123,6 +132,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.imageLoader = ImageLoader.getInstance();
+        this.mySet = new LinkedHashSet();
 //        ParseConfig.getInBackground(new ConfigCallback() {
 //            @Override
 //            public void done(ParseConfig config, ParseException e) {
@@ -135,20 +145,10 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
     }
 
     @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
-    }
-
-    @Override
-    public int getCount() {
-        return super.getCount();
-    }
-
-    @Override
-    public View getItemView(final ParseItems object, View view, ViewGroup parent) {
+    public View getItemView(final ParseObject object, View view, ViewGroup parent) {
         final ViewHolder holder;
-        Integer t = this.getCount();
-        position = +1;
+        Log.d("getItemView", "Start");
+        //position = +1;
         if (view == null) {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.itemview, null);
@@ -156,29 +156,41 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             holder.tvItemName = (TextView) view.findViewById(R.id.tvItemName);
             holder.tvItemUSD = (TextView) view.findViewById(R.id.tvItemUSD);
             holder.tvItemUAH = (TextView) view.findViewById(R.id.tvItemUAH);
-            holder.ivItem = (ParseImageView) view.findViewById(R.id.ivItem);
+            holder.ivItem = (ImageView) view.findViewById(R.id.ivItem);
             //holder.ivRest = (ParseImageView) view.findViewById(R.id.ivRest);
             holder.tvRest = (TextView) view.findViewById(R.id.tvRest);
             holder.btAdd = (Button) view.findViewById(R.id.btAdd);
             holder.btDel = (Button) view.findViewById(R.id.btDel);
             holder.tvQuantity = (TextView) view.findViewById(R.id.tvQuantity);
+            //holder.position = this.position;
             view.setTag(holder);
+            Log.d("getItemView", "view == null");
         } else {
             holder = (ViewHolder) view.getTag();
+            Log.d("getItemView", "view.getTag");
         }
         super.getItemView(object, view, parent);
 
-        this.setOnClickListener(holder.btAdd, object);
-        this.setOnClickListener(holder.btDel, object);
-        this.setOnClickListener(holder.ivItem, object);
+        mySet.add(object);
+        Log.d("getItemView", "mySet.add(object)");
+        int colorPosition = new ArrayList<ParseItems>(mySet).indexOf(object) % bgColors.length;
+        Log.d("getItemView", "get colorPosition");
+        view.setBackgroundColor(bgColors[colorPosition]);
+        Log.d("getItemView", "setBackgroundColor");
 
-        holder.tvItemName.setText(object.getName());
+        ParseItems parseItem = (ParseItems) object;
+
+        this.setOnClickListener(holder.btAdd, parseItem);
+        this.setOnClickListener(holder.btDel, parseItem);
+        this.setOnClickListener(holder.ivItem, parseItem);
+
+        holder.tvItemName.setText(parseItem.getName());
         DecimalFormat dec = new DecimalFormat("0.00");
-        holder.tvItemUSD.setText("$ " + dec.format(object.getPrice()));
-        holder.tvItemUAH.setText("₴ " + dec.format(object.getPriceUAH()));
+        holder.tvItemUSD.setText("$ " + dec.format(parseItem.getPrice()));
+        holder.tvItemUAH.setText("₴ " + dec.format(parseItem.getPriceUAH()));
 
 
-        ParseFile photoFile = object.getImage();
+        ParseFile photoFile = parseItem.getImage();
         //Get singleton instance of ImageLoader
 
         if (photoFile != null) {
@@ -186,14 +198,15 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             imageLoader.displayImage(photoFile.getUrl(), holder.ivItem);
         }
         if (object != null) {
-            if ((object.getStock() > 0) && (object.getStock() <= 5)) {
+            int cStock = parseItem.getStock();
+            if ((cStock > 0) && (cStock <= 5)) {
                 holder.tvRest.setBackgroundColor(Color.RED);
                 //imageLoader.displayImage(restMin.getUrl(), holder.ivRest);
-            } else if ((object.getStock() > 5) && (object.getStock() <= 30)) {
+            } else if ((cStock > 5) && (cStock <= 30)) {
                 holder.tvRest.setBackgroundColor(Color.YELLOW);
                 //imageLoader.displayImage(restAverage.getUrl(), holder.ivRest);
-            } else if (object.getStock() > 30) {
-                holder.tvRest.setBackgroundColor(Color.GREEN);
+            } else if (cStock > 30) {
+                holder.tvRest.setBackgroundColor(Color.rgb(69, 139, 116));
                 //imageLoader.displayImage(restMax.getUrl(), holder.ivRest);
             }
         }
@@ -212,15 +225,17 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
 //                context.startActivity(intent);
 //            }
 //        });
+        Log.d("getItemView", "End");
         return view;
 
 
     }
 
-
     private void delItem(ParseItems finalitem) {
         ParseQuery<Basket> query = Basket.getQuery();
-        query.fromLocalDatastore();
+        query.setMaxCacheAge(TimeUnit.DAYS.toMillis(1));
+        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        //query.fromLocalDatastore();
         query.whereEqualTo("productId", finalitem.getItemId());
         int currentcount = 0;
         try {
@@ -228,10 +243,11 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             currentcount = localbasket.getQuantity() - 1;
             if (currentcount < 0) {
                 currentcount = 0;
-                localbasket.unpinInBackground();
+                localbasket.deleteInBackground();
+                //localbasket.saveEventually();
             } else {
                 localbasket.setQuantity(currentcount);
-                localbasket.pinInBackground();
+                localbasket.saveEventually();
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -248,15 +264,18 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
     private void addItem(ParseItems finalitem) {
         Log.d("ADD", "Start");
         ParseQuery<Basket> query = Basket.getQuery();
-        query.fromLocalDatastore();
+        query.setMaxCacheAge(TimeUnit.DAYS.toMillis(1));
+        query.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
+        //query.fromLocalDatastore();
         query.whereEqualTo("productId", finalitem.getItemId());
         Log.d("ADD", "local query start");
         int currentcount = 1;
         try {
             Basket localbasket = query.getFirst();
-            currentcount = localbasket.getQuantity() + 1;
-            localbasket.setQuantity(currentcount);
-            localbasket.pinInBackground();
+            //currentcount = localbasket.getQuantity() + 1;
+            localbasket.increment("quantity");
+            //localbasket.setQuantity(currentcount);
+            localbasket.saveEventually();
         } catch (ParseException e) {
             e.printStackTrace();
             Basket basket = new Basket();
@@ -267,7 +286,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
             basket.setRequiredpriceUAH(finalitem.getPriceUAH());
             basket.setQuantity(1);
             //try {
-            basket.pinInBackground();
+            basket.saveEventually();
 //            } catch (ParseException e1) {
 //                e1.printStackTrace();
 //            }
@@ -324,12 +343,13 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseItems> {
 //    }
 
     public class ViewHolder {
+        //Integer position;
         TextView tvItemName;
         TextView tvItemUSD;
         TextView tvItemUAH;
         TextView tvRest;
-        ParseImageView ivItem;
-        ParseImageView ivRest;
+        ImageView ivItem;
+
         Button btAdd;
         Button btDel;
         TextView tvQuantity;

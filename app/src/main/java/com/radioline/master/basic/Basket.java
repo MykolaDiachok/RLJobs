@@ -34,6 +34,10 @@ public class Basket extends ParseObject {
         put("parseItem", parseItem);
     }
 
+    public ParseObject getUser() {
+        return getParseUser("user");
+    }
+
     public String getProductId() {
         return getString("productId");
     }

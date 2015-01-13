@@ -18,7 +18,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
-import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +38,13 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     protected void onResume() {
         super.onResume();
-        Mint.startSession(this);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
+
         if ((t != null) && (t.isAlive())) {
             t.interrupt();
         }
@@ -56,9 +54,6 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Mint.initAndStartSession(this, getString(R.string.mint));
-        //Mint.enableDebug();
 
         setContentView(R.layout.activity_secondgroup);
         lvSecond = (ListView) findViewById(R.id.lvSecond);
@@ -114,6 +109,25 @@ public class SecondGroupActivity extends Activity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Group itemgroup = (Group) adapterView.getItemAtPosition(position);
+
+//        ParseQuery querySite = new ParseQuery("ParseItems");
+//        querySite.whereEqualTo("GroupId", itemgroup.getGroupid());
+//        querySite.whereEqualTo("Availability", true);
+//        querySite.orderByAscending("Name");
+//        querySite.findInBackground(new FindCallback<ParseItems>() {
+//            public void done(final List<ParseItems> parseItemsList, ParseException e) {
+//                // Remove the previously cached results.
+//                ParseObject.unpinAllInBackground(parseItemsList,new DeleteCallback() {
+//                    public void done(ParseException e) {
+//                        // Cache the new results.
+//                        ParseObject.pinAllInBackground(parseItemsList);
+//                    }
+//                });
+//            }
+//        });
+
+
+
         Intent intent = new Intent(this, ItemActivity.class);
         intent.putExtra("parentid", itemgroup.getGroupid());
         intent.putExtra("Name", itemgroup.getName());

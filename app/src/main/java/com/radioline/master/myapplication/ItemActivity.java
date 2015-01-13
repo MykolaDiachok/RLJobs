@@ -23,7 +23,6 @@ import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.basic.ParseItems;
 import com.radioline.master.basic.ParseItemsViewAdapter;
-import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 
@@ -55,7 +54,6 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
 
         }
 
-
         @Override
         public void afterTextChanged(Editable s) {
             itemsViewAdapterAdapter = new ParseItemsViewAdapter(ItemActivity.this, getIntent().getStringExtra("parentid"), s.toString());
@@ -67,14 +65,12 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     protected void onResume() {
         super.onResume();
-        Mint.startSession(this);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
         if ((t != null) && (t.isAlive())) {
             t.interrupt();
         }
@@ -84,7 +80,7 @@ public class ItemActivity extends Activity implements AdapterView.OnItemClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Mint.initAndStartSession(this, getString(R.string.mint));
+
         setContentView(R.layout.activity_item);
 
         this.setTitle(getIntent().getStringExtra("Name"));

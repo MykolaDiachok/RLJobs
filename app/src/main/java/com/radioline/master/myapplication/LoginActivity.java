@@ -1,6 +1,7 @@
 package com.radioline.master.myapplication;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,32 +18,32 @@ import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.radioline.master.basic.BaseValues;
-import com.splunk.mint.Mint;
 
 public class LoginActivity extends Activity {
 
 
+    public static Context contextOfApplication;
     private Button btExit, btLogin;
     private EditText etUserId, etPasswordId;
 
-
+    public static Context getContextOfApplication() {
+        return contextOfApplication;
+    }
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Mint.startSession(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mint.initAndStartSession(this, getString(R.string.mint));
+        contextOfApplication = getApplicationContext();
+
         //Mint.enableDebug();
         setContentView(R.layout.activity_login);
 
@@ -122,7 +123,7 @@ public class LoginActivity extends Activity {
                                 }
                             }
                         });
-
+                        //loadParseItems();
                     ParseConfig.getInBackground();
                     ParseAnalytics.trackAppOpened(getIntent());
 
@@ -138,5 +139,24 @@ public class LoginActivity extends Activity {
             }
         });
     }
+
+
+//    private void loadParseItems(){
+//        ParseQuery query = new ParseQuery("ParseItems");
+//        query.whereEqualTo("Availability", true);
+//
+//        query.findInBackground(new FindCallback<ParseItems>() {
+//            public void done(final List<ParseItems> parseItemsList, ParseException e) {
+//                // Remove the previously cached results.
+//                ParseObject.unpinAllInBackground(new DeleteCallback() {
+//                    public void done(ParseException e) {
+//                        // Cache the new results.
+//                        ParseObject.pinAllInBackground(parseItemsList);
+//                    }
+//                });
+//            }
+//        });
+//    }
+
 
 }

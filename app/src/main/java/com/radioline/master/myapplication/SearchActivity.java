@@ -17,14 +17,17 @@ import com.badoo.mobile.util.WeakHandler;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
 import com.radioline.master.basic.SystemService;
-import com.radioline.master.myapplication.R;
 import com.radioline.master.soapconnector.Converts;
-import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class SearchActivity extends Activity implements AdapterView.OnItemClickListener, View.OnClickListener {
+    final Runnable showToastMessage = new Runnable() {
+        public void run() {
+            Toast.makeText(SearchActivity.this, "It's string:" + contents + " not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
+        }
+    };
     Button btSearchByName;
     EditText etSearchByName;
     ListView lvSearchByName;
@@ -34,25 +37,16 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
     private ItemViewAdapter itemViewAdapter;
     private Thread t;
 
-
-    final Runnable showToastMessage = new Runnable() {
-        public void run() {
-            Toast.makeText(SearchActivity.this, "It's string:" + contents + " not found in database, perhaps the item is not available", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-
     @Override
     protected void onResume() {
         super.onResume();
-        Mint.startSession(this);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
+
         if ((t != null) && (t.isAlive())) {
             t.interrupt();
         }
@@ -62,7 +56,7 @@ public class SearchActivity extends Activity implements AdapterView.OnItemClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        Mint.initAndStartSession(this, getString(R.string.mint));
+
 
         lvSearchByName = (ListView) findViewById(R.id.lvSearchByName);
         lvSearchByName.setOnItemClickListener(this);

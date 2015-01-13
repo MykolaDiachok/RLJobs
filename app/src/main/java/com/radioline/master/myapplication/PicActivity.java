@@ -3,7 +3,6 @@ package com.radioline.master.myapplication;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
@@ -40,14 +39,13 @@ public class PicActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Mint.startSession(this);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Mint.closeSession(this);
-        Mint.flush();
+
         if ((t != null) && (t.isAlive())) {
             t.interrupt();
         }
