@@ -17,6 +17,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
+import com.radioline.master.basic.ParseGroupViewAdapter;
+import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.soapconnector.MultiLoadingImage;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
     private ProgressDialog mProgressDialog;
     private List<ParseObject> ob;
     private List<Group> groups = null;
+    private ParseGroupViewAdapter parseGroupViewAdapter;
 
 
     @Override
@@ -56,8 +59,11 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         listView = (ListView) findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
-
-        new RemoteDataTask().execute();
+        parseGroupViewAdapter = new ParseGroupViewAdapter(this);
+        parseGroupViewAdapter.setAutoload(true);
+        parseGroupViewAdapter.setPaginationEnabled(false);
+        listView.setAdapter(parseGroupViewAdapter);
+        //new RemoteDataTask().execute();
 
     }
 
@@ -109,7 +115,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        Group itemgroup = (Group) adapterView.getItemAtPosition(position);
+        ParseGroups itemgroup = (ParseGroups) adapterView.getItemAtPosition(position);
         Intent intent = new Intent(this, SecondGroupActivity.class);
         intent.putExtra("parentid", itemgroup.getGroupid());
         intent.putExtra("Name", itemgroup.getName());

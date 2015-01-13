@@ -3,6 +3,7 @@ package com.radioline.master.basic;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 /**
  * Created by master on 13.11.2014.
@@ -30,12 +31,17 @@ public class Basket extends ParseObject {
         return (ParseItems) getParseObject("parseItem");
     }
 
+
     public void setParseItem(ParseItems parseItem) {
         put("parseItem", parseItem);
     }
 
     public ParseObject getUser() {
         return getParseUser("user");
+    }
+
+    public void setUser(ParseUser user) {
+        put("user", user);
     }
 
     public String getProductId() {
