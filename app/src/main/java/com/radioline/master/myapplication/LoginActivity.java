@@ -29,6 +29,7 @@ public class LoginActivity extends Activity {
     public static Context getContextOfApplication() {
         return contextOfApplication;
     }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -44,17 +45,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         contextOfApplication = getApplicationContext();
 
-        //Mint.enableDebug();
+
         setContentView(R.layout.activity_login);
 
-//        ParseCrashReporting.enable(this);
-//        Parse.enableLocalDatastore(getApplicationContext());
-//        ParseObject.registerSubclass(Basket.class);
-//        ParseObject.registerSubclass(ParseSetting.class);
-//        Parse.initialize(this, "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY", "oZII0CmkEklLvOvUQ64CQ6i4QjOzBIEGZfbXvYMG");
-
-
-//        ParseInstallation.getCurrentInstallation().saveInBackground();
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
@@ -107,11 +100,11 @@ public class LoginActivity extends Activity {
             public void done(ParseUser user, ParseException e) {
                 if (user != null) {
                     if ((Boolean) ParseUser.getCurrentUser().get("Enable")) {
-                    BaseValues.SetValue("UserId", ParseUser.getCurrentUser().getUsername());
-                    BaseValues.SetValue("PasswordId", etPasswordId.getText().toString());
-                    BaseValues.SetValue("PartnerId", ParseUser.getCurrentUser().get("PartnerId").toString());
-                    ParseUser.getCurrentUser().increment("RunCount");
-                    ParseUser.getCurrentUser().saveInBackground();
+                        BaseValues.SetValue("UserId", ParseUser.getCurrentUser().getUsername());
+                        BaseValues.SetValue("PasswordId", etPasswordId.getText().toString());
+                        BaseValues.SetValue("PartnerId", ParseUser.getCurrentUser().get("PartnerId").toString());
+                        ParseUser.getCurrentUser().increment("RunCount");
+                        ParseUser.getCurrentUser().saveInBackground();
 
                         ParsePush.subscribeInBackground("", new SaveCallback() {
                             @Override
@@ -124,11 +117,12 @@ public class LoginActivity extends Activity {
                             }
                         });
                         //loadParseItems();
-                    ParseConfig.getInBackground();
-                    ParseAnalytics.trackAppOpened(getIntent());
+                        ParseConfig.getInBackground();
+                        ParseAnalytics.trackAppOpened(getIntent());
 
 
-                    Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
+                        //Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, Groups.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();

@@ -59,7 +59,7 @@ public class FirstGroupActivity extends Activity implements AdapterView.OnItemCl
         listView = (ListView) findViewById(R.id.listView);
 
         listView.setOnItemClickListener(this);
-        parseGroupViewAdapter = new ParseGroupViewAdapter(this);
+        parseGroupViewAdapter = new ParseGroupViewAdapter(this, true);
         parseGroupViewAdapter.setAutoload(true);
         parseGroupViewAdapter.setPaginationEnabled(false);
         listView.setAdapter(parseGroupViewAdapter);

@@ -53,5 +53,6 @@
     <string name="NoData">Items not in stock</string>
     <string name="ItemAdd">add</string>
     <string name="ItemDel">del</string>
+    <string name="title_activity_groups">Groups</string>
 
 </resources>
