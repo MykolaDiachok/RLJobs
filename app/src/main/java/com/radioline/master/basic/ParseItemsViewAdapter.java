@@ -169,10 +169,14 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseObject> {
         ParseFile photoFile = parseItem.getImage();
         //Get singleton instance of ImageLoader
 
+        String imageurl = "";
         if (photoFile != null) {
-            //Load the image from the url into the ImageView.
-            imageLoader.displayImage(photoFile.getUrl(), holder.ivItem);
+            imageurl = photoFile.getUrl();
         }
+
+
+        imageLoader.displayImage(photoFile.getUrl(), holder.ivItem);
+
         if (object != null) {
             int cStock = parseItem.getStock();
             if ((cStock > 0) && (cStock <= 5)) {

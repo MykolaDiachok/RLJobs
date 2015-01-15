@@ -10,21 +10,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.Animations.DescriptionAnimation;
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
 import com.parse.ParseConfig;
 import com.parse.ParseException;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.radioline.master.basic.Actions;
 import com.radioline.master.basic.BaseValues;
 
-public class LoginActivity extends Activity {
+import java.util.List;
+
+public class LoginActivity extends Activity implements BaseSliderView.OnSliderClickListener {
 
 
     public static Context contextOfApplication;
     private Button btExit, btLogin;
     private EditText etUserId, etPasswordId;
+    private SliderLayout mDemoSlider;
 
     public static Context getContextOfApplication() {
         return contextOfApplication;
@@ -48,6 +58,9 @@ public class LoginActivity extends Activity {
 
         setContentView(R.layout.activity_login);
 
+        //https://github.com/daimajia/AndroidImageSlider
+        mDemoSlider = (SliderLayout) findViewById(R.id.slider);
+        loadActions();
 
         etUserId = (EditText) findViewById(R.id.etUserId);
 
@@ -130,6 +143,43 @@ public class LoginActivity extends Activity {
                 } else {
                     Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView baseSliderView) {
+        Toast.makeText(this, baseSliderView.getBundle().get("extra") + "", Toast.LENGTH_SHORT).show();
+    }
+
+    private void loadActions() {
+        ParseQuery query = new ParseQuery("Actions");
+        query.findInBackground(new FindCallback<Actions>() {
+
+            @Override
+            public void done(List<Actions> actionses, ParseException e) {
+                for (Actions act : actionses) {
+                    TextSliderView textSliderView = new TextSliderView(LoginActivity.this);
+                    // initialize a SliderLayout
+                    textSliderView
+                            .description(act.getString("name"))
+                            .image(act.getParseFile("banerimage").getUrl())
+                            .setScaleType(BaseSliderView.ScaleType.FitCenterCrop)
+                            .setOnSliderClickListener(LoginActivity.this);
+
+
+                    //add your extra information
+                    textSliderView.getBundle()
+                            .putString("extra", act.getString("name"));
+
+
+                    mDemoSlider.addSlider(textSliderView);
+                }
+
+                mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+                mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+                mDemoSlider.setCustomAnimation(new DescriptionAnimation());
+                mDemoSlider.setDuration(8000);
             }
         });
     }

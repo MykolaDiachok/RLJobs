@@ -9,6 +9,7 @@ import com.parse.Parse;
 import com.parse.ParseCrashReporting;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
+import com.radioline.master.basic.Actions;
 import com.radioline.master.basic.Basket;
 import com.radioline.master.basic.ParseGroups;
 import com.radioline.master.basic.ParseItems;
@@ -52,6 +53,7 @@ public class App extends Application {
         super.onCreate();
         ParseCrashReporting.enable(this);
         //Parse.enableLocalDatastore(getApplicationContext());
+        ParseObject.registerSubclass(Actions.class);
         ParseObject.registerSubclass(Basket.class);
         ParseObject.registerSubclass(ParseSetting.class);
         ParseObject.registerSubclass(ParseItems.class);
