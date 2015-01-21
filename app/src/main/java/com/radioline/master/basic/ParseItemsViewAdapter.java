@@ -1,6 +1,7 @@
 package com.radioline.master.basic;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.johnpersano.supertoasts.SuperToast;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.ParseACL;
@@ -40,6 +43,15 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseObject> {
     private LayoutInflater inflater;
     private ImageLoader imageLoader;
     private LinkedHashSet mySet;
+    private DisplayImageOptions options = new DisplayImageOptions.Builder()
+            .showImageOnLoading(R.drawable.ic_folderupload)
+            .showImageForEmptyUri(android.R.color.transparent)
+            .showImageOnFail(R.drawable.ic_folderutil)
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
 
 
     public ParseItemsViewAdapter(Context context, final ParseGroups parseGroupId) {
@@ -175,7 +187,7 @@ public class ParseItemsViewAdapter extends ParseQueryAdapter<ParseObject> {
         }
 
 
-        imageLoader.displayImage(photoFile.getUrl(), holder.ivItem);
+        imageLoader.displayImage(imageurl, holder.ivItem,options);
 
         if (object != null) {
             int cStock = parseItem.getStock();

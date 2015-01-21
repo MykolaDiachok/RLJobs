@@ -7,7 +7,7 @@ import com.parse.ParseQuery;
 /**
  * Created by master on 24.11.2014.
  */
-@ParseClassName("Parse")
+@ParseClassName("ParseSetting")
 public class ParseSetting extends ParseObject {
 
     public static ParseQuery<ParseSetting> getQuery() {
