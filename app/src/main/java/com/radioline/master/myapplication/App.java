@@ -9,11 +9,11 @@ import com.parse.Parse;
 import com.parse.ParseCrashReporting;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
-import com.radioline.master.basic.Actions;
-import com.radioline.master.basic.Basket;
-import com.radioline.master.basic.ParseGroups;
-import com.radioline.master.basic.ParseItems;
-import com.radioline.master.basic.ParseSetting;
+import com.radioline.master.parse.Actions;
+import com.radioline.master.parse.Basket;
+import com.radioline.master.parse.ParseGroups;
+import com.radioline.master.parse.ParseItems;
+import com.radioline.master.parse.ParseSetting;
 import com.splunk.mint.Mint;
 
 public class App extends Application {

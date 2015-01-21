@@ -16,8 +16,8 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.radioline.master.basic.Basket;
-import com.radioline.master.basic.BasketViewAdapter;
+import com.radioline.master.parse.Basket;
+import com.radioline.master.adapter.BasketViewAdapter;
 
 import java.util.List;
 

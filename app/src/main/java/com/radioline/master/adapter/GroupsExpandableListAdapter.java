@@ -1,4 +1,4 @@
-package com.radioline.master.basic;
+package com.radioline.master.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.radioline.master.myapplication.R;
+import com.radioline.master.parse.ParseGroups;
 
 import java.util.HashMap;
 import java.util.List;

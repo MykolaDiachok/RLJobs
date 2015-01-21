@@ -19,7 +19,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.BaseValues;
-import com.radioline.master.basic.Basket;
+import com.radioline.master.parse.Basket;
 import com.radioline.master.basic.SystemService;
 import com.radioline.master.soapconnector.Link;
 

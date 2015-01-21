@@ -1,4 +1,4 @@
-package com.radioline.master.basic;
+package com.radioline.master.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -26,6 +26,9 @@ import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.radioline.master.myapplication.R;
+import com.radioline.master.parse.Basket;
+import com.radioline.master.parse.ParseGroups;
+import com.radioline.master.parse.ParseItems;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

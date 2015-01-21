@@ -23,7 +23,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.radioline.master.basic.Actions;
+import com.radioline.master.parse.Actions;
 import com.radioline.master.basic.BaseValues;
 
 import java.util.List;
@@ -135,7 +135,7 @@ public class LoginActivity extends Activity implements BaseSliderView.OnSliderCl
 
 
                         //Intent intent = new Intent(LoginActivity.this, FirstGroupActivity.class);
-                        Intent intent = new Intent(LoginActivity.this, Groups.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(LoginActivity.this, getString(R.string.NoLogin), Toast.LENGTH_LONG).show();

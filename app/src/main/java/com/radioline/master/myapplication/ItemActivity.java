@@ -21,8 +21,8 @@ import com.badoo.mobile.util.WeakHandler;
 import com.parse.ParseQueryAdapter;
 import com.radioline.master.basic.Item;
 import com.radioline.master.basic.ItemViewAdapter;
-import com.radioline.master.basic.ParseItems;
-import com.radioline.master.basic.ParseItemsViewAdapter;
+import com.radioline.master.parse.ParseItems;
+import com.radioline.master.adapter.ParseItemsViewAdapter;
 
 import java.util.ArrayList;
 

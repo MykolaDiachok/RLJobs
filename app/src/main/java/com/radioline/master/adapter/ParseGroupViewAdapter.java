@@ -1,4 +1,4 @@
-package com.radioline.master.basic;
+package com.radioline.master.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,6 +16,8 @@ import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.radioline.master.myapplication.R;
+import com.radioline.master.parse.ParseGroups;
+import com.radioline.master.parse.ParseItems;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

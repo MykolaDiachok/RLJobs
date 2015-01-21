@@ -1,4 +1,4 @@
-package com.radioline.master.basic;
+package com.radioline.master.parse;
 
 import com.parse.ParseClassName;
 import com.parse.ParseFile;

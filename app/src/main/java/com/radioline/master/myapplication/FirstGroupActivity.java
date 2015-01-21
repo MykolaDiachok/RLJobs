@@ -17,8 +17,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.radioline.master.basic.Group;
 import com.radioline.master.basic.GroupViewAdapter;
-import com.radioline.master.basic.ParseGroupViewAdapter;
-import com.radioline.master.basic.ParseGroups;
+import com.radioline.master.adapter.ParseGroupViewAdapter;
+import com.radioline.master.parse.ParseGroups;
 import com.radioline.master.soapconnector.MultiLoadingImage;
 
 import java.util.ArrayList;

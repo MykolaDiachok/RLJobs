@@ -15,6 +15,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.radioline.master.myapplication.PicActivity;
 import com.radioline.master.myapplication.R;
+import com.radioline.master.parse.Basket;
 import com.radioline.master.soapconnector.ImageDownloaderSOAP;
 
 import java.text.DecimalFormat;
