@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android'
+apply plugin: 'com.parse'
 
 android {
     signingConfigs {
@@ -69,10 +70,6 @@ buildscript {
     }
 }
 
-apply plugin: 'com.parse'
 
-parse {
-    applicationId "5pOXIrqgAidVKFx2mWnlMHj98NPYqbR37fOEkuuY"
-    masterKey "J7STPEra8u0IxMiN34bfzSSWdWHXjbiQlqgUoB32"
-    // ...
-}
+
+
