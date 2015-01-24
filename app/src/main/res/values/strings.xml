@@ -59,7 +59,22 @@
     <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_example">Example action</string>
+
+    <string-array name="nav_drawer_items">
+        <item>Order</item>
+        <item>Basket</item>
+        <item>Search</item>
+        <item>Barcode Search</item>
+    </string-array>
+
+    <array name="nav_drawer_icons">
+        <item>@drawable/ic_write</item>
+        <item>@drawable/ic_basket</item>
+        <item>@drawable/ic_search</item>
+        <item>@drawable/ic_barcode</item>
+    </array>
+
+    <string name="desc_list_item_icon">Item Icon</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

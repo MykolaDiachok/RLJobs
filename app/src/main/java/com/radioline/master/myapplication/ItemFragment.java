@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.radioline.master.adapter.ParseItemsViewAdapter;
+import com.radioline.master.parse.ParseGroups;
 
 public class ItemFragment extends Fragment {
     private View rootView;
@@ -31,12 +32,13 @@ public class ItemFragment extends Fragment {
 
         lvItem = (ListView) getView().findViewById(R.id.lvItem);
 
+        if(getArguments() != null){
 
-
-        itemsViewAdapterAdapter = new ParseItemsViewAdapter(this, getIntent().getStringExtra("parentid"));
+        itemsViewAdapterAdapter = new ParseItemsViewAdapter(getView().getContext(),getArguments().getString("parentid"));
         itemsViewAdapterAdapter.setAutoload(true);
         itemsViewAdapterAdapter.setPaginationEnabled(false);
         lvItem.setAdapter(itemsViewAdapterAdapter);
+        }
     }
 
 }

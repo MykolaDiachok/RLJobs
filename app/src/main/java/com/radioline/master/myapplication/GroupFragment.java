@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +49,13 @@ public class GroupFragment extends Fragment {
                 ParseGroups itemgroup = listDataChild.get(
                         listDataHeader.get(groupPosition)).get(
                         childPosition);
-
+                Bundle bundle = new Bundle();
+                bundle.putString("parentid", itemgroup.getGroupid());
+                Fragment frmItems = new ItemFragment();
+                frmItems.setArguments(bundle);
+                FragmentManager fragmentManager = getFragmentManager();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.replace(R.id.container, frmItems).addToBackStack(null).commit();
 //                Intent intent = new Intent(getApplicationContext(), ItemActivity.class);
 //                intent.putExtra("parentid", itemgroup.getGroupid());
 //                intent.putExtra("Name", itemgroup.getName());

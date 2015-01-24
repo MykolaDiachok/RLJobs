@@ -2,6 +2,7 @@ package com.radioline.master.myapplication;
 
 
 import android.app.Activity;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.radioline.master.adapter.NavDrawerListAdapter;
+import com.radioline.master.model.NavDrawerItem;
+import com.radioline.master.rlprice.OrderFragment;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity
@@ -26,7 +33,13 @@ public class MainActivity extends ActionBarActivity
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
+    private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private String[] navMenuTitles;
+    private TypedArray navMenuIcons;
+
+    private ArrayList<NavDrawerItem> navDrawerItems;
+    private NavDrawerListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +48,7 @@ public class MainActivity extends ActionBarActivity
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+        mTitle = mDrawerTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -49,7 +62,7 @@ public class MainActivity extends ActionBarActivity
         Fragment objFragment = null;
         switch (position){
             case 0:
-                objFragment = new GroupFragment();
+                objFragment = new OrderFragment();
                 break;
         }
 

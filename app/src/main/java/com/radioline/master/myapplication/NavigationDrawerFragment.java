@@ -22,6 +22,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.radioline.master.model.NavDrawerItem;
+
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -98,6 +100,10 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
+
+
+
+
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
