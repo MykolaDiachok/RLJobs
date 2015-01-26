@@ -1,4 +1,4 @@
-package com.radioline.master.myapplication;
+package com.radioline.master.rlprice;
 
 
 import android.app.Activity;
@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.radioline.master.adapter.NavDrawerListAdapter;
 import com.radioline.master.model.NavDrawerItem;
-import com.radioline.master.rlprice.OrderFragment;
+import com.radioline.master.myapplication.R;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.radioline.master.myapplication;
+package com.radioline.master.rlprice;
 
 
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.radioline.master.adapter.ParseItemsViewAdapter;
+import com.radioline.master.myapplication.R;
 import com.radioline.master.parse.ParseGroups;
 
 public class ItemFragment extends Fragment {

@@ -6,7 +6,7 @@
 
 
     <fragment
-        android:name="com.radioline.master.myapplication.ItemFragment"
+        android:name="com.radioline.master.rlprice.ItemFragment"
         android:id="@+id/fragment2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -1,4 +1,4 @@
-package com.radioline.master.myapplication;
+package com.radioline.master.rlprice;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
@@ -23,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.radioline.master.model.NavDrawerItem;
+import com.radioline.master.myapplication.R;
 
 
 /**
