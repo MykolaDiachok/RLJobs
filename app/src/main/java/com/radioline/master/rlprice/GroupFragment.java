@@ -26,10 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 public class GroupFragment extends Fragment {
     private View rootView;
-    private GroupsExpandableListAdapter listAdapter;
-    private ExpandableListView expListView;
-    private List<ParseGroups> listDataHeader;
-    private HashMap<ParseGroups, List<ParseGroups>> listDataChild;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,36 +33,8 @@ public class GroupFragment extends Fragment {
 
 
         // get the listview
-        expListView = (ExpandableListView)getView().findViewById(R.id.lvExp);
-//        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-//
-//            @Override
-//            public boolean onChildClick(ExpandableListView parent, View v,
-//                                        int groupPosition, int childPosition, long id) {
-//                ParseGroups itemgroup = listDataChild.get(
-//                        listDataHeader.get(groupPosition)).get(
-//                        childPosition);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("parentid", itemgroup.getGroupid());
-//                Fragment frmItems = new ItemFragment();
-//                frmItems.setArguments(bundle);
-//                FragmentManager fragmentManager = getFragmentManager();
-//                FragmentTransaction ft = fragmentManager.beginTransaction();
-//                ft.replace(R.id.container, frmItems).addToBackStack(null).commit();
-////                Intent intent = new Intent(getApplicationContext(), ItemActivity.class);
-////                intent.putExtra("parentid", itemgroup.getGroupid());
-////                intent.putExtra("Name", itemgroup.getName());
-////                startActivity(intent);
-//                return false;
-//            }
-//        });
-        // preparing list data
-        prepareListData();
+        //expListView = (ExpandableListView)getView().findViewById(R.id.lvExp);
 
-        listAdapter = new GroupsExpandableListAdapter(getView().getContext(), listDataHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
     }
 
     @Nullable
@@ -78,52 +46,6 @@ public class GroupFragment extends Fragment {
 
 
         return rootView;
-    }
-
-
-    private void prepareListData() {
-        listDataHeader = new ArrayList<ParseGroups>();
-        listDataChild = new HashMap<ParseGroups, List<ParseGroups>>();
-
-        ParseQuery queryFirst = ParseGroups.getQuery();
-        queryFirst.setMaxCacheAge(TimeUnit.HOURS.toMillis(4));
-        queryFirst.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
-        queryFirst.whereEqualTo("parentid", "00000000-0000-0000-0000-000000000000");
-        queryFirst.whereEqualTo("Enable", true);
-        queryFirst.orderByAscending("sortcode");
-        queryFirst.findInBackground(new FindCallback<ParseGroups>() {
-            @Override
-            public void done(List<ParseGroups> list, ParseException e) {
-                for (final ParseGroups parseGroups : list) {
-                    listDataHeader.add(parseGroups);
-
-                    ParseQuery querySecond = ParseGroups.getQuery();
-                    querySecond.setMaxCacheAge(TimeUnit.HOURS.toMillis(4));
-                    querySecond.setCachePolicy(ParseQuery.CachePolicy.CACHE_ELSE_NETWORK);
-                    querySecond.whereEqualTo("parseGroupId", parseGroups);
-                    querySecond.whereEqualTo("Enable", true);
-                    querySecond.orderByAscending("sortcode");
-//                    try {
-//
-//                        listDataChild.put(parseGroups,querySecond.find());
-//                    } catch (ParseException e1) {
-//                        e1.printStackTrace();
-//                    }
-                    querySecond.findInBackground(new FindCallback<ParseGroups>() {
-                        @Override
-                        public void done(List<ParseGroups> list, ParseException e) {
-                            listDataChild.put(parseGroups, list);
-                            //listAdapter.notifyDataSetChanged();
-                        }
-                    });
-
-
-                }
-                listAdapter.notifyDataSetChanged();
-            }
-        });
-
-
     }
 
 
